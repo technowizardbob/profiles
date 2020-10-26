@@ -1,0 +1,10 @@
+export SN=`netstat -nr | grep -m 1 -iE 'default|0.0.0.0' | awk '{print \$2}' | sed 's/\.[0-9]*$//' `
+alias find-servers='nmap --top-ports 10 "$SN".*'
+alias find-web-servers='nmap -p 80,443,8080  "$SN".*'
+alias find-file-servers='nmap -p 137,138,139,445 "$SN".*'
+alias find-ssh-servers='nmap -p 22 "$SN".*'
+alias find-ftp-servers='nmap -p 21 "$SN".*'
+
+#Ping Default Gateway
+export GW=`netstat -nr | grep -m 1 -iE 'default|0.0.0.0' | awk '{print $2}'`
+alias check-internet='ping -c 5 -i .250 -s .2 "$GW"'
