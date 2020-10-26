@@ -12,10 +12,12 @@ Then:$ sudo mv profiles/ /opt/
 
 Next:$ goto this folder: cd /opt/profiles
 
+$ chmod 774 install.sh
 Now, as a non-Root USER from a console:$ ./install.sh
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
 sudo apt-get install fonts-powerline
+
 touch /opt/profiles/.unicode_support
 
 # (Optional) To disable Background colors:
