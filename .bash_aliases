@@ -25,4 +25,26 @@ for f in $_ENV_FILES;
 do
 	source "${f}"
 done
-cat /opt/profiles/awesome.txt
+
+if [ -f /opt/profiles/awesome.txt ]; then
+	cat /opt/profiles/awesome.txt
+fi
+
+if [ -f /opt/profiles/mysite.txt ]; then
+	cat /opt/profiles/mysite.txt
+fi
+
+date +"%A, %B %-d, %Y %r"
+
+#Check if Root
+if [ $UID -ne 0 ]; then
+    # This is not a root user:	
+    echo "Welcome, " `whoami`
+    echo "This is a protected system! All access is logged." 
+    alias reboot='sudo reboot'
+    alias upgrade='sudo apt-get upgrade'
+else 
+    # Wow, got root:		
+    echo "You are logged in as an admin becareful! This is a restricted system, this will be logged."
+    alias upgrade='apt-get upgrade'
+fi

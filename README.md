@@ -16,9 +16,12 @@ $ chmod 774 install.sh
 Now, as a non-Root USER from a console:$ ./install.sh
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
-sudo apt-get install fonts-powerline
+$ sudo apt-get install fonts-powerline
 
-touch /opt/profiles/.unicode_support
+$ touch /opt/profiles/.unicode_support
+
+# Customize your banner: 
+$ mv /opt/profiles/bw_awesome.txt /opt/profiles/awesome.txt
 
 # (Optional) To disable Background colors:
 touch /opt/profiles/.simple_theme
