@@ -1,19 +1,28 @@
 #!/bin/bash
-if ([ -f /home/$USER/.old_bash_aliases ] || [ -f /home/$USER/.old_bashrc ] || [ -f /home/$USER/.old_profile ] || [ -f /home/$USER/.old_git_svn_bash_prompt ]); 
+if [ "$EUID" -eq 0 ]; then
+	echo "Please backup and make sym-links your self for the root account, as I do not want to make a admin mad."
+	echo -e "\n"
+	echo "ln -s /pathHere/{.bashrc,.bash_aliases,.profile,.git_bash_prompt} /root/"
+	echo -e "\n"
+	echo "Also, if you want all new users to have the same aliases....link to /etc/skel/"
+	echo -e "\n"
+	exit 1
+fi
+if ([ -f /home/$USER/.old_a_bash_aliases ] || [ -f /home/$USER/.old_a_bashrc ] || [ -f /home/$USER/.old_a_profile ] || [ -f /home/$USER/.old_a_git_svn_bash_prompt ]); 
 then 
-	rm .old_*
+	rm /home/$USER/.old_a_*
 fi
 if [ -f /home/$USER/.bash_aliases ]; then 
-	mv /home/$USER/.bash_aliases /home/$USER/.old_bash_aliases
+	mv /home/$USER/.bash_aliases /home/$USER/.old_a_bash_aliases
 fi
 if [ -f /home/$USER/.bashrc ]; then 
-	mv /home/$USER/.bashrc /home/$USER/.old_bashrc
+	mv /home/$USER/.bashrc /home/$USER/.old_a_bashrc
 fi
 if [ -f /home/$USER/.profile ]; then
-	mv /home/$USER/.profile /home/$USER/.old_profile
+	mv /home/$USER/.profile /home/$USER/.old_a_profile
 fi
 if [ -f /home/$USER/.git_bash_prompt ]; then 
-	mv /home/$USER/.git_bash_prompt /home/$USER/.old_git_bash_prompt
+	mv /home/$USER/.git_bash_prompt /home/$USER/.old_a_git_bash_prompt
 fi
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
 	echo "Making Sym Links from current install location"
