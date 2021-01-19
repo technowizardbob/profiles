@@ -1,0 +1,94 @@
+#!/bin/bash
+if [ -z "$2" ]; then
+  FOLDER="$1"
+elif [ $2 = home ]; then
+  FOLDER="$HOME/$1"
+else
+  FOLDER="$1"
+fi
+if [ -d "$FOLDER/.git" ]; then
+  cd "$FOLDER"
+  /bin/echo "$FOLDER"
+  /bin/echo "Here are all the Branches:"
+  /usr/bin/git branch -a
+  /bin/echo "(0) or (stay) Stay here"
+  /bin/echo "(1) or (change) Change to another existing Branch"
+  /bin/echo "(2) or (new) Create new Branch"
+  read branch
+  if [[ -z "$branch" ]]; then
+    exit 1
+  elif [ $branch = 1 ] || [ $branch = change ]; then
+    /bin/echo "Enter name of branch"
+    read name
+    if [[ -z "$name" ]]; then
+      exit 1
+    fi
+    /usr/bin/git checkout "$name"
+    if [ $? -ne 0 ]; then
+      echo "Sorry, that branch does NOT exist!"
+      exit 1
+    fi  
+    
+  elif [ $branch = 2 ] || [ $branch = new ]; then
+    /bin/echo "Enter name for new branch"
+    read name
+    if [[ -z "$name" ]]; then
+      exit 1
+    fi
+    /usr/bin/git checkout -b "$name"
+    if [ $? -eq 0 ]; then
+		/usr/bin/git push -u origin HEAD
+    else 
+      /bin/echo "Unable to make new branch"
+      exit 1  
+    fi
+  fi
+  /bin/echo "(1) or (pull) Just Pull and Wipe my code. Run only before changes!"
+  /bin/echo "(2) or (push) Will Pull and Push when your Feature Complete!"
+  read well
+  if [[ -z "$well" ]]; then
+      exit 1
+  elif [ $well = 1 ] || [ $well = pull ]; then
+    /opt/profiles/scripts/git/gpull "$FOLDER"
+  elif [ $well = 2 ] || [ $well = push ]; then
+  while :
+   do
+    /bin/echo "Here are your untracked/unstaged/changed...files:"
+    /usr/bin/git status -s
+    /bin/echo "(0) Continue on to next step."
+    /bin/echo "(1) (discard) Discard changes made in file!"
+    /bin/echo "(2) (add) Add file to be staged."
+    /bin/echo "(3) (remove) Remove file so it's not staged."
+    read todo
+    if [[ -z "$todo" ]]; then
+      exit 1
+    elif [ $todo = 1 ] || [ $todo = discard ]; then
+      /bin/echo "enter path/file:"
+      read filename
+      if [[ -z "$filename" ]]; then
+        exit 1
+      fi
+      /usr/bin/git checkout -- "$filename"
+    elif [ $todo = 2 ] || [ $todo = add ]; then
+      /bin/echo "enter path/file:"
+      read filename
+      if [[ -z "$filename" ]]; then
+        exit 1
+      fi      
+      /usr/bin/git add "$filename"
+    elif [ $todo = 3 ] || [ $todo = remove ]; then
+      /bin/echo "enter path/file:"
+      read fiilename
+      if [[ -z "$filename" ]]; then
+        exit 1
+      fi      
+      /usr/bin/git rm --cached "$filename"
+    elif [ $todo = 0 ]; then
+      break
+    fi
+   done
+    /opt/profiles/scripts/git/gpull-and-push "$FOLDER"
+  fi
+else
+  /bin/echo "Sorry, Git Repo not found!"
+fi
