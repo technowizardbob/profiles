@@ -1,0 +1,35 @@
+1 = execute only
+2 = write only
+3 = write and execute (1+2)
+4 = read only
+5 = read and execute (4+1)
+6 = read and write (4+2)
+7 = read and write and execute (4+2+1)
+
++r adds read access
++w adds write access
++x allows execution
+
++ allow
+- deny
+
+u = user
+g = group
+o = other
+
+user group others
+
+# Change file permissions Examples:
+chmod +r file.txt
+chmod u+r g+r file.txt
+chmod o-w file.txt
+chmod 664 file.txt
+
+#Change ownership of a file: chown owner:group file
+chown dave:www-data file.txt
+
+# Add write protection, must be root....:
+chattr +i data.txt
+
+# Remove write protection, must be root....:
+chattr -i data.txt
