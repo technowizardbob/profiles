@@ -1,4 +1,5 @@
-_ENV_PATH="/opt/profiles/aliases/"
+_PROFILES_PATH="/opt/profiles/"
+_ENV_PATH="${_PROFILES_PATH}aliases/"
 _ENV_FILES="${_ENV_PATH}*.env"
 # List these alias Commands, this file...
 commands() {
