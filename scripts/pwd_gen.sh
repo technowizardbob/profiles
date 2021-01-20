@@ -12,5 +12,5 @@ echo -e "$SPC\c"
 cat /dev/urandom | grep -ao '[A-Za-z0-9]' \
     | head -n $PWD_SIZE \
     | shuf \
-    | tr -d '\n'
+    | tr -d 'ioIOlL01\n'
 echo $EPC
