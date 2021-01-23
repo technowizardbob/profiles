@@ -2,9 +2,13 @@
 Bash Aliases
 
 .TH "Bash Aliases" "1" "January 2021" "Profiles-1.X" "User manual"
+
 .SH NAME
+
 Profiles-1X \- BASH scripts to manage your aliases.
+
 .SH DESCRIPTION
+
 .nf
 
 # INSTALL:
@@ -90,5 +94,6 @@ ex3: cheats
 
 .SH AUTHOR
 Robert S. <Robert@TryingToScale.com>
+
 .SH GITHUB
 https://github.com/tryingtoscale
