@@ -1,15 +1,5 @@
 # profiles
-Bash Aliases
-
-.TH "Bash Aliases" "1" "January 2021" "Profiles-1.X" "User manual"
-
-.SH NAME
-
-Profiles-1X \- BASH scripts to manage your aliases.
-
-.SH DESCRIPTION
-
-.nf
+Bash Aliases :rocket:
 
 # INSTALL:
 Download from github to /home/$USER/profiles and extract there...via the following git clone command:
@@ -80,6 +70,8 @@ To SSH into a box: sshto
 
 To generate a password: pwdgen
 
+To work on a git Project repo: dogit /var/www/reponame
+
 To edit an alias do: calias folders
 
 To find something Quick: alias-find netstat
@@ -95,5 +87,6 @@ ex3: cheats
 .SH AUTHOR
 Robert S. <Robert@TryingToScale.com>
 
-.SH GITHUB
-https://github.com/tryingtoscale
+:octocat:
+
+[GitHub-TryingToScale.com](https://github.com/tryingtoscale)
