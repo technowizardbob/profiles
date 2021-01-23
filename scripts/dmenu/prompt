@@ -1,0 +1,8 @@
+#!/bin/bash
+# ./prompt "Label" "Command"
+if [ -f /usr/bin/dmenu ]; then
+   [ $(echo -e "No\nYes" | dmenu -i -p "$1") == "Yes" ] && $2
+else
+   echo -e "\nYou need dmenu which is part of suckless-tools."
+   echo -e "\napt install suckless-tools\n"
+fi
