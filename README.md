@@ -10,9 +10,10 @@ $ git clone https://github.com/tryingtoscale/profiles.git
 
 Then:$ sudo mv profiles/ /opt/
 
-Next:$ goto this folder: cd /opt/profiles
+Next, goto this folder:$ cd /opt/profiles
 
 $ chmod 774 install.sh
+
 Now, as a non-Root USER from a console:$ ./install.sh
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
@@ -30,7 +31,7 @@ touch /opt/profiles/.simple_theme
 
 # If NOT using the install.sh installer follow these steps:
 
-# First Backup any changes to these files, then remove them:
+# First Backup any changes to these files, move them:
 ```bash
 mv /home/$USER/.bash_aliases /home/$USER/.old_bash_aliases
 
