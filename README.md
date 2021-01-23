@@ -70,6 +70,8 @@ ex3: command apt_get
 
 ex4: command docker
 
+To edit SSH config: cssh
+
 To SSH into a box: sshto
 
 To generate a password: pwdgen
