@@ -1,0 +1,17 @@
+#Label, Bash_Command, Description
+GUI, gui, Open nautils GUI
+List Files, list_files, List remote files
+Free Memory, free_mem, Get memory on server
+Inodes Free, free_inodes, Get inodes free on server
+Disk Sace, disk_space, Get Disk Space on server
+Upload, upload, Upload to the server
+Dest, serverpath, Change Server folder
+Download, dlst; down, Download from the server
+System Info, system_info, Get server information
+Port Tunnel, portunneling, Open Tunnel on server
+Key Copy, add_sshkey, Copy your SSH key to the server
+Files Copy, copy_files, Copy files to server
+Change Username, username, Switch user accounts
+Local Port, local_port, Change local port
+Remote Port, remote_port, Change remote port
+Change Colors, colors, Edit dialog colors
