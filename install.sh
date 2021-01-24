@@ -8,24 +8,41 @@ if [ "$EUID" -eq 0 ]; then
 fi
 if ([ -f /home/$USER/.old_a_bash_aliases ] || [ -f /home/$USER/.old_a_bashrc ] || \
     [ -f /home/$USER/.old_a_profile ] || [ -f /home/$USER/.old_a_git_svn_bash_prompt ] || \
-    [ -f /home/$USER/.old_a_gitconfig ] || [ -f /home/$USER/.ran_profiles_once ]); then 
+    [ -f /home/$USER/.old_a_gitconfig ] || [ -f /home/$USER/.old_a_vimrc ] || \
+    [ -f /home/$USER/.ran_profiles_once ]); then 
     	echo -e "Already run once for this user!!"
 	exit 1
 fi
+echo -e "\n"
 if [ -f /home/$USER/.bash_aliases ]; then 
-	mv /home/$USER/.bash_aliases /home/$USER/.old_a_bash_aliases
+	mv -v /home/$USER/.bash_aliases /home/$USER/.old_a_bash_aliases
+        echo "Moved existing Bash Aliases - Dot File!!! to ~/.old_a_bash_aliases"
+        echo "If something does not work anymore in bash alias...edit the backup..."
 fi
 if [ -f /home/$USER/.bashrc ]; then 
-	mv /home/$USER/.bashrc /home/$USER/.old_a_bashrc
+	mv -v /home/$USER/.bashrc /home/$USER/.old_a_bashrc
+        echo "Moved existing Bash RC - Dot File!!! to ~/.old_a_bash_rc"
+        echo "If something does not work anymore in bashrc edit the backup..."
 fi
 if [ -f /home/$USER/.profile ]; then
-	mv /home/$USER/.profile /home/$USER/.old_a_profile
+	mv -v /home/$USER/.profile /home/$USER/.old_a_profile
+        echo "Moved existing Profile - Dot File!!! to ~/.old_a_profile"
+        echo "If something does not work anymore in the profile edit the backup..."
 fi
 if [ -f /home/$USER/.git_bash_prompt ]; then 
-	mv /home/$USER/.git_bash_prompt /home/$USER/.old_a_git_bash_prompt
+	mv -v /home/$USER/.git_bash_prompt /home/$USER/.old_a_git_bash_prompt
+        echo "Moved existing Git Prompt - Dot File!!! to ~/.old_a_git_bash_prompt"
+        echo "If something does not look right anymore in git prompt edit the backup..."
 fi
 if [ -f /home/$USER/.gitconfig ]; then 
-	mv /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
+	mv -v /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
+        echo "Moved existing Git Config - Dot File!!! to ~/.old_a_gitconfig"
+        echo "If something does not work anymore in Git edit the backup..."
+fi
+if [ -f /home/$USER/.vimrc ]; then 
+	mv -v /home/$USER/.vimrc /home/$USER/.old_a_vimrc
+        echo "Moved existing VIM Config - Dot File!!! to ~/.old_a_vimrc"
+        echo "If something does not work anymore in Vim edit the backup..."
 fi
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
 	echo "Making Sym Links from current install location"
@@ -34,6 +51,11 @@ if ([ -d aliases ] && [ -f .bash_aliases ]); then
 	ln -s "$(pwd -P)"/.profile /home/$USER/
 	ln -s "$(pwd -P)"/.git_bash_prompt /home/$USER/
 	ln -s "$(pwd -P)"/dotfiles/.gitconfig /home/$USER/
+	ln -s "$(pwd -P)"/dotfiles/.vimrc /home/$USER/
+	if [ ! -f /home/$USER/.gitconfig.secret ]; then
+   		cp "$(pwd -P)"/dotfiles/.gitconfig.secret /home/$USER/
+   		nano /home/$USER/.gitconfig.secret
+	fi
 	touch /home/$USER/.ran_profiles_once
 else
   if ([ -d /opt/profiles/aliases ] && [ -f /opt/profiles/.bash_aliases ]); then
@@ -43,6 +65,11 @@ else
 	ln -s /opt/profiles/.profile /home/$USER/
 	ln -s /opt/profiles/.git_bash_prompt /home/$USER/
 	ln -s /opt/profiles/dotfiles/.gitconfig /home/$USER/
+	ln -s /opt/profiles/dotfiles/.vimrc /home/$USER/
+	if [ ! -f /home/$USER/.gitconfig.secret ]; then
+   		cp /opt/profiles/dotfiles/.gitconfig.secret /home/$USER/
+   		nano /home/$USER/.gitconfig.secret
+	fi
 	touch /home/$USER/.ran_profiles_once
   fi
 fi

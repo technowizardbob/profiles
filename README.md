@@ -16,6 +16,8 @@ $ chmod 774 install.sh
 
 Now, as a non-Root USER from a console:$ ./install.sh
 
+Note: It will edit the git config file so it has your name and email at this point.
+
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
 $ sudo apt-get install fonts-powerline
 # If Powerline installed okay..., do:
@@ -38,6 +40,7 @@ mv /home/$USER/.bash_aliases /home/$USER/.old_bash_aliases
 mv /home/$USER/.bashrc /home/$USER/.old_bashrc
 
 mv /home/$USER/.profile /home/$USER/.old_profile
+.........and other dotfiles.........listed below.
 ```
 ## Make links to Bash Aliases:
 ```bash
@@ -48,6 +51,11 @@ ln -s /opt/profiles/.bashrc /home/$USER/
 ln -s /opt/profiles/.profile /home/$USER/
 
 ln -s /opt/profiles/.git_bash_prompt /home/$USER/
+
+ln -s /opt/profiles/dotfiles/.gitconfig /home/$USER/
+....be sure to edit the .gitconfig.secret and save it to /home/$USER/
+
+ln -s /opt/profiles/dotfiles/.vimrc /home/$USER/
 
 exit && relog in... for changes to take effect
 ```
