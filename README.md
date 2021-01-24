@@ -12,14 +12,14 @@ Then:$ sudo mv profiles/ /opt/
 
 Next, goto this folder:$ cd /opt/profiles
 
-$ chmod 774 install.sh
-
 Now, as a non-Root USER from a console:$ ./install.sh
 
 Note: It will edit the git config file so it has your name and email at this point.
 
 # Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
 $ sudo apt-get install fonts-powerline
+# For Arch, Font:
+$ pacman -S powerline-fonts
 # If Powerline installed okay..., do:
 $ touch /opt/profiles/.unicode_support
 
