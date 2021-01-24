@@ -9,42 +9,48 @@ fi
 if ([ -f /home/$USER/.old_a_bash_aliases ] || [ -f /home/$USER/.old_a_bashrc ] || \
     [ -f /home/$USER/.old_a_profile ] || [ -f /home/$USER/.old_a_git_svn_bash_prompt ] || \
     [ -f /home/$USER/.old_a_gitconfig ] || [ -f /home/$USER/.old_a_vimrc ] || \
-    [ -f /home/$USER/.ran_profiles_once ]); then 
+    [ -f /home/$USER/.ran_profiles_once ]); then
     	echo -e "Already run once for this user!!"
 	exit 1
 fi
-echo -e "\n"
-if [ -f /home/$USER/.bash_aliases ]; then 
+if [ -f /home/$USER/.bash_aliases ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.bash_aliases /home/$USER/.old_a_bash_aliases
         echo "Moved existing Bash Aliases - Dot File!!! to ~/.old_a_bash_aliases"
         echo "If something does not work anymore in bash alias...edit the backup..."
 fi
-if [ -f /home/$USER/.bashrc ]; then 
+if [ -f /home/$USER/.bashrc ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.bashrc /home/$USER/.old_a_bashrc
         echo "Moved existing Bash RC - Dot File!!! to ~/.old_a_bash_rc"
         echo "If something does not work anymore in bashrc edit the backup..."
 fi
 if [ -f /home/$USER/.profile ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.profile /home/$USER/.old_a_profile
         echo "Moved existing Profile - Dot File!!! to ~/.old_a_profile"
         echo "If something does not work anymore in the profile edit the backup..."
 fi
-if [ -f /home/$USER/.git_bash_prompt ]; then 
+if [ -f /home/$USER/.git_bash_prompt ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.git_bash_prompt /home/$USER/.old_a_git_bash_prompt
         echo "Moved existing Git Prompt - Dot File!!! to ~/.old_a_git_bash_prompt"
         echo "If something does not look right anymore in git prompt edit the backup..."
 fi
-if [ -f /home/$USER/.gitconfig ]; then 
+if [ -f /home/$USER/.gitconfig ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
         echo "Moved existing Git Config - Dot File!!! to ~/.old_a_gitconfig"
         echo "If something does not work anymore in Git edit the backup..."
 fi
-if [ -f /home/$USER/.vimrc ]; then 
+if [ -f /home/$USER/.vimrc ]; then
+	echo -e "\n"
 	mv -v /home/$USER/.vimrc /home/$USER/.old_a_vimrc
         echo "Moved existing VIM Config - Dot File!!! to ~/.old_a_vimrc"
         echo "If something does not work anymore in Vim edit the backup..."
 fi
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
+	echo -e "\n"
 	echo "Making Sym Links from current install location"
 	ln -s "$(pwd -P)"/.bash_aliases /home/$USER/
 	ln -s "$(pwd -P)"/.bashrc /home/$USER/
@@ -59,7 +65,8 @@ if ([ -d aliases ] && [ -f .bash_aliases ]); then
 	touch /home/$USER/.ran_profiles_once
 else
   if ([ -d /opt/profiles/aliases ] && [ -f /opt/profiles/.bash_aliases ]); then
-    echo "Making Sym Links from /opt/profiles install location"
+	echo -e "\n"
+	echo "Making Sym Links from /opt/profiles install location"
 	ln -s /opt/profiles/.bash_aliases /home/$USER/
 	ln -s /opt/profiles/.bashrc /home/$USER/
 	ln -s /opt/profiles/.profile /home/$USER/
