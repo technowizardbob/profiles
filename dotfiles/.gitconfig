@@ -1,0 +1,33 @@
+[include]
+	# include external gitconfig file (requires git 1.7.10+)
+	# typically, user.name and user.email is configured.
+	path = ~/.gitconfig.secret
+[init]
+	defaultBranch = main
+[core]
+	editor = nano
+[alias]
+	co = checkout
+	go = checkout -B
+	unstage = reset HEAD --
+	discard = checkout --
+	update-branch = branch -f --no-track
+	ub = branch -f --no-track
+
+	assume-unchanged = update-index --assume-unchanged
+	unassume-unchanged = update-index --no-assume-unchanged
+	list-assume-unchanged = !sh -c 'git ls-files -v | grep "^[a-z]" | sed "s/^..//"'
+
+	list-conflicts = diff --name-only --diff-filter=U
+
+	amend = commit --amend -v
+
+	wdiff = diff --color-words
+	wshow = show --color-words
+	
+	# Show a concise status of the working directory, along with the branch
+	# and the number of commits behind and/or ahead.
+	s = status --short --branch
+
+	# Show the staged changes.
+	dc = diff --cached
