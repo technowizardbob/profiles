@@ -1,11 +1,12 @@
 #!/bin/bash
 
 git_projects=~/.gitprojects
-git_util='/opt/profiles/scripts/git/dogit'
-
+tmp_projects=/tmp/gitprojects
+git_util=/opt/profiles/scripts/git/dogit
+git_gen=/opt/profiles/scripts/locate_gits.sh
 if [ ! -r $git_projects ]; then
-   echo "#Name,Path_to_project,short desc." > $git_projects
-   nano $git_projects
+   $git_gen
+   mv $tmp_projects $git_projects
 fi
 
 clear
