@@ -41,9 +41,12 @@ run_dialog() {
 	refresh
 	command=$(dialog --ok-label "View Site" --cancel-label "EXIT" --output-fd 1 \
                     --colors \
-                    --menu "Select web site:" 0 0 0 "${cmdlist[@]}" > /dev/tty)
+                    --menu "Select web site:" 0 0 0 "${cmdlist[@]}")
 	run_site
 }
+
+what=$(/opt/profiles/scripts/display_check.sh)
+[[ $what == "" ]] && clear || { echo $what; exit 1; }
 
 run_dialog
 clear
