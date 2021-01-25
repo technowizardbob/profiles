@@ -1,5 +1,5 @@
 #Label, Bash_Command, Description
-GUI, gui, Open nautils GUI
+GUI, gui, Open GUI File MGR
 List Files, list_files, List remote files
 Free Memory, free_mem, Get memory on server
 Inodes Free, free_inodes, Get inodes free on server
