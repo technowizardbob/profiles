@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ ! -x /bin/locate ] && [ ! -x /usr/bin/locate ]; then
-   echo "Install locate system package"
+if [ ! -x /bin/mlocate ] && [ ! -x /usr/bin/mlocate ]; then
+   echo "Install mlocate system package"
    exit 1
 fi
 
@@ -14,7 +14,7 @@ if [ ! -x /bin/awk ] && [ ! -x /usr/bin/awk ]; then
    exit 1
 fi
 
-list=$(locate '*/.git')
+list=$(mlocate '*/.git')
 
 #Set the field separator to new line
 OLD_IFS=$IFS
