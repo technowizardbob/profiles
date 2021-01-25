@@ -6,7 +6,11 @@ git_util=/opt/profiles/scripts/git/dogit
 git_gen=/opt/profiles/scripts/locate_gits.sh
 if [ ! -r $git_projects ]; then
    $git_gen
-   mv $tmp_projects $git_projects
+   if [ $? -eq 0 ]; then
+      mv $tmp_projects $git_projects
+   else
+      exit 1
+   fi
 fi
 
 clear
