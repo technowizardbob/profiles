@@ -14,7 +14,7 @@ run_dialog() {
 	refresh
 	command=$(dialog --ok-label "RUN" --cancel-label "BACK" --output-fd 1 \
                     --extra-button    --extra-label "CONNECT" --colors    \
-                    --menu "Select command to run on host \Z4$target\Z0. $USERNOTE" 0 0 0 "${cmdlist[@]}" > /dev/tty)
+                    --menu "Select command to run on host \Z4$target\Z0. $USERNOTE" 0 0 0 "${cmdlist[@]}")
                     
     case $command:$? in
          *:0) cmd;;
