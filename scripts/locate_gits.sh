@@ -15,6 +15,11 @@ if [ ! -x /bin/awk ] && [ ! -x /usr/bin/awk ]; then
    exit 1
 fi
 
+if [ -x /usr/bin/updatedb ] || [ -x /bin/updatedb ]; then
+   echo "Updating dbsearch cache for git projects to be fresh...."
+   sudo updatedb
+fi
+
 if [ -x /bin/mlocate ] || [ -x /usr/bin/mlocate ]; then
    list=$(mlocate '*/.git')
 elif [ -x /bin/locate ] || [ -x /usr/bin/locate ]; then
