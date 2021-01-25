@@ -4,13 +4,38 @@ git_projects=~/.gitprojects
 tmp_projects=/tmp/gitprojects
 git_util=/opt/profiles/scripts/git/dogit
 git_gen=/opt/profiles/scripts/locate_gits.sh
+
+refresh() {
+   cmdlist=()
+   IFSOLD=$IFS
+   IFS=',';
+   while read -r label mycommand desc;
+   do
+	[[ $label =~ ^#.* ]] && continue
+        cmdlist+=("$label" "$desc")
+   done < "$git_projects"
+   IFS=$IFSOLD
+}
+
+is_valid() {
+  $git_gen
+  if [ $? -eq 0 ]; then
+     mv $tmp_projects $git_projects
+  else
+     exit 1
+  fi
+}
+opps=false
 if [ ! -r $git_projects ]; then
-   $git_gen
-   if [ $? -eq 0 ]; then
-      mv $tmp_projects $git_projects
-   else
-      exit 1
-   fi
+   is_valid
+   opps=true
+fi
+
+refresh
+
+if [ ${#cmdlist[@]} -eq 0 ] && [ "$opps" = false ]; then
+   is_valid
+   refresh
 fi
 
 clear
@@ -34,18 +59,6 @@ edit() {
 
 quit() { clear; exit 0; }
 
-refresh() {
-   cmdlist=()
-   IFSOLD=$IFS
-   IFS=',';
-   while read -r label mycommand desc;
-   do
-	[[ $label =~ ^#.* ]] && continue
-        cmdlist+=("$label" "$desc")
-   done < "$git_projects"
-   IFS=$IFSOLD
-}
-
 run_site() {
    IFSOLD=$IFS
    IFS=',';
@@ -57,7 +70,6 @@ run_site() {
 }
 
 run_dialog() {
-	refresh
 	command=$(dialog --ok-label "Pull/Push" --cancel-label "EXIT" --output-fd 1 \
                     --extra-button    --extra-label "Edit" --colors \
                     --menu "Select git project:" 0 0 0 "${cmdlist[@]}")
