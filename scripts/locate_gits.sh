@@ -1,15 +1,15 @@
 #!/bin/bash
-if [ ! -x /bin/locate && ! -x /usr/bin/locate ]; then
+if [ ! -x /bin/locate ] && [ ! -x /usr/bin/locate ]; then
    echo "Install locate system package"
    exit 1
 fi
 
-if [ ! -x /bin/sed && ! -x /usr/bin/sed ]; then
+if [ ! -x /bin/sed ] && [ ! -x /usr/bin/sed ]; then
    echo "Install sed system package"
    exit 1
 fi
 
-if [ ! -x /bin/awk && ! -x /usr/bin/awk ]; then
+if [ ! -x /bin/awk ] && [ ! -x /usr/bin/awk ]; then
    echo "Install awk system package"
    exit 1
 fi
