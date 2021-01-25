@@ -1,0 +1,22 @@
+deploy_NEW_UbuntuServer.sh -> once enabled and run creates a MySQL, PHP, Apache web site server
+make_new_dev_user.sh -> once enabled and run creates a ROOTable dev user account
+
+These scripts are provided as is, becareful not to run on existing servers
+ -- As it will add extra bloat & mess up configs!!!
+
+These scripts are ONLY for new server installs with nothing installed Yet!!!!!
+
+Only after you have uploaded your RSA key file to server, then upload sshd_config and reload sshd.
+/home/USER/.ssh/.authorized_keys should have your public key in it!
+Otherwise, you will get locked out of your server! Note port is now: 2992
+Requiring your private key file to be kept secret and only have chmod 600 perms on your PC.
+
+Please Review: Each file and modify them for your needs....!
+
+You may want to try it in a VM Box first, to see what modifications are needed for your systems.
+
+Other installed components: Redis, curl, screen, wget, PHPmyAdmin, git, npm-node, and PHP Composer.
+
+I assum no fitness or warranty....use at own risk!
+
+Peace out, Robert S.

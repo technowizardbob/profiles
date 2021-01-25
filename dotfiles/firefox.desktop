@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Name=Firefox Web Browser
+Comment=Browse the World Wide Web
+GenericName=Web Browser
+Keywords=Internet;WWW;Browser;Web;Explorer
+Exec=firejail --seccomp --private=~/work --dns=1.1.1.3 --dns=1.0.0.3 firefox %u -no-remote
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=firefox
+Categories=GNOME;GTK;Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;
+StartupNotify=true
+Actions=secure-mode;private
+
+[Desktop Action private]
+Name=Private Mode
+Exec=firejail --seccomp --private=~/work --dns=208.67.222.222 --dns=208.67.220.220 firefox %u -no-remote -private-window
+
+[Desktop Action secure-mode]
+Name=Super Secure Mode
+Exec=firejail --seccomp --x11 --name=SecureMode --private=~/work --dns=1.1.1.3 --dns=1.0.0.3 firefox %u -private-window -no-remote -safe-mode
+

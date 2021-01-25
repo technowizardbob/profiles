@@ -41,7 +41,7 @@ run_dialog() {
 	refresh
 	command=$(dialog --ok-label "View Site" --cancel-label "EXIT" --output-fd 1 \
                     --colors \
-                    --menu "Select web site:" 0 0 0 "${cmdlist[@]}")
+                    --menu "Select web site:" 0 0 0 "${cmdlist[@]}" > /dev/tty)
 	run_site
 }
 
