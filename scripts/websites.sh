@@ -32,7 +32,11 @@ run_site() {
    IFS=',';
    while read -r label mycommand desc;
    do
-	[[ "$label" = "$command" ]] && $WEBSITE_BROWSER "$mycommand" &
+	[[ "$label" = "$command" ]] && {
+		$WEBSITE_BROWSER "$mycommand" &
+		clear
+		exit 0
+	}
    done < "$urls"
    IFS=$IFSOLD
 }
