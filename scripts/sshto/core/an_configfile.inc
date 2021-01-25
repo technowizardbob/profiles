@@ -12,7 +12,7 @@ if [ ! -r ~/.ssh/config ]; then
    echo "    User $USER" >> ~/.ssh/config
    echo "    IdentityFile ~/.ssh/${USER}_rsa.private" >> ~/.ssh/config
 
-   echo "Host github" >> ~/.ssh/config
+   echo "Host github #ignore" >> ~/.ssh/config
    echo "    HostName github.com" >> ~/.ssh/config
    echo "    Port 22" >> ~/.ssh/config
    echo "    User git" >> ~/.ssh/config
