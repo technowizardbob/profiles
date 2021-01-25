@@ -22,6 +22,13 @@ dialog &> /dev/null || {
     exit 1
 }
 
+edit() {
+	nano $git_projects
+	run_dialog
+}
+
+quit() { clear; exit 0; }
+
 refresh() {
    cmdlist=()
    IFSOLD=$IFS
@@ -47,16 +54,22 @@ run_site() {
 run_dialog() {
 	refresh
 	command=$(dialog --ok-label "Pull/Push" --cancel-label "EXIT" --output-fd 1 \
-                    --colors \
+                    --extra-button    --extra-label "Edit" --colors \
                     --menu "Select git project:" 0 0 0 "${cmdlist[@]}")
-	clear
-	run_site
+    case $command:$? in
+         *:0) run_site;;
+         *:3) edit;;
+         *:*) quit;;
+	esac            
 }
 
 what=$(/opt/profiles/scripts/display_check.sh)
 [[ $what == "" ]] && echo "" || { echo $what; exit 1; }
 
 run_dialog
+
+clear
+
 if [ ! -z $DO ]; then
  $git_util "$DO"
 fi
