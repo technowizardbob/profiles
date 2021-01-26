@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -r arch_deps.list ] || [ -r debian_deps.list ] \
+if [ ! -r arch_deps.list ] || [ -r debian_deps.list ] || \
    [ ! -d /opt/profiles ]; then
    echo "Please have this git repo in /opt/profiles"
    echo "Then cd into it, \$ cd /opt/profiles"
