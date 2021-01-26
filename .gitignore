@@ -3,3 +3,4 @@
 .ran_setup
 mysite.txt
 awesome.txt
+custom_aliases/*.env
