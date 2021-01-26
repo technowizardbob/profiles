@@ -1,5 +1,6 @@
 #!/bin/bash
-if [ ! -r arch_deps.list ] || [ -r debian_deps.list ] || \
+pushd /opt/profiles
+if [ ! -r arch_deps.list ] || [ ! -r debian_deps.list ] || \
    [ ! -d /opt/profiles ]; then
    echo "Please have this git repo in /opt/profiles"
    echo "Then cd into it, \$ cd /opt/profiles"
@@ -13,6 +14,8 @@ elif [ -x /bin/apt-get ] || [ -x /usr/bin/apt-get ]; then
    sudo apt-get update
    sudo apt-get install -y $(cat debian_deps.list)
 fi
+
+popd
 
 if [ $? -eq 0 ]; then
    echo -e "Success!\nNow run install.sh if you have not already..."
