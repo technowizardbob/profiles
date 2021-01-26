@@ -1,83 +1,83 @@
 #!/bin/bash
 clear
-if [ -z "$1" ];		then
-	/bin/echo "Please enter you GIT Folder"
-	exit 1
-else	
-	cd "$1"
-	/usr/bin/git status -s
-	branch=$(git symbolic-ref --short -q HEAD)
-  	branch=${branch:-HEAD}
-	/bin/echo "Did you see any files that you must first add using: git add file ?"
-	/bin/echo "Please type: yes/no (then hit enter). yes will add the files, no will skip them."
-	read safe
-	if [ $safe = yes ];	then
-		/usr/bin/git add --all .
-	else	
-		if [ $safe = no ];	then
-			echo "Ok"
-		else
-			exit 1
-		fi
-	fi	
-	/bin/echo "Are you feature complete and working?"
-	/bin/echo "Please type: yes (then hit enter), to do a git pull/push to make $1 up to date!"
-	read agree
-	if [ $agree = yes ];	then 
-		/bin/echo "Please enter your commit message now: What features are added/removed?"
-		while :
-		do
-			read commit
-			LEN=$(echo ${#commit})
-			if [ $LEN -lt 5 ];		then
-				/bin/echo "Please enter your a commit message! What did you work on?"
-			else
-				break
-			fi	
-		done
-		/usr/bin/git commit -a -m "$commit"
-		if [ $? -eq 0 ];	then
-			/bin/echo "I applied your commit message, $commit"
-		else
-			/bin/echo "Opps"
-			read -n 1 -p "Hit a key to abort!"
-			exit 1
-		fi
-		/usr/bin/git status
-		read -n 1 -p "Ready to pull in new code? Hit any key..."
-		/usr/bin/git pull origin $branch
-		if [ $? -eq 0 ];	then
-			/bin/echo "done with pulling."
-		else
-			/bin/echo "Opps"
-			read -n 1 -p "Hit a key to abort!"
-			exit 1
-		fi
-		/bin/echo "Ready to save your work"
-		read -n 1 -p "Press any key to continue..."
-		/usr/bin/git push origin $branch
-#master
-		if [ $? -eq 0 ];	then
-			/bin/echo "Super job!"
-		else
-			/bin/echo "Opps"
-			read -n 1 -p "Hit a key to abort!"
-			exit 1
-		fi
-		#/bin/echo "Update MainSite.com?"
-		#/bin/echo "Have you tested this yet? If working, type: yes (then hit enter)."
-		#	read worked
-		#if [ $worked = yes ];	then
-		#	/usr/bin/ssh -t mysite "cd /var/www/mainsite; /usr/bin/git pull origin master"
-		#	/bin/echo "thanks"
-		#fi
-		read -n 1 -p "Press any key to exit"
-		/bin/echo ""
-		exit 0
-	else
-		/bin/echo "Skipped update..."
-		read -n 1 -p "Press any key to continue..."
-		/bin/echo ""
-		exit 1
-	fi
+if [ -z "$1" ];     then
+    /bin/echo "Please enter you GIT Folder"
+    exit 1
+else    
+    cd "$1"
+    /usr/bin/git status -s
+    branch=$(git symbolic-ref --short -q HEAD)
+    branch=${branch:-HEAD}
+    /bin/echo "Did you see any files that you must first add using: git add file ?"
+    /bin/echo "Please type: yes/no (then hit enter). yes will add the files, no will skip them."
+    read safe
+    if [ $safe = yes ]; then
+        /usr/bin/git add --all .
+    else    
+        if [ $safe = no ];  then
+            echo "Ok"
+        else
+            exit 1
+        fi
+    fi  
+    /bin/echo "Are you feature complete and working?"
+    /bin/echo "Please type: yes (then hit enter), to do a git pull/push to make $1 up to date!"
+    read agree
+    if [ $agree = yes ];    then 
+        /bin/echo "Please enter your commit message now: What features are added/removed?"
+        while :
+        do
+            read commit
+            LEN=$(echo ${#commit})
+            if [ $LEN -lt 5 ];      then
+                /bin/echo "Please enter your a commit message! What did you work on?"
+            else
+                break
+            fi  
+        done
+        /usr/bin/git commit -a -m "$commit"
+        if [ $? -eq 0 ];    then
+            /bin/echo "I applied your commit message, $commit"
+        else
+            /bin/echo "Opps"
+            read -n 1 -p "Hit a key to abort!"
+            exit 1
+        fi
+        /usr/bin/git status
+        read -n 1 -p "Ready to pull in new code? Hit any key..."
+        /usr/bin/git pull origin $branch
+        if [ $? -eq 0 ];    then
+            /bin/echo "done with pulling."
+        else
+            /bin/echo "Opps"
+            read -n 1 -p "Hit a key to abort!"
+            exit 1
+        fi
+        /bin/echo "Ready to save your work"
+        read -n 1 -p "Press any key to continue..."
+        /usr/bin/git push origin $branch
+        #main
+        if [ $? -eq 0 ];    then
+            /bin/echo "Super job!"
+        else
+            /bin/echo "Opps"
+            read -n 1 -p "Hit a key to abort!"
+            exit 1
+        fi
+        #/bin/echo "Update MainSite.com?"
+        #/bin/echo "Have you tested this yet? If working, type: yes (then hit enter)."
+        #   read worked
+        #if [ $worked = yes ];  then
+        #   /usr/bin/ssh -t mysite "cd /var/www/mainsite; /usr/bin/git pull origin master"
+        #   /bin/echo "thanks"
+        #fi
+        read -n 1 -p "Press any key to exit"
+        /bin/echo ""
+        exit 0
+    else
+        /bin/echo "Skipped update..."
+        read -n 1 -p "Press any key to continue..."
+        /bin/echo ""
+        exit 1
+    fi
 fi

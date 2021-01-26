@@ -1,5 +1,7 @@
 #!/bin/bash
-if [ -z "$2" ]; then
+if [ -z $1 ]; then
+  FOLDER=.
+elif [ -z "$2" ]; then
   FOLDER="$1"
 elif [ $2 = home ]; then
   FOLDER="$HOME/$1"
@@ -37,7 +39,7 @@ if [ -d "$FOLDER/.git" ]; then
     fi
     /usr/bin/git checkout -b "$name"
     if [ $? -eq 0 ]; then
-		/usr/bin/git push -u origin HEAD
+      /usr/bin/git push -u origin HEAD
     else 
       /bin/echo "Unable to make new branch"
       exit 1  
