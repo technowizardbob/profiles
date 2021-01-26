@@ -2,6 +2,12 @@
 Bash Aliases :rocket:
 
 # INSTALL:
+Notice: I reference /opt/profiles folders a lot...in code, as it's a nice unused place for it to live at...
+Sorry, if you wanted /usr/local/bin or something else....
+
+####As with any software...Please backup your system before installation begains....
+If you use the installer I make best efforts to auto backup to ~/.dotfile_backups
+
 Download from github to /home/$USER/profiles and extract there...via the following git clone command:
 ```bash
 $ cd ~
@@ -16,17 +22,17 @@ Now, as a non-Root USER from a console:$ ./install.sh
 
 Note: It will edit the git config file so it has your name and email at this point.
 
-# Ubuntu Font for Cool Term, do not do on Windows linux-subsystem:
-$ sudo apt-get install fonts-powerline
-# For Arch, Font:
-$ pacman -S powerline-fonts
-# If Powerline installed okay..., do:
-$ touch /opt/profiles/.unicode_support
+# To install package dependencies, (review arch_deps.list or debian_deps.list - depending on your system):
+   -   as this will apt-get or pacman install system packages, so ensure you got system backups....
+$ ./setup_deps.sh
+
+# (Optional) If on windows sub-system for Linux and your Fonts look bad...then
+$ rm /opt/profiles/.unicode_support
 
 # Customize your banner: 
 $ mv /opt/profiles/bw_awesome.txt /opt/profiles/awesome.txt
 
-# (Optional) To disable Background colors:
+# (Optional) To disable Background colors, if annoying:
 touch /opt/profiles/.simple_theme
 ```
 ---
