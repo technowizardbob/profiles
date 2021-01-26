@@ -9,7 +9,9 @@ fi
 SSH_OPT=     # SSH Options
 
 # SSH key to use (Add my ssh key to host).
-if [ -r ~/.ssh/${USER}_rsa.pub ]; then
+if [ ! -d ~/.ssh ]; then
+   echo "Let's setup SSH...."
+elif [ -r ~/.ssh/${USER}_rsa.pub ]; then
    KEY=~/.ssh/${USER}_rsa.pub
 elif [ -r ~/.ssh/${USER}.pub ]; then
    KEY=~/.ssh/${USER}.pub

@@ -13,9 +13,14 @@ fi
 cd ~/.ssh
 RKEY=~/.ssh/${USER}_rsa
 
-if [ -f "${RKEY}.private" ]; then
-   echo "RSA key already made...!"
-   exit 1
+if [ -f "${RKEY}.private" ] || [ -f ${RKEY}.pub ]; then
+   echo -e "\nRSA key already made...!\n"
+   echo "Enter name for new key, if you want another:"
+   read newkey
+   if [ -z $newkey ]; then
+      exit 1
+   fi
+   RKEY=~/.ssh/{$newkey}_rsa
 fi
 
 echo -e "\nCreating SSH RSA Keys..."
@@ -28,3 +33,4 @@ fi
 ssh-keygen -t rsa -b 4096 -C "$email" -f "$RKEY"
 mv "$RKEY" "${RKEY}.private"
 echo "Made Private Key @ ${RKEY}.private :: Keep it SAFE!"
+read -n 1 -s -r -p "Hit enter or press any key to continue:"

@@ -3,9 +3,15 @@ add_sshkey() {
   IFSOLD=$IFS
   IFS=$'\n'
   homes=~/.ssh/
-  akeys=( "Default" "${KEY/$homes/}" )
-  realkeys=( "${KEY}" )
-  indexforkeys=( "Default" )
+  if [ -z $KEY ]; then
+     akeys=()
+     realkeys=()
+     indexforkeys=()
+  else 
+     akeys=( "Default" "${KEY/$homes/}" )
+     realkeys=( "${KEY}" )
+     indexforkeys=( "Default" )
+  fi
   option_no=0
   local pubs=$(find ~/.ssh/ -type f -iname "*.pub")
   if [ -z $pubs ]; then

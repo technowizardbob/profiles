@@ -47,7 +47,7 @@ findhosts() {
 
 if [ ! -r ~/.ssh/config ]; then
    echo "# Edit the following SSHTO config file:" > ~/.ssh/config
-   echo "# What sites do you want to connect to?" >> ~/.ssh/config
+   echo "# What servers do you want to connect to?" >> ~/.ssh/config
 
    findhosts
    if [ ${#hostnames[@]} -eq 0 ]; then
