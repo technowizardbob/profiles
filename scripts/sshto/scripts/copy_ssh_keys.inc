@@ -7,7 +7,13 @@ add_sshkey() {
   realkeys=( "${KEY}" )
   indexforkeys=( "Default" )
   option_no=0
-  for k in $(find ~/.ssh/ -type f -iname "*.pub"); do
+  local pubs=$(find ~/.ssh/ -type f -iname "*.pub")
+  if [ -z $pubs ]; then
+     echo "You have no KEYs, copy your existing ones or make a new one...."
+     echo "To make a key do \$ /opt/profiles/scripts/gen_rsa_key.sh"
+     exit 1
+  fi
+  for k in $pubs; do
     if [ $k == "$KEY" ]; then 
        continue
     fi
@@ -19,7 +25,7 @@ add_sshkey() {
   done
   IFS=$IFSOLD
   
-  usekey=$(dialog --ok-label "Use this Key" --cancel-label "EXIT" --output-fd 1 \
+  usekey=$(dialog --ok-label "Use this Key" --cancel-label "Back" --output-fd 1 \
                     --colors \
                     --menu "Select key:" 0 0 0 "${akeys[@]}")
   
