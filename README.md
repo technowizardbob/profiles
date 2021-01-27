@@ -23,8 +23,9 @@ Now, as a non-Root USER from a console:$ ./install.sh
 
 Note: It will edit the git config file so it has your name and email at this point.
 
-# To install package dependencies, (review arch_deps.list or debian_deps.list 
-   -   depending on your system):
+# To install package dependencies: 
+   -   (review arch_deps.list or debian_deps.list 
+   -   depending on your system)
    -   as this will apt-get or pacman install system packages, 
    -   so ensure you got system backups....
 $ ./setup_deps.sh
@@ -37,6 +38,9 @@ $ mv /opt/profiles/bw_awesome.txt /opt/profiles/awesome.txt
 
 # (Optional) To disable Background colors, if annoying:
 touch /opt/profiles/.simple_theme
+
+# (Optional) Install FireJailed FireFox Icons for Gnome Desktop:
+$ ./firejail_firefox_icons.sh
 
 # Your done, so exit or reload $ alias-reload
 
