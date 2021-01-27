@@ -68,6 +68,12 @@ exit && relog in... for changes to take effect
 
 ---
 
+# Customize your Aliases:
+
+Add/Remove/Change any Bash Alias in: $ cd /opt/profiles/custom_aliases/
+
+These will not get clobbered with every git pull request....
+
 # Usage:
 
 for list of all commands/aliases type: commands
