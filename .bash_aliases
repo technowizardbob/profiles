@@ -1,66 +1,61 @@
-# to change default editor change order here:
-if [ -x /bin/nano ] || [ -x /usr/bin/nano ]; then
-  export EDITOR=nano
-elif [ -x /bin/neovim ] || [ -x /usr/bin/neovim ]; then
-  export EDITOR=neovim
-elif [ -x /bin/vim ] || [ -x /usr/bin/vim ]; then
-  export EDITOR=vim
-elif [ -x /bin/vi ] || [ -x /usr/bin/vi ]; then
-  export EDITOR=vi
-elif [ -x /bin/emacs ] || [ -x /usr/bin/emacs ]; then
-  export EDITOR=emacs
-elif [ -x /bin/pico ] || [ -x /usr/bin/pico ]; then
-  export EDITOR=pico
-else
-  export EDITOR=nano
-fi
-
-if [ -x /bin/geany ] || [ -x /usr/bin/geany ]; then
-  export VISUAL=geany
-elif [ -x /bin/sublime ] || [ -x /usr/bin/sublime ]; then
-  export VISUAL=sublime
-elif [ -x /bin/gvim ] || [ -x /usr/bin/gvim ]; then
-  export VISUAL=gvim
-elif [ -x /bin/kate ] || [ -x /usr/bin/kate ]; then
-  export VISUAL=kate
-elif [ -x /bin/gedit ] || [ -x /usr/bin/gedit ]; then
-  export VISUAL=gedit
-elif [ -x /bin/leafpad ] || [ -x /usr/bin/leafpad ]; then
-  export VISUAL=leafpad
-elif [ -x /bin/medit ] || [ -x /usr/bin/medit ]; then
-  export VISUAL=medit
-elif [ -x /bin/atom ] || [ -x /usr/bin/atom ]; then
-  export VISUAL=atom
-elif [ -x /bin/emacs ] || [ -x /usr/bin/emacs ]; then
-  export VISUAL=emacs
-else
-  export VISUAL=geany
-fi
-
 _PROFILES_PATH="/opt/profiles/"
+_CUSTOM_ENV_PATH="${_PROFILES_PATH}custom_aliases/"
+_CUSTOM_ENV_FILES="${_CUSTOM_ENV_PATH}*.env"
 _ENV_PATH="${_PROFILES_PATH}aliases/"
 _ENV_FILES="${_ENV_PATH}*.env"
+
+renew_env_aliases() {
+    ALLENVS=()
+    
+    anyexists=$(ls -l $_CUSTOM_ENV_FILES 2> /dev/null | wc -l)
+        
+    for eev in $_ENV_FILES; do
+        skip=false
+        if [ ! $anyexists -eq 0 ]; then 
+           for cev in $_CUSTOM_ENV_FILES; do
+              if [ $(basename $cev) == $(basename "$eev") ]; then
+                 skip=true
+                 break
+              fi   
+           done
+        fi   
+        if [ $skip = false ]; then
+           ALLENVS+=( "$eev" )
+        fi
+    done
+    
+    if [ ! $anyexists -eq 0 ]; then 
+       for addce in $_CUSTOM_ENV_FILES; do
+           ALLENVS+=( "$addce" )
+       done
+    fi
+}
+
 # List these alias Commands, this file...
 commands() {
-	echo "..." > /tmp/commands.txt
-	for f in $_ENV_FILES;
-	do
-		echo "Reading Aliases for ${f}" >> /tmp/commands.txt
-		cat "${f}" >> /tmp/commands.txt
-	done
-	less /tmp/commands.txt
+    echo "..." > /tmp/commands.txt
+    renew_env_aliases
+    for f in ${ALLENVS[@]}; do
+        echo "Reading Aliases for ${f}" >> /tmp/commands.txt
+        cat "${f}" >> /tmp/commands.txt
+    done
+    less /tmp/commands.txt
 }
 command() {
-	if [ -f "${_ENV_PATH}$1.env" ];	then
-                less "${_ENV_PATH}$1.env"
-	else 
-		for c in $_ENV_FILES; 
-		do 
-			echo $c
-		done
-	fi
+        renew_env_aliases
+        for c in ${ALLENVS[@]}; do
+            cbasename=$(basename $c)
+            if [ -z "$1" ]; then
+                echo $cbasename
+            else
+                if [ "${cbasename/.env/}" == "$1" ] && [ -f "$c" ]; then
+                    less "$c"
+                fi
+            fi
+        done
 }
-for f in $_ENV_FILES;
-do
-	source "${f}"
+
+renew_env_aliases
+for rea in ${ALLENVS[@]}; do
+    source "${rea}"
 done
