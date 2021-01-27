@@ -4,3 +4,4 @@
 mysite.txt
 awesome.txt
 custom_aliases/*.env
+custom_dotfiles/.*

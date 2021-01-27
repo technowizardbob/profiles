@@ -46,9 +46,9 @@ command() {
         for c in ${ALLENVS[@]}; do
             cbasename=$(basename $c)
             if [ -z "$1" ]; then
-                echo $cbasename
+                echo "${cbasename/.env/}"
             else
-                if [ "${cbasename/.env/}" == "$1" ] && [ -f "$c" ]; then
+                if [ "${cbasename/.env/}" == "${1/.env/}" ] && [ -f "$c" ]; then
                     less "$c"
                 fi
             fi

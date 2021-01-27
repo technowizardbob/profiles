@@ -2,13 +2,13 @@ PROFILE_PATH=/opt/profiles
 #   Set the bash prompt according to:
 #    * the branch/status of the current git repository
 #    * the return value of the previous command
-# 	AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
+#	AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
 #   Based on work by halbtuerke and lakiolen.
 #   http://gist.github.com/31967
 
 # Unicode symbols https://github.com/pjmp/fancy-linux-prompt/blob/master/fancy-prompt.sh
 # The various escape codes that we can use to color our prompt.
-# Glued together by Robert Strutts -> https://github.com/Bob-586/profiles
+# Glued together by Robert S. -> https://github.com/tryingtoscale/profiles
      GIT_BRANCH_CHANGED_SYMBOL='+ changed'
      GIT_NEED_PULL_SYMBOL='⇣ do pull'
      GIT_NEED_PUSH_SYMBOL='⇡ needs push'
