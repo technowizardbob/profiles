@@ -1,1 +1,1 @@
-dialog mlocate expect awk sed powerline-fonts
+dialog mlocate expect awk sed powerline-fonts firejail

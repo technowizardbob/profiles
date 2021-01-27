@@ -7,6 +7,7 @@ Sorry, if you wanted /usr/local/bin or something else....
 
 ####As with any software...Please backup your system before installation begains....
 If you use the installer I make best efforts to auto backup to ~/.dotfile_backups
+So, please go to that folder if your {vimrc,bashrc,bash_aliases} is gone...as it will be...moved/copied.
 
 Download from github to /home/$USER/profiles and extract there...via the following git clone command:
 ```bash
@@ -22,8 +23,10 @@ Now, as a non-Root USER from a console:$ ./install.sh
 
 Note: It will edit the git config file so it has your name and email at this point.
 
-# To install package dependencies, (review arch_deps.list or debian_deps.list - depending on your system):
-   -   as this will apt-get or pacman install system packages, so ensure you got system backups....
+# To install package dependencies, (review arch_deps.list or debian_deps.list 
+   -   depending on your system):
+   -   as this will apt-get or pacman install system packages, 
+   -   so ensure you got system backups....
 $ ./setup_deps.sh
 
 # (Optional) If on windows sub-system for Linux and your Fonts look bad...then
@@ -34,6 +37,9 @@ $ mv /opt/profiles/bw_awesome.txt /opt/profiles/awesome.txt
 
 # (Optional) To disable Background colors, if annoying:
 touch /opt/profiles/.simple_theme
+
+# Your done, so exit or reload $ alias-reload
+
 ```
 ---
 
@@ -90,13 +96,17 @@ ex3: command apt_get
 
 ex4: command docker
 
-To edit SSH config: cssh
+To edit SSH config: essh
 
-To SSH into a box: sshto
+To SSH into a box: sshto ( will setup .ssh folder/RSA keys/config for you )
 
 To generate a password: pwdgen
 
 To work on a git Project repo: dogit /var/www/reponame
+
+List all git projects: gp ( GUI that will create list of projects )
+
+Auto CD into git project: gcd
 
 To edit an alias do: calias folders
 

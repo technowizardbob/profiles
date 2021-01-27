@@ -11,7 +11,7 @@ refresh() {
    IFS=',';
    while read -r label mycommand desc;
    do
-	[[ $label =~ ^#.* ]] && continue
+    [[ $label =~ ^#.* ]] && continue
         cmdlist+=("$label" "$desc")
    done < "$git_projects"
    IFS=$IFSOLD
@@ -53,8 +53,8 @@ dialog &> /dev/null || {
 }
 
 edit() {
-	nano $git_projects
-	run_dialog
+    nano $git_projects
+    run_dialog
 }
 
 quit() { clear; exit 0; }
@@ -64,20 +64,20 @@ run_site() {
    IFS=',';
    while read -r label mycommand desc;
    do
-	[[ "$label" = "$command" ]] && DO=$mycommand
+    [[ "$label" = "$command" ]] && DO=$mycommand
    done < "$git_projects"
    IFS=$IFSOLD
 }
 
 run_dialog() {
-	command=$(dialog --ok-label "Pull/Push" --cancel-label "EXIT" --output-fd 1 \
+    command=$(dialog --ok-label "Pull/Push" --cancel-label "EXIT" --output-fd 1 \
                     --extra-button    --extra-label "Edit" --colors \
                     --menu "Select git project:" 0 0 0 "${cmdlist[@]}")
     case $command:$? in
          *:0) run_site;;
          *:3) edit;;
          *:*) quit;;
-	esac            
+    esac            
 }
 
 what=$(/opt/profiles/scripts/display_check.sh)
