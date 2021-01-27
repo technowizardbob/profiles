@@ -1,6 +1,8 @@
 #!/bin/bash
 
 urls=/opt/profiles/sites/urls
+config_sites_dir=~/.config/profiles_sites
+config_sites=$config_sites_dir/sites_url.list
 WEBSITE_BROWSER='firefox'
 
 dialog &> /dev/null || {
@@ -15,38 +17,63 @@ dialog &> /dev/null || {
     exit 1
 }
 
+edit() {
+    if [ -z $EDITOR ]; then
+        nano "$config_sites"
+    else   
+        $EDITOR "$config_sites"
+    fi
+    run_dialog
+}
+
 refresh() {
+    if [ ! -d "$config_sites_dir" ]; then
+        mkdir -p "$config_sites_dir"
+    fi
+    if [ ! -r "$config_sites" ]; then
+        cp "$urls" "$config_sites"
+        echo "Local,file:/home/$USER/.config/profiles_sites/index.html,Links" >> "$config_sites"
+    fi
+    if [ ! -r "$config_sites_dir/index.html" ]; then
+        cp /opt/profiles/sites/index.html "$config_sites_dir/index.html"
+    fi
    cmdlist=()
    IFSOLD=$IFS
    IFS=',';
    while read -r label mycommand desc;
    do
-	[[ $label =~ ^#.* ]] && continue
+    [[ $label =~ ^#.* ]] && continue
         cmdlist+=("$label" "$desc")
-   done < "$urls"
+   done < "$config_sites"
    IFS=$IFSOLD
 }
+
+quit() { clear; exit 0; }
 
 run_site() {
    IFSOLD=$IFS
    IFS=',';
    while read -r label mycommand desc;
    do
-	[[ "$label" = "$command" ]] && {
-		$WEBSITE_BROWSER "$mycommand" &
-		clear
-		exit 0
-	}
-   done < "$urls"
+    [[ "$label" = "$command" ]] && {
+        $WEBSITE_BROWSER "$mycommand" &
+        clear
+        exit 0
+    }
+   done < "$config_sites"
    IFS=$IFSOLD
 }
 
 run_dialog() {
-	refresh
-	command=$(dialog --ok-label "View Site" --cancel-label "EXIT" --output-fd 1 \
-                    --colors \
+    refresh
+    command=$(dialog --ok-label "View Site" --cancel-label "EXIT" --output-fd 1 \
+                    --extra-button    --extra-label "Edit" --colors \
                     --menu "Select web site:" 0 0 0 "${cmdlist[@]}")
-	run_site
+        case $command:$? in
+         *:0) run_site;;
+         *:3) edit;;
+         *:*) quit;;
+        esac
 }
 
 what=$(/opt/profiles/scripts/display_check.sh)
