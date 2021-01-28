@@ -1,4 +1,5 @@
 HOSTS_FILE=/etc/hosts
+split="1" # Default of no Split!!!
 
 if [ ! -d ~/.ssh ]; then
    #mkdir ~/.ssh # Commented out as it is done in gen_rsa_key.sh
@@ -7,7 +8,7 @@ if [ ! -d ~/.ssh ]; then
 fi
 
 defaults() {
-   echo "Host mysite" >> ~/.ssh/config
+   echo "Host s-mysite" >> ~/.ssh/config
    echo "    HostName YOURsiteHERE.com OR IP of computer" >> ~/.ssh/config
    echo "    Port $SSH_PORT" >> ~/.ssh/config
    echo "    User $DEFAULT_USER" >> ~/.ssh/config
@@ -51,6 +52,8 @@ choose_key() {
     realkeys+=( "$nonpub" )
   done
   
+  IFS=$IFSOLD
+  
    if [ $pubs_count -eq 1 ]; then
      USE_PRIVATE_KEY=$nonpub
      return 0
@@ -59,7 +62,10 @@ choose_key() {
      return 0
    fi
   
-  IFS=$IFSOLD
+  if [ ${#akeys[@]} -eq 0 ]; then
+      USE_PRIVATE_KEY=~/.ssh/${USER}_rsa.private
+      return 0
+  fi
   
   usekey=$(dialog --ok-label "Use this Key" --cancel-label "Back" --output-fd 1 \
                     --colors \
@@ -110,10 +116,8 @@ default_username() {
     DEFAULT_USER=${new_user:-$DEFAULT_USER}
 }
 
-process_hosts_file() {
-  echo "# Hosts to SSH into" > /tmp/localhosts_ssh
-  echo "# For SSH config to auto populate please give your server" >> /tmp/localhosts_ssh
-  echo "# -- hostnames the prefix of: ssh-" >> /tmp/localhosts_ssh
+split_hosts_file() {
+  echo "# I would suggest the pre-fix of h- or host- to avoid issues with ssh..." > /tmp/localhosts_remotes
   echo "# Private/Remote Servers" > /tmp/localhosts_remotes
   echo "# Local-Hosts IPv4" > /tmp/localhosts_ip4
   echo "# Local-Hosts IPv6" > /tmp/localhosts_ip6
@@ -124,10 +128,10 @@ process_hosts_file() {
   for item in $(cat "$HOSTS_FILE"); do
     tipaddr=$(echo $item | awk '{print $1}')
     thostname=$(echo $item | awk '{print $2}')
-    lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
-    rhost=${lcase/ssh-/}
-    rhost=${rhost/h-/}
-    rhost=${rhost/host-/}
+    #lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
+    #rhost=${lcase/ssh-/}
+    #rhost=${rhost/h-/}
+    #rhost=${rhost/host-/}
     if [ $(echo $tipaddr | awk -F. '{ printf("%d\n", $1); }') = "127" ]; then
        #echo "Skipped IPv4 Loopback"
        if [ -n "$comment" ]; then
@@ -144,38 +148,26 @@ process_hosts_file() {
        echo "$item" >> /tmp/localhosts_ip6
     elif [ "$(echo $tipaddr | grep -c "^#")" -ge 1 ]; then
        #echo "Skipped Comment"
-       if [ -n "$comment" ]; then
-          comment+=$(printf "\n%s" "$item")
-       elif [ $item != "# Hosts to SSH into" ] && \
-            [ $item != "# For SSH config to auto populate please give your server" ] && \
-            [ $item != "# -- hostnames the prefix of: ssh-" ] && \
+       
+       if [ $item != "# Private/Remote Servers" && \
             [ $item != "# Local-Hosts IPv4" ] && \
             [ $item != "# Local-Hosts IPv6" ] && \
             [ $item != "# Script will include Localhosts back in automatically" ] && \
             [ $item != "#" ]; then
-          comment=$item
+               if [ -n "$comment" ]; then
+                  comment+=$(printf "\n%s" "$item")  
+               else   
+                  comment=$item
+               fi
        fi
        continue
-    elif [ "$(echo $lcase | grep -c "ssh-")" -eq 0 ]; then
-       #echo "Skipped non ssh-hostname"
+    else
+       #echo "Found Private/Remote Host"
        if [ -n "$comment" ]; then
           echo "$comment" >> /tmp/localhosts_remotes
           comment=""
        fi
-       remote_comment=$(echo $item | awk '{print $3 $4 $5 $6 $7 $8}')
-       if [ "host-$rhost" = "$thostname" ]; then
-          echo -e "$tipaddr\thost-$rhost\t$remote_comment" >> /tmp/localhosts_remotes
-       else
-          echo -e "$tipaddr\t$thostname\t#Suggested:host-$rhost\t$remote_comment" >> /tmp/localhosts_remotes
-       fi
-       echo -e "$tipaddr\tssh-$rhost" >> /tmp/localhosts_ssh
-    else
-       #echo "Found SSH Host"
-       if [ -n "$comment" ]; then
-          echo "$comment" >> /tmp/localhosts_ssh
-          comment=""
-       fi
-       echo -e "$tipaddr\tssh-$rhost" >> /tmp/localhosts_ssh
+       echo "$item" >> /tmp/localhosts_remotes
     fi
   done
   
@@ -205,19 +197,44 @@ deduper() {
    fi
 }
 
-next_step() {
+ask_to_split() {
+    dialog --output-fd 1 --title "Split Host File" \
+       --backtitle "Hosts file too large, temporary..split it?" \
+       --yesno "Local Hosts will be placed at bottom of host file." 7 60
+    
+    split=$?
+    clear
+}
+
+admin_step() {
+  
+  if [ $(wc -l "$HOSTS_FILE" | awk -F. '{ printf("%d\n", $1); }') -gt 2 ]; then #################################################################################
+     ask_to_split
+  fi 
+  
+  echo "Updating Hosts"
   if [ ! -d ~/.dotfile_backups ]; then
      mkdir ~/.dotfile_backups 2> /dev/null
   fi
   bknow=$(date +"%m_%d_%Y_%H_%M_%S")
   cp "$HOSTS_FILE" ~/.dotfile_backups/host${bknow} 2> /dev/null
-  
-  process_hosts_file
-  
-  echo -e "\n\nPlease add: Any NEW IP Addresses to Servers Hostname mappings from your new Hosts file."
-  echo "As your /etc/hosts file will auto populate the SSH config to be more complete...."
-  read -n 1 -s -r -p "Hit enter or press any key to continue:"  
-  echo -e "\n\n"
+
+  if [ "$split" = "0" ]; then
+    split_hosts_file
+  else
+    if [ -x /usr/bin/tee ] || [ -x /bin/tee ]; then
+       echo -e "# Please add all your SSH Servers to this list:"  | cat - "$HOSTS_FILE" | sudo tee "$HOSTS_FILE"
+    fi
+
+    if [ -z $EDITOR ]; then
+       sudo nano "$HOSTS_FILE"
+    else
+       sudo $EDITOR "$HOSTS_FILE"
+    fi
+    sed '/# Please add all your SSH Servers to this list:/d' "$HOSTS_FILE" > /tmp/localhosts_o && sudo mv -f /tmp/localhosts_o "$HOSTS_FILE"
+    return 1
+  fi
+    
   if [ -z $EDITOR ]; then
       nano /tmp/localhosts_main
   else
@@ -227,48 +244,47 @@ next_step() {
   sed '/# Script will include Localhosts back in automatically/d' /tmp/localhosts_main > /tmp/tmpfile && mv -f /tmp/tmpfile /tmp/localhosts_main
 }
 
+admin_check() {
+   if [ $UID -eq 0 ]; then
+      admin_step
+   else
+      sudoers_power=$(groups $USER | grep "sudo")
+      admin_power=$(groups $USER | grep "admin")
+      wheel_power=$(groups $USER | grep "wheel")
+      if [ -n "sudoers_power" ] || [ -n "admin_power" ] || [ -n "wheel_power" ]; then
+         admin_step
+      fi
+    fi
+}
+
+clean_up_split() {
+  if [ "$split" = "0" ]; then
+      cat /tmp/localhosts_ip4 >> /tmp/localhosts_main
+      cat /tmp/localhosts_ip6 >> /tmp/localhosts_main
+      echo -e "\n Original $HOSTS_FILE file Backed up at: ~/.dotfile_backups/host${bknow}"
+      echo "Cleaning up hosts file...."
+      sudo mv -f $HOSTS_FILE "${HOSTS_FILE}_old"
+      sudo mv /tmp/localhosts_main $HOSTS_FILE
+      sudo chown root:root $HOSTS_FILE
+      sudo chmod 644 $HOSTS_FILE
+      rm -f /tmp/localhosts_*
+  fi
+}
 
 findhosts() {
-
-  IFSOLD=$IFS 
-  IFS=$'\n' 
-
-  local found_ssh=false
-  for item in $(cat /etc/hosts); do
-    tipaddr=$(echo $item | awk '{print $1}')
-    thostname=$(echo $item | awk '{print $2}')
-    lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
-    
-    if [ $(echo $tipaddr | awk -F. '{ printf("%d\n", $1); }') = "127" ]; then
-       #echo "Skipped IPv4 Loopback"
-       continue
-    elif [ "$(echo $tipaddr | grep -c "::")" -ge 1 ]; then
-       #echo "Skipped IPv6 Loopback"
-       continue
-    elif [ "$(echo $tipaddr | grep -c "^#")" -ge 1 ]; then
-       #echo "Skipped Comment"
-       continue
-    elif [ "$(echo $lcase | grep -c "ssh-")" -eq 0 ]; then
-       #echo "Skipped non ssh-hostname"
-       continue
-    else
-       found_ssh=true
-       break
-    fi
-  done
-  if [ $found_ssh = true ]; then
-     if [ -z $EDITOR ]; then
-         nano "$HOSTS_FILE"
-     else
-         $EDITOR "$HOSTS_FILE"
-     fi
-     main=$HOSTS_FILE
-  else 
-     next_step
-     main=/tmp/localhosts_main  
+  
+  admin_check
+   
+  if [ "$split" = "0" ]; then
+     read_hosts=/tmp/localhosts_main
+  else
+     read_hosts=$HOSTS_FILE
   fi
   
-  for item in $(cat "$main"); do
+  IFSOLD=$IFS 
+  IFS=$'\n' 
+  
+  for item in $(cat $read_hosts); do
     tipaddr=$(echo $item | awk '{print $1}')
     thostname=$(echo $item | awk '{print $2}')
     lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
@@ -281,9 +297,6 @@ findhosts() {
        continue
     elif [ "$(echo $tipaddr | grep -c "^#")" -ge 1 ]; then
        #echo "Skipped Comment"
-       continue
-    elif [ "$(echo $lcase | grep -c "ssh-")" -eq 0 ]; then
-       #echo "Skipped non ssh-hostname"
        continue
     else
        deduper
@@ -291,42 +304,31 @@ findhosts() {
   done
   
   IFS=$IFSOLD
+
+  clean_up_split
   
-  if [ $found_ssh = false ]; then
-      cat /tmp/localhosts_ip4 >> /tmp/localhosts_main
-      cat /tmp/localhosts_ip6 >> /tmp/localhosts_main
-      echo -e "\n Original /etc/hosts file Backed up at: ~/.dotfile_backups/host${bknow}"
-      echo "Updating Hosts File:"
-      sudo rm /etc/hosts
-      sudo mv /tmp/localhosts_main /etc/hosts
-      rm -f /tmp/localhosts_*
-  fi
 }
 
 if [ ! -r ~/.ssh/config ]; then
    choose_key
    default_ssh_port
    default_username
-   
    clear
-   
-   if [ $(wc -l "$HOSTS_FILE" | awk -F. '{ printf("%d\n", $1); }') -gt 5000 ]; then
-      echo -e "\n /etc/hosts file too big, bailing....!!"
-      echo "Please split or remove old entries!!"
-      read -n 1 -s -r -p "Hit enter or press any key to continue:"
-      hostnames=()
-   else
-      findhosts
-   fi
+   findhosts
    
    echo "# Edit the following SSHTO config file:" > ~/.ssh/config
+   echo "# To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-" >> ~/.ssh/config
    echo "# What servers do you want to connect to?" >> ~/.ssh/config
    
    if [ ${#hostnames[@]} -eq 0 ]; then
       defaults
    else
       for h in "${hostnames[@]}"; do
-          echo "Host ${h/ssh-/}" >> ~/.ssh/config
+        ch=${h/host-/}
+        ch=${ch/h-/}
+        ch=${ch/s-/}
+        ch=${ch/ssh-/}
+          echo "Host s-${ch}" >> ~/.ssh/config
           echo "    HostName ${h}" >> ~/.ssh/config
           echo "    Port $SSH_PORT" >> ~/.ssh/config
           echo "    User $DEFAULT_USER" >> ~/.ssh/config

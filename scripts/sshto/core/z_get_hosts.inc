@@ -1,36 +1,45 @@
-IFSOLD=$IFS 
-IFS=$'\n' 
-for host in $(grep -h "Host " ~/.ssh/config* | sed '/\*/d; s/Host //g;'); {
+update_hosts() {
 
-    name="${host// #*/}" # Get HostName
-    desc="${host//*#/}"  # Get Description
+    fullist=()
+    content=()
 
-	case $desc in
-		'ignore') continue;;
-	esac	
+    IFSOLD=$IFS 
+    IFS=$'\n' 
 
-    case $name in
-        '#Group')
-			desc="${host%\#*}"
-			desc="${desc##*\#}"
-			name="{ $desc }" 
-			length=$[ (40-${#name})/2 ]
-			name=$( line - $length; printf  "$name"; line - $length )
-			[[ ${#name} -lt 40 ]]  &&  name=-$name
-			content+=( "$desc" )
-			desc=$(line - 20);;
-        '#'*) continue;;
-    esac
+    for host in $(grep -h "Host " ~/.ssh/config* | sed '/\*/d; s/Host //g;'); {
 
-    fullist+=( "$name" "$desc" ) #Add HostName and Description to the list
+        name="${host// #*/}" # Get HostName
+        desc="${host//*#/}"  # Get Description
 
-} 
+        case $desc in
+            'ignore') continue;;
+        esac    
 
-IFS=$IFSOLD
+        case $name in
+            '#Group')
+                desc="${host%\#*}"
+                desc="${desc##*\#}"
+                name="{ $desc }" 
+                length=$[ (40-${#name})/2 ]
+                name=$( line - $length; printf  "$name"; line - $length )
+                [[ ${#name} -lt 40 ]]  &&  name=-$name
+                content+=( "$desc" )
+                desc=$(line - 20);;
+            '#'*) continue;;
+        esac
 
-list=( "${fullist[@]}" )
+        fullist+=( "$name" "${desc/s-/}" ) #Add HostName and Description to the list
 
-[[ $filter ]] && new_list
+    } 
 
+  IFS=$IFSOLD
+
+  list=( "${fullist[@]}" )
+  [[ -e \$tmpfile ]] && . \$tmpfile
+  [[ $filter ]] && new_list
+
+}
+
+update_hosts
 main_dialog
 is_done

@@ -11,7 +11,7 @@ new_list() {
     [[ ${list[*]} ]] && echo "filter='$filter'" > "$tmpfile" || { list=( "${fullist[@]}" ); rm "$tmpfile"; }
 }
 
-editconfig() { nano ~/.ssh/config; }
+editconfig() { nano ~/.ssh/config; update_hosts; }
 
 contents_menu () {
 	filter=$(dialog --output-fd 1 --ok-label "SELECT" --cancel-label "BACK" \
