@@ -208,7 +208,7 @@ ask_to_split() {
 
 admin_step() {
   
-  if [ $(wc -l "$HOSTS_FILE" | awk -F. '{ printf("%d\n", $1); }') -gt 2 ]; then #################################################################################
+  if [ $(wc -l "$HOSTS_FILE" | awk -F. '{ printf("%d\n", $1); }') -gt 500 ]; then
      ask_to_split
   fi 
   
