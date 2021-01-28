@@ -47,6 +47,7 @@ fi
 bnow=$(date +"%m_%d_%Y_%H_%M_%S")
 mkdir -p ~/.dotfile_backups/$bnow 2> /dev/null
 cp /home/$USER/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} ~/.dotfile_backups/$bnow/ 2> /dev/null
+cp /etc/hosts ~/.dotfile_backups/$bnow/ 2> /dev/null
 
 if [ -f /home/$USER/.bash_aliases ]; then
     echo -e "\n"

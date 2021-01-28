@@ -20,3 +20,25 @@ The test command includes the following FILE operators that allow you to test fo
     -u FILE - True if the FILE exists, and set-user-id (suid) flag is set.
     -w FILE - True if the FILE exists and is writable.
     -x FILE - True if the FILE exists and is executable.
+
+Comparison operators are operators that compare values and return true or false. When comparing strings in Bash you can use the following operators:
+
+    string1 = string2 and string1 == string2 - The equality operator returns true if the operands are equal.
+        Use the = operator with the test [ command.
+        Use the == operator with the [[ command for pattern matching.
+    string1 != string2 - The inequality operator returns true if the operands are not equal.
+    string1 =~ regex- The regex operator returns true if the left operand matches the extended regular expression on the right.
+    string1 > string2 - The greater than operator returns true if the left operand is greater than the right sorted by lexicographical (alphabetical) order.
+    string1 < string2 - The less than operator returns true if the right operand is greater than the right sorted by lexicographical (alphabetical) order.
+    -z string - True if the string length is zero.
+    -n string - True if the string length is non-zero.
+
+Following are a few points to be noted when comparing strings:
+
+    A blank space must be used between the binary operator and the operands.
+    Always use double quotes around the variable names to avoid any word splitting or globbing issues.
+    Bash does not segregate variables by “type”, variables are treated as integer or string depending on the context.
+    
+There are multiple ways to check if a string contains a substring:
+
+    One approach is to use surround the substring with asterisk symbols * which means match all characters.

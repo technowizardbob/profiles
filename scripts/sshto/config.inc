@@ -18,6 +18,6 @@ elif [ -r ~/.ssh/${USER}.pub ]; then
 elif [ -r ~/.ssh/id_rsa.pub ]; then
    KEY=~/.ssh/id_rsa.pub 
 else
-   KEY=$(ls ~/.ssh/*.pub| head -1)
+   KEY=$(ls ~/.ssh/*.pub 2> /dev/null | head -1)
 fi
 #echo $KEY
