@@ -163,7 +163,11 @@ process_hosts_file() {
           comment=""
        fi
        remote_comment=$(echo $item | awk '{print $3 $4 $5 $6 $7 $8}')
-       echo -e "$tipaddr\thost-$rhost  #WAS-$thostname  $remote_comment" >> /tmp/localhosts_remotes
+       if [ "host-$rhost" = "$thostname" ]; then
+          echo -e "$tipaddr\thost-$rhost\t$remote_comment" >> /tmp/localhosts_remotes
+       else
+          echo -e "$tipaddr\t$thostname\t#Suggested:host-$rhost\t$remote_comment" >> /tmp/localhosts_remotes
+       fi
        echo -e "$tipaddr\tssh-$rhost" >> /tmp/localhosts_ssh
     else
        #echo "Found SSH Host"
