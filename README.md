@@ -79,19 +79,15 @@ exit && relog in... for changes to take effect
 
 # Customize your Aliases:
 
-Add/Remove/Change any Bash Alias in: $ cd /opt/profiles/custom_aliases/
-Also, see: $ cd /opt/profiles/custom_dotfiles/
+[x] - Add/Remove/Change any Bash Alias in: $ cd /opt/profiles/custom_aliases/
+[ ] - Also, see: $ cd /opt/profiles/custom_dotfiles/
 These will not get clobbered with every git pull request....
 
 # Usage:
 
-for list of all commands/aliases type: commands
+See list of all scripts, type: command
 
-see list of scripts type: command
-
-After command : type filename without the .env extension.
-
-example: command web
+Example, to look at a script: command web
 
 ex2: command git
 
@@ -99,21 +95,20 @@ ex3: command apt_get
 
 ex4: command docker
 
-To edit SSH config: essh
-
 To SSH into a box: sshto ( will setup .ssh folder/RSA keys/config for you )
 
 To generate a password: pwdgen
 
-To work on a git Project repo: dogit /var/www/reponame
+List all git projects: gp ( GUI that will create list of projects.
+  -- Also, git prompt for add/remove/comment/pull/pushing to project )
 
-List all git projects: gp ( GUI that will create list of projects )
-
-Auto CD into git project: gcd
+Auto CD into git project: gpcd
 
 To edit an alias do: calias folders
 
 To find something Quick: alias-find netstat
+
+Grep search text in current folders or a path given: lookfor "hardtofindthing" 
 
 To get help with a cheat-sheet: cheat
 
