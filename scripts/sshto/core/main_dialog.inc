@@ -2,6 +2,7 @@ main_dialog () {
     
     if [ ${#list[@]} -eq 0 ]; then
        echo "Menu has no SSH Hosts to pick from!"
+       errors="1"
        exit 1
     fi
     target=$(dialog --extra-button --extra-label "RUN COMMAND"         \

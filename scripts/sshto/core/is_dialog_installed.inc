@@ -7,5 +7,6 @@ dialog &> /dev/null || {
     if [[ -x /usr/bin/pacman ]]; then
        echo -e "\nInstall dialog\nsudo pacman -S dialog"
     fi
+    errors="1"
     exit 1
 }

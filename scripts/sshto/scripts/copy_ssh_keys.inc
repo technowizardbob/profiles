@@ -88,6 +88,7 @@ add_sshkey() {
   fi
 
   if [ ! "$run_success" -eq 0 ]; then
+    errors="1"
     exit 1
   fi      
 }

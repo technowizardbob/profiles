@@ -1,5 +1,7 @@
 #!/bin/bash
 
+errors="0"
+
 _MAIN_PATH="/opt/profiles/scripts/sshto"
 
 _PATH_TO_CORE="${_MAIN_PATH}/core"
