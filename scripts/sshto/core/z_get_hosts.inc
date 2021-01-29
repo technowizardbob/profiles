@@ -1,12 +1,19 @@
-update_hosts() {
+zpath=$1
 
-    fullist=()
+update_hosts() {
+    if [ -z "$zpath" ]; then
+        local cf=~/.ssh/config*
+    else
+        local cf=~/.ssh/configs_$zpath*.conf
+    fi
+    
+    fullist=() # define & Refresh!
     content=()
 
     IFSOLD=$IFS 
     IFS=$'\n' 
 
-    for host in $(grep -h "Host " ~/.ssh/config* | sed '/\*/d; s/Host //g;'); {
+    for host in $(grep -h "Host " $cf | sed '/\*/d; s/Host //g;'); {
 
         name="${host// #*/}" # Get HostName
         desc="${host//*#/}"  # Get Description

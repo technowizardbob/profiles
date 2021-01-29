@@ -316,9 +316,16 @@ if [ ! -r ~/.ssh/config ]; then
    clear
    findhosts
    
-   echo "# Edit the following SSHTO config file:" > ~/.ssh/config
-   echo "# To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-" >> ~/.ssh/config
-   echo "# What servers do you want to connect to?" >> ~/.ssh/config
+   # Begin Dummy Config   
+echo "
+Include ~/.ssh/configs_*.conf
+
+# Edit the following SSHTO config file:
+# To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-
+# What servers do you want to connect to?
+
+#Host Group #My Work Server's#
+" > ~/.ssh/config
    
    if [ ${#hostnames[@]} -eq 0 ]; then
       defaults
@@ -335,13 +342,38 @@ if [ ! -r ~/.ssh/config ]; then
           echo "    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/config
       done
    fi
-   echo "Host github #ignore" >> ~/.ssh/config
-   echo "    HostName github.com" >> ~/.ssh/config
-   echo "    Port 22" >> ~/.ssh/config
-   echo "    User git" >> ~/.ssh/config
-   echo "    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/config
-   echo "#Host Group #My Work Server's#" >> ~/.ssh/config
+   echo "
+Host github #ignore
+    HostName github.com
+    Port 22
+    User git
+    IdentityFile $USE_PRIVATE_KEY
+
+# ---  default for all NOT Defined hosts..! ---
+Host *
+     ForwardAgent no
+     ForwardX11 no
+     ForwardX11Trusted yes
+     User root
+     Port 22
+     Protocol 2
+     ServerAliveInterval 60
+     ServerAliveCountMax 30
+" >> ~/.ssh/config
+
+echo "
+#Host Group #Proxies's#
+# Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
+# $ ssh -f -N  proxyus
+Host proxyus #ignore
+    HostName vps1.cyberciti.biz
+    User breakfree
+    IdentityFile ~/.ssh/vps1.cyberciti.biz.key
+    LocalForward 3128 127.0.0.1:3128     
+" >> ~/.ssh/configs_proxy.conf
+
    chmod 644 ~/.ssh/config
+   chmod 644 ~/.ssh/configs_proxy.conf
    if [ -z $EDITOR ]; then
       nano ~/.ssh/config
    else
