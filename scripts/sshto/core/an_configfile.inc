@@ -8,13 +8,11 @@ if [ ! -d ~/.ssh ]; then
 fi
 
 defaults() {
-   echo "
-Host s-mysite
+    echo "Host s-mysite
     HostName YOURsiteHERE.com OR IP of computer
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY
-   " > ~/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" > ~/.ssh/configs_work.conf
 }
 
 choose_key() {
@@ -376,9 +374,8 @@ if [ ! -r ~/.ssh/config ]; then
    clear
    findhosts
    
-   # Begin Dummy Config   
-echo "
-Include ~/.ssh/configs_*.conf
+   # Begin Dummy Configs   
+echo "Include ~/.ssh/configs_*.conf
 
 # Edit the following SSHTO config file:
 # To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-
@@ -396,17 +393,16 @@ Include ~/.ssh/configs_*.conf
         ch=${ch/h-/}
         ch=${ch/s-/}
         ch=${ch/ssh-/}
-echo "
-Host s-${ch}
+echo "Host s-${ch}
     HostName ${h}
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY
-" >> ~/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_work.conf
+    
       done
    fi
-   echo "
-Host github #ignore
+   
+   echo "Host github #ignore
     HostName github.com
     Port 22
     User git
@@ -424,25 +420,21 @@ Host *
      ServerAliveCountMax 30
 " >> ~/.ssh/config
 
-   echo "
-#Host Group #My Home Lab#   
+   echo "#Host Group #My Home Lab#   
 Host s-lab #ignore
     HostName lab1
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY
-" >> ~/.ssh/configs_home.conf
+    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_home.conf
 
-echo "
-#Host Group #Proxies's#
+echo "#Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
 # $ ssh -f -N  proxyus
 Host proxyus #ignore
     HostName vps1.cyberciti.biz
     User breakfree
     IdentityFile ~/.ssh/vps1.cyberciti.biz.key
-    LocalForward 3128 127.0.0.1:3128     
-" >> ~/.ssh/EXAMPLEconfigs_proxy.conf
+    LocalForward 3128 127.0.0.1:3128" >> ~/.ssh/EXAMPLEconfigs_proxy.conf
 
    chmod 644 ~/.ssh/config
    chmod 644 ~/.ssh/configs_work.conf
