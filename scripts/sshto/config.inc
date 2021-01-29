@@ -21,3 +21,5 @@ else
    KEY=$(ls ~/.ssh/*.pub 2> /dev/null | head -1)
 fi
 #echo $KEY
+
+tmpfile=/tmp/sshtorc

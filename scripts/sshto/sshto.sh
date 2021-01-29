@@ -16,8 +16,6 @@ _RUN_CMDS_FILE="${_PATH_TO_SCRIPTS}/sshto_run_cmds.list"
 
 source ${_MAIN_PATH}/config.inc
 
-tmpfile=/tmp/sshtorc
-
 source ${_PATH_TO_CORE}/dynamic/run_cmd.inc
 
 for s in $_SCRIPT_FILES;

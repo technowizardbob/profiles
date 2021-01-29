@@ -12,7 +12,6 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 if [ -z "$1" ]; then
-  pushd /opt/profiles > /dev/null
   if [ ! -d /opt/profiles ]; then
      echo -e "Please use the default install path of /opt/profiles\n - as it is hard coded everywhere...."
      echo "You may override this by using \$ install.sh --force"
@@ -20,6 +19,7 @@ if [ -z "$1" ]; then
      echo "It you really want it installed to somewhere else I would make a symbolic link to /opt/profiles"
      exit 1
   fi
+  pushd /opt/profiles > /dev/null
 elif [ $1 == "--force" ]; then
      echo "Don't forget to make a sym-link to /opt/profiles"
 fi

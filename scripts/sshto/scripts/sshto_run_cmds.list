@@ -11,7 +11,7 @@ System Info, system_info, Get server information
 Port Tunnel, portunneling, Open Tunnel on server
 Key Copy, add_sshkey, Copy your SSH key to the server
 Files Copy, copy_files, Copy files to server
-Change Username, username, Switch user accounts
-Local Port, local_port, Change local port
-Remote Port, remote_port, Change remote port
+Change Username, username, Switch user accounts: !GUEST
+Local Port, local_port, Change local port: !LOCAL
+Remote Port, remote_port, Change remote port: !REMOTE
 Change Colors, colors, Edit dialog colors

@@ -1,5 +1,4 @@
 HOSTS_FILE=/etc/hosts
-HOSTS_FILE=/etc/hosts
 split="1" # Default of no Split!!!
 
 if [ ! -d ~/.ssh ]; then
@@ -377,9 +376,7 @@ if [ ! -r ~/.ssh/config ]; then
 echo "Include ~/.ssh/configs_*.conf
 
 # Edit the following SSHTO config file:
-# What servers do you want to connect to?
-
-" > ~/.ssh/config
+# What servers do you want to connect to?" > ~/.ssh/config
 
 if [ -r ~/.ssh/configs_work.conf ]; then
    bknow=$(date +"%m_%d_%Y_%H_%M_%S")
