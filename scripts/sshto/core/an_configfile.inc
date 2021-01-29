@@ -8,14 +8,6 @@ if [ ! -d ~/.ssh ]; then
    /opt/profiles/scripts/gen_rsa_key.sh
 fi
 
-defaults() {
-    echo "Host s-mysite
-    HostName YOURsiteHERE.com OR IP of computer
-    Port $SSH_PORT
-    User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" > ~/.ssh/configs_work.conf
-}
-
 choose_key() {
   local homes=~/.ssh/
   local pubs=$(find $homes -type f -iname "*.pub" 2> /dev/null)
@@ -118,7 +110,6 @@ default_username() {
 }
 
 split_hosts_file() {
-  echo "# I would suggest the pre-fix of h- or host- to avoid issues with ssh..." > /tmp/localhosts_remotes
   echo "# Private/Remote Servers" > /tmp/localhosts_remotes
   echo "# Local-Hosts IPv4" > /tmp/localhosts_ip4
   echo "# Local-Hosts IPv6" > /tmp/localhosts_ip6
@@ -374,32 +365,42 @@ if [ ! -r ~/.ssh/config ]; then
    default_username
    clear
    findhosts
+
+   prefix_num=$(dialog --output-fd 1 --menu "SSH name prefixes:" 0 0 0 1 "None" 2 "s-" 3 "ssh-")
+   case "$prefix_num" in
+      '2') prefix="s-";; 
+      '3') prefix="ssh-";;
+      *) prefix="";;
+   esac
    
    # Begin Dummy Configs   
 echo "Include ~/.ssh/configs_*.conf
 
 # Edit the following SSHTO config file:
-# To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-
 # What servers do you want to connect to?
 
 " > ~/.ssh/config
 
-if [ ! -r ~/.ssh/configs_work.conf ]; then
-   local bknow=$(date +"%m_%d_%Y_%H_%M_%S")
+if [ -r ~/.ssh/configs_work.conf ]; then
+   bknow=$(date +"%m_%d_%Y_%H_%M_%S")
    mv ~/.ssh/configs_work.conf ~/.ssh/bk_configs_work${bknow}.old  2> /dev/null
 fi
    
    echo "#Host Group #My Work Server's#" > ~/.ssh/configs_work.conf
    
    if [ ${#hostnames[@]} -eq 0 ]; then
-      defaults
+    echo "Host ${prefix}mysite
+    HostName YOURsiteHERE.com OR IP of computer
+    Port $SSH_PORT
+    User $DEFAULT_USER
+    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_work.conf
    else
       for h in "${hostnames[@]}"; do
         ch=${h/host-/}
         ch=${ch/h-/}
         ch=${ch/s-/}
         ch=${ch/ssh-/}
-echo "Host s-${ch}
+echo "Host ${prefix}${ch}
     HostName ${h}
     Port $SSH_PORT
     User $DEFAULT_USER
@@ -428,14 +429,14 @@ Host *
 
 if [ ! -r ~/.ssh/configs_home.conf ]; then
    echo "#Host Group #My Home Lab#   
-Host s-lab #ignore
+Host ${prefix}lab #ignore
     HostName lab1
     Port $SSH_PORT
     User $DEFAULT_USER
     IdentityFile $USE_PRIVATE_KEY" > ~/.ssh/configs_home.conf
 fi
 
-if [ ! -r ~/.ssh/configs_home.conf ]; then
+if [ ! -r ~/.ssh/EXAMPLEconfigs_proxy.conf ]; then
 echo "#Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
 # $ ssh -f -N  proxyus

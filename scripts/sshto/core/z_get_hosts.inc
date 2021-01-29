@@ -35,7 +35,12 @@ update_hosts() {
             '#'*) continue;;
         esac
 
-        fullist+=( "$name" "${desc/s-/}" ) #Add HostName and Description to the list
+        desc="${desc/s-/}"
+        desc="${desc/ssh-/}"
+        desc="${desc/h-/}"
+        desc="${desc/host-/}"
+        
+        fullist+=( "$name" "$desc" ) #Add HostName and Description to the list
 
     } 
 
