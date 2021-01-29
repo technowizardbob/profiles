@@ -118,14 +118,13 @@ else
   fi
 fi
 
-echo "For listing of all commands Type: commands"
 echo "See a list of commands Type: command"
-echo "To read the command file type command followed by the filename without the file extesion."
 echo "Example: command web"
 echo "Ex2: command git"
 echo "Ex3: command apt_get"
 echo "Ex4: command docker"
 echo "Ex5: command folders"
+echo "For a GUIDE: \$ guide"
 echo "Installed to local user account ${USER}. IE folder: /home/${USER}/"
 echo -e "\nIf you had any dotfiles, they will be moved to /home/${USER}/.old_a_XXXX"
 echo -e "Also, backed up to ~/.dotfile_backups/$bnow/ \n \t --- because I don't want you to loose any work....!"

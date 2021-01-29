@@ -1,0 +1,11 @@
+$ sshto work
+$ sshto home
+
+# Example Proxy Server Port Forwarding
+nano ~/.ssh/EXAMPLEconfigs_proxy.conf
+
+# GUI git project auto updater....
+$ gp
+
+# GUI git project Change DIR - Note: RUN gp @ least once before...this.
+$ gpcd

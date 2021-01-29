@@ -8,11 +8,13 @@ if [ ! -d ~/.ssh ]; then
 fi
 
 defaults() {
-   echo "Host s-mysite" >> ~/.ssh/config
-   echo "    HostName YOURsiteHERE.com OR IP of computer" >> ~/.ssh/config
-   echo "    Port $SSH_PORT" >> ~/.ssh/config
-   echo "    User $DEFAULT_USER" >> ~/.ssh/config
-   echo "    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/config
+   echo "
+Host s-mysite
+    HostName YOURsiteHERE.com OR IP of computer
+    Port $SSH_PORT
+    User $DEFAULT_USER
+    IdentityFile $USE_PRIVATE_KEY
+   " > ~/.ssh/configs_work.conf
 }
 
 choose_key() {
@@ -309,6 +311,64 @@ findhosts() {
   
 }
 
+edit_configs() {
+  IFSOLD=$IFS
+  IFS=$'\n'
+
+  local aconfig=()
+  local cfgs=$(ls ~/.ssh/config*)
+  local realconfig=()
+  local realindex=()
+  local p=""
+  local r=""
+  local cdd
+  for cdd in $cfgs; do
+     realconfig+=( "$cdd" )
+     p=/home/$USER/.ssh/
+     r=${cdd/$p/}
+     de=${r/configs_/}
+     de=${de/.conf/}
+     realindex+=( "$de" )
+     aconfig+=( "$de" "$r" )
+  done
+  
+  if [ ${#aconfig[@]} -eq 0 ]; then
+     return 1
+  fi   
+ 
+  editme=$(dialog --ok-label "Edit this config" --cancel-label "Back" --output-fd 1 \
+                    --colors \
+                    --menu "Select SSH file:" 0 0 0 "${aconfig[@]}")
+
+  local match=false
+  local c=0
+  local no
+  for no in "${realindex[@]}"; do
+    c=$((c+1))
+    echo $no
+    if [ "$editme" = "$no" ]; then
+       match=true
+       break
+    fi
+  done
+  
+  if [ "$match" = false ]; then 
+     return 0
+  fi   
+  
+  local d=0
+  local i
+  for i in "${realconfig[@]}"; do
+    d=$((d+1))
+    if [ "$d" = "$c" ]; then
+        $EDITOR $i
+        break
+    fi
+  done
+
+  IFS=$IFSOLD
+}
+
 if [ ! -r ~/.ssh/config ]; then
    choose_key
    default_ssh_port
@@ -324,8 +384,9 @@ Include ~/.ssh/configs_*.conf
 # To avoid hostname collisions, I suggest to name Hosts with an prefix of: s-
 # What servers do you want to connect to?
 
-#Host Group #My Work Server's#
 " > ~/.ssh/config
+
+   echo "#Host Group #My Work Server's#" > ~/.ssh/configs_work.conf
    
    if [ ${#hostnames[@]} -eq 0 ]; then
       defaults
@@ -335,11 +396,13 @@ Include ~/.ssh/configs_*.conf
         ch=${ch/h-/}
         ch=${ch/s-/}
         ch=${ch/ssh-/}
-          echo "Host s-${ch}" >> ~/.ssh/config
-          echo "    HostName ${h}" >> ~/.ssh/config
-          echo "    Port $SSH_PORT" >> ~/.ssh/config
-          echo "    User $DEFAULT_USER" >> ~/.ssh/config
-          echo "    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/config
+echo "
+Host s-${ch}
+    HostName ${h}
+    Port $SSH_PORT
+    User $DEFAULT_USER
+    IdentityFile $USE_PRIVATE_KEY
+" >> ~/.ssh/configs_work.conf
       done
    fi
    echo "
@@ -361,6 +424,15 @@ Host *
      ServerAliveCountMax 30
 " >> ~/.ssh/config
 
+   echo "
+#Host Group #My Home Lab#   
+Host s-lab #ignore
+    HostName lab1
+    Port $SSH_PORT
+    User $DEFAULT_USER
+    IdentityFile $USE_PRIVATE_KEY
+" >> ~/.ssh/configs_home.conf
+
 echo "
 #Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
@@ -370,13 +442,13 @@ Host proxyus #ignore
     User breakfree
     IdentityFile ~/.ssh/vps1.cyberciti.biz.key
     LocalForward 3128 127.0.0.1:3128     
-" >> ~/.ssh/configs_proxy.conf
+" >> ~/.ssh/EXAMPLEconfigs_proxy.conf
 
    chmod 644 ~/.ssh/config
-   chmod 644 ~/.ssh/configs_proxy.conf
-   if [ -z $EDITOR ]; then
-      nano ~/.ssh/config
-   else
-      $EDITOR  ~/.ssh/config
-   fi
+   chmod 644 ~/.ssh/configs_work.conf
+   chmod 644 ~/.ssh/configs_home.conf
+   chmod 644 ~/.ssh/EXAMPLEconfigs_proxy.conf
+
+   edit_configs
+
 fi
