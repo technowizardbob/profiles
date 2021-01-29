@@ -1,4 +1,5 @@
 HOSTS_FILE=/etc/hosts
+HOSTS_FILE=/etc/hosts
 split="1" # Default of no Split!!!
 
 if [ ! -d ~/.ssh ]; then
@@ -216,7 +217,7 @@ admin_step() {
   if [ ! -d ~/.dotfile_backups ]; then
      mkdir ~/.dotfile_backups 2> /dev/null
   fi
-  bknow=$(date +"%m_%d_%Y_%H_%M_%S")
+  local bknow=$(date +"%m_%d_%Y_%H_%M_%S")
   cp "$HOSTS_FILE" ~/.dotfile_backups/host${bknow} 2> /dev/null
 
   if [ "$split" = "0" ]; then
@@ -383,6 +384,11 @@ echo "Include ~/.ssh/configs_*.conf
 
 " > ~/.ssh/config
 
+if [ ! -r ~/.ssh/configs_work.conf ]; then
+   local bknow=$(date +"%m_%d_%Y_%H_%M_%S")
+   mv ~/.ssh/configs_work.conf ~/.ssh/bk_configs_work${bknow}.old  2> /dev/null
+fi
+   
    echo "#Host Group #My Work Server's#" > ~/.ssh/configs_work.conf
    
    if [ ${#hostnames[@]} -eq 0 ]; then
@@ -420,13 +426,16 @@ Host *
      ServerAliveCountMax 30
 " >> ~/.ssh/config
 
+if [ ! -r ~/.ssh/configs_home.conf ]; then
    echo "#Host Group #My Home Lab#   
 Host s-lab #ignore
     HostName lab1
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_home.conf
+    IdentityFile $USE_PRIVATE_KEY" > ~/.ssh/configs_home.conf
+fi
 
+if [ ! -r ~/.ssh/configs_home.conf ]; then
 echo "#Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
 # $ ssh -f -N  proxyus
@@ -434,7 +443,8 @@ Host proxyus #ignore
     HostName vps1.cyberciti.biz
     User breakfree
     IdentityFile ~/.ssh/vps1.cyberciti.biz.key
-    LocalForward 3128 127.0.0.1:3128" >> ~/.ssh/EXAMPLEconfigs_proxy.conf
+    LocalForward 3128 127.0.0.1:3128" > ~/.ssh/EXAMPLEconfigs_proxy.conf
+fi
 
    chmod 644 ~/.ssh/config
    chmod 644 ~/.ssh/configs_work.conf
