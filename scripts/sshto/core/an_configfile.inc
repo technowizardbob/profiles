@@ -359,12 +359,13 @@ if [ ! -r ~/.ssh/config ]; then
    clear
    findhosts
 
-   prefix_num=$(dialog --output-fd 1 --menu "SSH name prefixes:" 0 0 0 1 "None" 2 "s-" 3 "ssh-")
-   case "$prefix_num" in
-      '2') prefix="s-";; 
-      '3') prefix="ssh-";;
-      *) prefix="";;
-   esac
+   prefix=""
+   #prefix_num=$(dialog --output-fd 1 --menu "SSH name prefixes:" 0 0 0 1 "None" 2 "s-" 3 "ssh-")
+   #case "$prefix_num" in
+   #   '2') prefix="s-";; 
+   #   '3') prefix="ssh-";;
+   #   *) prefix="";;
+   #esac
    
    # Begin Dummy Configs   
 echo "Include ~/.ssh/configs_*.conf
