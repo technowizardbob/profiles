@@ -90,15 +90,15 @@ These will not get clobbered with every git pull request....
 
 # Usage:
 
-See list of all scripts, type: command
+See list of all scripts, type: cmd
 
-Example, to look at a script: command web
+Example, to look at a script: cmd web
 
-ex2: command git
+ex2: cmd git
 
-ex3: command apt_get
+ex3: cmd apt_get
 
-ex4: command docker
+ex4: cmd docker
 
 To SSH into a box: sshto ( will setup .ssh folder/RSA keys/config for you )
 

@@ -41,18 +41,37 @@ commands() {
     done
     less /tmp/commands.txt
 }
-command() {
+cmd() {
+    if [ -z $1 ]; then
         renew_env_aliases
         for c in ${ALLENVS[@]}; do
             cbasename=$(basename $c)
-            if [ -z "$1" ]; then
-                echo "${cbasename/.env/}"
-            else
-                if [ "${cbasename/.env/}" == "${1/.env/}" ] && [ -f "$c" ]; then
-                    less "$c"
-                fi
-            fi
+            echo "${cbasename/.env/}"
         done
+    elif [ "$1" = "?" ] ||  [ "$1" = "-help" ] ||  [ "$1" = "--help" ]; then
+echo "cmd without any arugments will list all alias files.
+Type: cmd followed by name of alias to list contents of.
+cmd aliasfilename --edit  Will edit the alias" 
+    else 
+        if [ "$1" = "--edit" ] && [ -n "$2" ]; then
+           local cname=$2
+        elif [ "$2" = "--edit" ]; then
+           local cname=$1
+        fi
+        if [ -z "$cname" ]; then
+           local cname=$1
+	   local cto=less
+        else
+           local cto=$EDITOR
+        fi
+            renew_env_aliases
+            for c in ${ALLENVS[@]}; do
+                cbasename=$(basename $c)
+                if [ "${cbasename/.env/}" == "${cname/.env/}" ] && [ -f "$c" ]; then
+                    $cto "$c"
+                fi
+            done
+    fi
 }
 
 renew_env_aliases
