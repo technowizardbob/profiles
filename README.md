@@ -3,6 +3,9 @@ Bash Aliases :rocket:
 
 # INSTALL:
 Notice: I reference /opt/profiles folders a lot...in code, as it's a nice unused place for it to live at...
+
+You will need sudoers/root access to do install!
+
 Sorry, if you wanted /usr/local/bin or something else....
 
 ####As with any software...Please backup your system before installation begains....
