@@ -1,12 +1,6 @@
 HOSTS_FILE=/etc/hosts
 split="1" # Default of no Split!!!
 
-if [ ! -d ~/.ssh ]; then
-   #mkdir ~/.ssh # Commented out as it is done in gen_rsa_key.sh
-   #chmod 700 ~/.ssh
-   /opt/profiles/scripts/gen_rsa_key.sh
-fi
-
 choose_key() {
   local homes=~/.ssh/
   local pubs=$(find $homes -type f -iname "*.pub" 2> /dev/null)
@@ -222,7 +216,7 @@ admin_step() {
     else
        sudo $EDITOR "$HOSTS_FILE"
     fi
-    sed '/# Please add all your SSH Servers to this list:/d' "$HOSTS_FILE" > /tmp/localhosts_o && sudo mv -f /tmp/localhosts_o "$HOSTS_FILE"
+    sudo sed -i '/# Please add all your SSH Servers to this list:/d' "$HOSTS_FILE"
     return 1
   fi
     
@@ -232,7 +226,7 @@ admin_step() {
       $EDITOR /tmp/localhosts_main
   fi
   
-  sed '/# Script will include Localhosts back in automatically/d' /tmp/localhosts_main > /tmp/tmpfile && mv -f /tmp/tmpfile /tmp/localhosts_main
+  sed -i '/# Script will include Localhosts back in automatically/d' /tmp/localhosts_main
 }
 
 admin_check() {

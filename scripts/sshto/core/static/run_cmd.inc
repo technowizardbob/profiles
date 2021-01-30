@@ -1,3 +1,7 @@
+if [ ! -d ~/.ssh ]; then
+   gen_rsa_key
+fi
+
 refresh() {
    cmdlist=()
    IFSOLD=$IFS

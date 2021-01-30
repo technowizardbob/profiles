@@ -24,6 +24,8 @@ _RUN_CMDS_FILE="${_PATH_TO_SCRIPTS}/sshto_run_cmds.list"
 
 [ ! -f $_RUN_CMDS_FILE ] && { echo "No config file!! Aborting..."; exit; } 
 
+_GEN_RSA_KEY=/opt/profiles/scripts/gen_rsa_key.sh
+
 echo "#!/bin/bash" > $_SSHTO_BIN
 cat ${_MAIN_PATH}/config.inc >> $_SSHTO_BIN
 
@@ -32,6 +34,12 @@ echo "hard_coded_cmds=\$(cat <<EOF"  >> $_SSHTO_BIN
 cat $_RUN_CMDS_FILE >> $_SSHTO_BIN
 echo "EOF" >> $_SSHTO_BIN
 echo -e ")\n"  >> $_SSHTO_BIN
+
+cp $_GEN_RSA_KEY /tmp/gen_rsa_key
+sed -i "1,1d" /tmp/gen_rsa_key
+sed -i "/gen_rsa_key ##/d" /tmp/gen_rsa_key
+cat /tmp/gen_rsa_key >> $_SSHTO_BIN
+rm /tmp/gen_rsa_key
 
 echo -e "#script: run_cmd.inc \n" >> $_SSHTO_BIN
 cat ${_PATH_TO_CORE}/static/run_cmd.inc >> $_SSHTO_BIN
