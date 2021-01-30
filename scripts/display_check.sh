@@ -12,5 +12,6 @@ uid=$(id -u $user)
 who=$(whoami)
 [ ! $user = $who ] && {
     echo "Only the current GUI user ${user} can use this screen!"
+    echo "BTW - this error may happen also if switched users in GUI...so ignore it...then."
     exit 1
 }

@@ -251,10 +251,10 @@ admin_check() {
    if [ $UID -eq 0 ]; then
       admin_step
    else
-      sudoers_power=$(groups $USER | grep "sudo")
-      admin_power=$(groups $USER | grep "admin")
-      wheel_power=$(groups $USER | grep "wheel")
-      if [ -n "sudoers_power" ] || [ -n "admin_power" ] || [ -n "wheel_power" ]; then
+      sudoers_power=$(groups $USER | grep " sudo")
+      admin_power=$(groups $USER | grep " admin")
+      wheel_power=$(groups $USER | grep " wheel")
+      if [ -n "$sudoers_power" ] || [ -n "$admin_power" ] || [ -n "$wheel_power" ]; then
          admin_step
       fi
     fi
