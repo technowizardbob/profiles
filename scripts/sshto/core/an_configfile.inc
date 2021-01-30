@@ -91,6 +91,14 @@ choose_key() {
   pkey
 }
 
+ask_to_edit_hosts() {
+    dialog --output-fd 1 --title "Edit Host File" \
+       --backtitle "Add servers to your /etc/hosts file as SUDOer?" \
+       --yesno "Would you like to add any servers as SUDO user?" 7 60   
+    EDIT_HOSTS=$?
+    clear
+}
+
 default_ssh_port() {
     SSH_PORT=22
     new_port=$(dialog --ok-label "OK" --cancel-label "BACK" --output-fd 1 --max-input 5 \
@@ -195,6 +203,13 @@ ask_to_split() {
 }
 
 admin_step() {
+
+  ask_to_edit_hosts
+  if [ "$EDIT_HOSTS" = "0" ]; then 
+     echo "Editing Hosts file..."
+  else
+     return 0 
+  fi
   
   if [ $(wc -l "$HOSTS_FILE" | awk -F. '{ printf("%d\n", $1); }') -gt 500 ]; then
      ask_to_split
