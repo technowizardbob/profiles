@@ -1,24 +1,29 @@
 HOSTS_FILE=/etc/hosts
 split="1" # Default of no Split!!!
 
+pkey() {
+  if [ -f "$PK" ]; then
+      USE_PRIVATE_KEY=$PK
+  elif [ -f "${PK}.private" ]; then
+      USE_PRIVATE_KEY=${PK}.private
+  else
+      USE_PRIVATE_KEY=~/.ssh/id_rsa
+  fi
+}
+
 choose_key() {
   local homes=~/.ssh/
   local pubs=$(find $homes -type f -iname "*.pub" 2> /dev/null)
   if [ -z $pubs ]; then
-     USE_PRIVATE_KEY=${homes}${USER}_rsa.private
+     PK=${homes}${USER}
+     pkey
      return 0
   fi
 
-  if [ -z $KEY ]; then
-     akeys=()
-     realkeys=()
-     indexforkeys=()
-  else
-     non=${KEY/.pub/} 
-     akeys=( "Default" "${non/$homes/}" )
-     realkeys=( "${non}" )
-     indexforkeys=( "Default" )
-  fi
+  nonpub=""
+  akeys=()
+  realkeys=()
+  indexforkeys=()
 
   IFSOLD=$IFS
   IFS=$'\n'
@@ -28,28 +33,27 @@ choose_key() {
   for k in $pubs; do
     pubs_count=$((pubs_count+1))
     nonpub=${k/.pub/}
-    if [ $k = "$KEY" ]; then 
-       continue
-    fi
-       
     option_no=$((option_no+1))
     akeys+=( "$option_no" "${nonpub/$homes/}" )
-    indexforkeys+=( "$option_no" )
+    indexforkeys+=( "$option_no" )	
     realkeys+=( "$nonpub" )
   done
   
   IFS=$IFSOLD
   
    if [ $pubs_count -eq 1 ]; then
-     USE_PRIVATE_KEY=$nonpub
+     PK=$nonpub
+     pkey
      return 0
    elif [ $pubs_count -eq 0 ]; then
-     USE_PRIVATE_KEY=~/.ssh/${USER}_rsa.private
+     PK=~/.ssh/${USER}
+     pkey
      return 0
    fi
   
   if [ ${#akeys[@]} -eq 0 ]; then
-      USE_PRIVATE_KEY=~/.ssh/${USER}_rsa.private
+      PK=~/.ssh/${USER}
+      pkey
       return 0
   fi
   
@@ -68,7 +72,8 @@ choose_key() {
   done
   
   if [ "$match" = false ]; then 
-     USE_PRIVATE_KEY=~/.ssh/${USER}_rsa.private
+     PK=~/.ssh/${USER}
+     pkey
      return 0
   fi   
   
@@ -76,16 +81,14 @@ choose_key() {
   for i in "${realkeys[@]}"; do
     d=$((d+1))
     if [ "$d" = "$c" ]; then
-      if [ -r "${i}.private" ]; then
-         USE_PRIVATE_KEY=${i}.private
-      else
-         USE_PRIVATE_KEY=$i
-      fi
+      PK=$i
+      pkey
       return 0
     fi
   done
 
-  USE_PRIVATE_KEY=~/.ssh/${USER}_rsa.private
+  PK=~/.ssh/${USER}
+  pkey
 }
 
 default_ssh_port() {
