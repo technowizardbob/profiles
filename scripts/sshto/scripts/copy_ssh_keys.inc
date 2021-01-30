@@ -12,14 +12,18 @@ add_sshkey() {
      realkeys=( "${KEY}" )
      indexforkeys=( "Default" )
   fi
-  option_no=0
+  
   local pubs=$(find ~/.ssh/ -type f -iname "*.pub")
   if [ -z $pubs ]; then
      echo "You have no KEYs, copy your existing ones or make a new one...."
      echo "To make a key do \$ /opt/profiles/scripts/gen_rsa_key.sh"
      exit 1
   fi
+  
+  local option_no=0
+  local ckeys=0
   for k in $pubs; do
+    ckeys=$((ckeys+1))
     if [ $k == "$KEY" ]; then 
        continue
     fi
@@ -31,34 +35,37 @@ add_sshkey() {
   done
   IFS=$IFSOLD
   
-  usekey=$(dialog --ok-label "Use this Key" --cancel-label "Back" --output-fd 1 \
+  if [ $ckeys -eq 1 ]; then
+        USExKEY=$k
+  else
+        usekey=$(dialog --ok-label "Use this Key" --cancel-label "Back" --output-fd 1 \
                     --colors \
-                    --menu "Select key:" 0 0 0 "${akeys[@]}")
+                    --menu "Select key:" 0 0 0 "${akeys[@]}")  
+      match="false"                  
+      c=0
+      for no in "${indexforkeys[@]}"; do
+        c=$((c+1))
+        if [ "$usekey" == "$no" ]; then
+           match="true"
+           break
+        fi
+      done
+      
+      if [ "$match" == "false" ]; then 
+         clear
+         return 0
+      fi   
+      
+      d=0
+      for i in "${realkeys[@]}"; do
+        d=$((d+1))
+        if [ "$d" == "$c" ]; then
+          USExKEY=$i
+          break
+        fi
+      done
+  fi
   
-  match="false"                  
-  c=0
-  for no in "${indexforkeys[@]}"; do
-    c=$((c+1))
-    if [ "$usekey" == "$no" ]; then
-       match="true"
-       break
-    fi
-  done
-  
-  if [ "$match" == "false" ]; then 
-     clear
-     return 0
-  fi   
-  
-  d=0
-  for i in "${realkeys[@]}"; do
-    d=$((d+1))
-    if [ "$d" == "$c" ]; then
-      USExKEY=$i
-      break
-    fi
-  done
-
   #echo $USExKEY
   #exit 1
   clear
