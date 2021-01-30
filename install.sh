@@ -45,18 +45,18 @@ if [ -z "$1" ] || [ ! "$1" == "---dangerious-reload" ]; then
         echo "To override and reload, which BTW would blow away the auto moved backups...."
         echo "So, in that case, Please MAKE your own BACKUPs of all your DOT-FILES!!!!!"
         echo "If its broken and you understand the RISKS use: ---dangerious-reload"
-        if [ -d ~/.dotfile_backups ]; then
+        if [ -d $HPATH/.dotfile_backups ]; then
            echo "FYI - I made extra backups in ~/.dotfile_backups"
-           ls -la ~/.dotfile_backups
+           ls -la $HPATH/.dotfile_backups
         fi   
     exit 1
   fi
 fi
 
 bnow=$(date +"%m_%d_%Y_%H_%M_%S")
-mkdir -p ~/.dotfile_backups/$bnow 2> /dev/null
-cp $HPATH/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} ~/.dotfile_backups/$bnow/ 2> /dev/null
-cp /etc/hosts ~/.dotfile_backups/$bnow/ 2> /dev/null
+mkdir -p $HPATH/.dotfile_backups/$bnow 2> /dev/null
+cp $HPATH/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} $HPATH/.dotfile_backups/$bnow/ 2> /dev/null
+cp /etc/hosts $HPATH/.dotfile_backups/$bnow/ 2> /dev/null
 
 if [ -f $HPATH/.bash_aliases ]; then
     echo -e "\n"

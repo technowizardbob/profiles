@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ -d $HOME ]; then
+   HPATH=$HOME
+elif [ -d /home/$USER ]; then
+   HPATH=/home/$USER
+else
+   echo "Unable to Find user HOME folder!!!!"
+   exit 1
+fi
+
 gen_rsa_key() {
 
     if [ $UID -eq 0 ]; then
@@ -7,13 +16,13 @@ gen_rsa_key() {
       exit 1
     fi
 
-    if [ ! -d ~/.ssh ]; then
-       mkdir ~/.ssh
-       chmod 700 ~/.ssh
+    if [ ! -d $HPATH/.ssh ]; then
+       mkdir $HPATH/.ssh
+       chmod 700 $HPATH/.ssh
     fi
 
-    cd ~/.ssh
-    RKEY=~/.ssh/${USER}_rsa
+    cd $HPATH/.ssh
+    RKEY=$HPATH/.ssh/${USER}_rsa
 
     if [ -f "${RKEY}.private" ] || [ -f ${RKEY}.pub ]; then
        echo -e "\nRSA key already made...!\n"
@@ -22,7 +31,7 @@ gen_rsa_key() {
        if [ -z $newkey ]; then
           exit 1
        fi
-       RKEY=~/.ssh/${newkey}_rsa
+       RKEY=$HPATH/.ssh/${newkey}_rsa
     fi
 
     echo -e "\nCreating SSH RSA Keys..."
