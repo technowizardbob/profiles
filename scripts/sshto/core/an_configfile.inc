@@ -7,12 +7,12 @@ pkey() {
   elif [ -f "${PK}.private" ]; then
       USE_PRIVATE_KEY=${PK}.private
   else
-      USE_PRIVATE_KEY=~/.ssh/id_rsa
+      USE_PRIVATE_KEY=$HPATH/.ssh/id_rsa
   fi
 }
 
 choose_key() {
-  local homes=~/.ssh/
+  local homes=$HPATH/.ssh/
   local pubs=$(find $homes -type f -iname "*.pub" 2> /dev/null)
   if [ -z $pubs ]; then
      PK=${homes}${USER}
@@ -46,13 +46,13 @@ choose_key() {
      pkey
      return 0
    elif [ $pubs_count -eq 0 ]; then
-     PK=~/.ssh/${USER}
+     PK=$HPATH/.ssh/${USER}
      pkey
      return 0
    fi
   
   if [ ${#akeys[@]} -eq 0 ]; then
-      PK=~/.ssh/${USER}
+      PK=$HPATH/.ssh/${USER}
       pkey
       return 0
   fi
@@ -72,7 +72,7 @@ choose_key() {
   done
   
   if [ "$match" = false ]; then 
-     PK=~/.ssh/${USER}
+     PK=$HPATH/.ssh/${USER}
      pkey
      return 0
   fi   
@@ -87,7 +87,7 @@ choose_key() {
     fi
   done
 
-  PK=~/.ssh/${USER}
+  PK=$HPATH/.ssh/${USER}
   pkey
 }
 
@@ -216,11 +216,11 @@ admin_step() {
   fi 
   
   echo "Updating Hosts"
-  if [ ! -d ~/.dotfile_backups ]; then
-     mkdir ~/.dotfile_backups 2> /dev/null
+  if [ ! -d $HPATH/.dotfile_backups ]; then
+     mkdir $HPATH/.dotfile_backups 2> /dev/null
   fi
   local bknow=$(date +"%m_%d_%Y_%H_%M_%S")
-  cp "$HOSTS_FILE" ~/.dotfile_backups/host${bknow} 2> /dev/null
+  cp "$HOSTS_FILE" $HPATH/.dotfile_backups/host${bknow} 2> /dev/null
 
   if [ "$split" = "0" ]; then
     split_hosts_file
@@ -264,7 +264,7 @@ clean_up_split() {
   if [ "$split" = "0" ]; then
       cat /tmp/localhosts_ip4 >> /tmp/localhosts_main
       cat /tmp/localhosts_ip6 >> /tmp/localhosts_main
-      echo -e "\n Original $HOSTS_FILE file Backed up at: ~/.dotfile_backups/host${bknow}"
+      echo -e "\n Original $HOSTS_FILE file Backed up at: $HPATH/.dotfile_backups/host${bknow}"
       echo "Cleaning up hosts file...."
       sudo mv -f $HOSTS_FILE "${HOSTS_FILE}_old"
       sudo mv /tmp/localhosts_main $HOSTS_FILE
@@ -317,7 +317,7 @@ edit_configs() {
   IFS=$'\n'
 
   local aconfig=()
-  local cfgs=$(ls ~/.ssh/config*)
+  local cfgs=$(ls $HPATH/.ssh/config*)
   local realconfig=()
   local realindex=()
   local p=""
@@ -325,7 +325,7 @@ edit_configs() {
   local cdd
   for cdd in $cfgs; do
      realconfig+=( "$cdd" )
-     p=/home/$USER/.ssh/
+     p=$HPATH/.ssh/
      r=${cdd/$p/}
      de=${r/configs_/}
      de=${de/.conf/}
@@ -370,7 +370,7 @@ edit_configs() {
   IFS=$IFSOLD
 }
 
-if [ ! -r ~/.ssh/config ]; then
+if [ ! -r $HPATH/.ssh/config ]; then
    choose_key
    default_ssh_port
    default_username
@@ -386,24 +386,24 @@ if [ ! -r ~/.ssh/config ]; then
    #esac
    
    # Begin Dummy Configs   
-echo "Include ~/.ssh/configs_*.conf
+echo "Include $HPATH/.ssh/configs_*.conf
 
 # Edit the following SSHTO config file:
-# What servers do you want to connect to?" > ~/.ssh/config
+# What servers do you want to connect to?" > $HPATH/.ssh/config
 
-if [ -r ~/.ssh/configs_work.conf ]; then
+if [ -r $HPATH/.ssh/configs_work.conf ]; then
    bknow=$(date +"%m_%d_%Y_%H_%M_%S")
-   mv ~/.ssh/configs_work.conf ~/.ssh/bk_configs_work${bknow}.old  2> /dev/null
+   mv $HPATH/.ssh/configs_work.conf $HPATH/.ssh/bk_configs_work${bknow}.old  2> /dev/null
 fi
    
-   echo "#Host Group #My Work Server's#" > ~/.ssh/configs_work.conf
+   echo "#Host Group #My Work Server's#" > $HPATH/.ssh/configs_work.conf
    
    if [ ${#hostnames[@]} -eq 0 ]; then
     echo "Host ${prefix}mysite
     HostName YOURsiteHERE.com OR IP of computer
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" >> $HPATH/.ssh/configs_work.conf
    else
       for h in "${hostnames[@]}"; do
         ch=${h/host-/}
@@ -414,7 +414,7 @@ echo "Host ${prefix}${ch}
     HostName ${h}
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" >> ~/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" >> $HPATH/.ssh/configs_work.conf
     
       done
    fi
@@ -435,32 +435,32 @@ Host *
      Protocol 2
      ServerAliveInterval 60
      ServerAliveCountMax 30
-" >> ~/.ssh/config
+" >> $HPATH/.ssh/config
 
-if [ ! -r ~/.ssh/configs_home.conf ]; then
+if [ ! -r $HPATH/.ssh/configs_home.conf ]; then
    echo "#Host Group #My Home Lab#   
 Host ${prefix}lab #ignore
     HostName lab1
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" > ~/.ssh/configs_home.conf
+    IdentityFile $USE_PRIVATE_KEY" > $HPATH/.ssh/configs_home.conf
 fi
 
-if [ ! -r ~/.ssh/EXAMPLEconfigs_proxy.conf ]; then
+if [ ! -r $HPATH/.ssh/EXAMPLEconfigs_proxy.conf ]; then
 echo "#Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
 # $ ssh -f -N  proxyus
 Host proxyus #ignore
     HostName vps1.cyberciti.biz
     User breakfree
-    IdentityFile ~/.ssh/vps1.cyberciti.biz.key
-    LocalForward 3128 127.0.0.1:3128" > ~/.ssh/EXAMPLEconfigs_proxy.conf
+    IdentityFile $HPATH/.ssh/vps1.cyberciti.biz.key
+    LocalForward 3128 127.0.0.1:3128" > $HPATH/.ssh/EXAMPLEconfigs_proxy.conf
 fi
 
-   chmod 644 ~/.ssh/config
-   chmod 644 ~/.ssh/configs_work.conf
-   chmod 644 ~/.ssh/configs_home.conf
-   chmod 644 ~/.ssh/EXAMPLEconfigs_proxy.conf
+   chmod 644 $HPATH/.ssh/config
+   chmod 644 $HPATH/.ssh/configs_work.conf
+   chmod 644 $HPATH/.ssh/configs_home.conf
+   chmod 644 $HPATH/.ssh/EXAMPLEconfigs_proxy.conf
 
    edit_configs
 

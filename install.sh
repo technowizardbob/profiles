@@ -11,6 +11,15 @@ if [ "$EUID" -eq 0 ]; then
     exit 1
 fi
 
+if [ -d $HOME ]; then
+   HPATH=$HOME
+elif [ -d /home/$USER ]; then
+   HPATH=$HPATH
+else
+   echo "Unable to Find user HOME folder!!!!"
+   exit 1
+fi
+
 if [ -z "$1" ]; then
   if [ ! -d /opt/profiles ]; then
      echo -e "Please use the default install path of /opt/profiles\n - as it is hard coded everywhere...."
@@ -25,10 +34,10 @@ elif [ $1 == "--force" ]; then
 fi
 
 if [ -z "$1" ] || [ ! "$1" == "---dangerious-reload" ]; then
-  if ([ -f /home/$USER/.old_a_bash_aliases ] || [ -f /home/$USER/.old_a_bashrc ] || \
-    [ -f /home/$USER/.old_a_profile ] || [ -f /home/$USER/.old_a_git_svn_bash_prompt ] || \
-    [ -f /home/$USER/.old_a_gitconfig ] || [ -f /home/$USER/.old_a_vimrc ] || \
-    [ -f /home/$USER/.ran_profiles_once ]); then
+  if ([ -f $HPATH/.old_a_bash_aliases ] || [ -f $HPATH/.old_a_bashrc ] || \
+    [ -f $HPATH/.old_a_profile ] || [ -f $HPATH/.old_a_git_svn_bash_prompt ] || \
+    [ -f $HPATH/.old_a_gitconfig ] || [ -f $HPATH/.old_a_vimrc ] || \
+    [ -f $HPATH/.ran_profiles_once ]); then
         echo -e "Already run once for this user!!\n"
         echo -e "Success, I think!?\n \t --- If NOT and you have broken symbolic Links, well then:::"
         echo "If, not sure then see manual install guide from README.md!!"
@@ -46,43 +55,43 @@ fi
 
 bnow=$(date +"%m_%d_%Y_%H_%M_%S")
 mkdir -p ~/.dotfile_backups/$bnow 2> /dev/null
-cp /home/$USER/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} ~/.dotfile_backups/$bnow/ 2> /dev/null
+cp $HPATH/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} ~/.dotfile_backups/$bnow/ 2> /dev/null
 cp /etc/hosts ~/.dotfile_backups/$bnow/ 2> /dev/null
 
-if [ -f /home/$USER/.bash_aliases ]; then
+if [ -f $HPATH/.bash_aliases ]; then
     echo -e "\n"
-    mv -v /home/$USER/.bash_aliases /home/$USER/.old_a_bash_aliases
+    mv -v $HPATH/.bash_aliases $HPATH/.old_a_bash_aliases
         echo "Moved existing Bash Aliases - Dot File!!! to ~/.old_a_bash_aliases"
         echo "If something does not work anymore in bash alias...edit the backup..."
 fi
-if [ -f /home/$USER/.bashrc ]; then
+if [ -f $HPATH/.bashrc ]; then
     echo -e "\n"
-    mv -v /home/$USER/.bashrc /home/$USER/.old_a_bashrc
+    mv -v $HPATH/.bashrc $HPATH/.old_a_bashrc
         echo "Moved existing Bash RC - Dot File!!! to ~/.old_a_bash_rc"
         echo "If something does not work anymore in bashrc edit the backup..."
 fi
-if [ -f /home/$USER/.profile ]; then
+if [ -f $HPATH/.profile ]; then
     echo -e "\n"
-    mv -v /home/$USER/.profile /home/$USER/.old_a_profile
+    mv -v $HPATH/.profile $HPATH/.old_a_profile
         echo "Moved existing Profile - Dot File!!! to ~/.old_a_profile"
         echo "If something does not work anymore in the profile edit the backup..."
 fi
-if [ -f /home/$USER/.git_bash_prompt ]; then
+if [ -f $HPATH/.git_bash_prompt ]; then
     echo -e "\n"
-    mv -v /home/$USER/.git_bash_prompt /home/$USER/.old_a_git_bash_prompt
+    mv -v $HPATH/.git_bash_prompt $HPATH/.old_a_git_bash_prompt
         echo "Moved existing Git Prompt - Dot File!!! to ~/.old_a_git_bash_prompt"
         echo "If something does not look right anymore in git prompt edit the backup..."
 fi
 ###### My .gitconfig && .vimrc are not all that great, so....let's not wipe yours!
-#if [ -f /home/$USER/.gitconfig ]; then
+#if [ -f $HPATH/.gitconfig ]; then
 #    echo -e "\n"
-#    mv -v /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
+#    mv -v $HPATH/.gitconfig $HPATH/.old_a_gitconfig
 #        echo "Moved existing Git Config - Dot File!!! to ~/.old_a_gitconfig"
 #        echo "If something does not work anymore in Git edit the backup..."
 #fi
-#if [ -f /home/$USER/.vimrc ]; then
+#if [ -f $HPATH/.vimrc ]; then
 #    echo -e "\n"
-#    mv -v /home/$USER/.vimrc /home/$USER/.old_a_vimrc
+#    mv -v $HPATH/.vimrc $HPATH/.old_a_vimrc
 #        echo "Moved existing VIM Config - Dot File!!! to ~/.old_a_vimrc"
 #        echo "If something does not work anymore in Vim edit the backup..."
 #fi
@@ -90,40 +99,40 @@ fi
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
     echo -e "\n"
     echo "Making Sym Links from current install location"
-    ln -s "$(pwd -P)"/.bash_aliases /home/$USER/
-    ln -s "$(pwd -P)"/.bashrc /home/$USER/
-    ln -s "$(pwd -P)"/.profile /home/$USER/
-    ln -s "$(pwd -P)"/.git_bash_prompt /home/$USER/
-    if [ ! -f /home/$USER/.gitconfig ]; then
-      cp "$(pwd -P)"/dotfiles/.gitconfig /home/$USER/
+    ln -s "$(pwd -P)"/.bash_aliases $HPATH/
+    ln -s "$(pwd -P)"/.bashrc $HPATH/
+    ln -s "$(pwd -P)"/.profile $HPATH/
+    ln -s "$(pwd -P)"/.git_bash_prompt $HPATH/
+    if [ ! -f $HPATH/.gitconfig ]; then
+      cp "$(pwd -P)"/dotfiles/.gitconfig $HPATH/
     fi
-    if [ ! -f /home/$USER/.vimrc ]; then  
-       cp "$(pwd -P)"/dotfiles/.vimrc /home/$USER/
+    if [ ! -f $HPATH/.vimrc ]; then  
+       cp "$(pwd -P)"/dotfiles/.vimrc $HPATH/
     fi
-    if [ ! -f /home/$USER/.gitconfig.secret ]; then
-        cp "$(pwd -P)"/dotfiles/.gitconfig.secret /home/$USER/
-        nano /home/$USER/.gitconfig.secret
+    if [ ! -f $HPATH/.gitconfig.secret ]; then
+        cp "$(pwd -P)"/dotfiles/.gitconfig.secret $HPATH/
+        nano $HPATH/.gitconfig.secret
     fi
-    touch /home/$USER/.ran_profiles_once
+    touch $HPATH/.ran_profiles_once
 else
   if ([ -d /opt/profiles/aliases ] && [ -f /opt/profiles/.bash_aliases ]); then
     echo -e "\n"
     echo "Making Sym Links from /opt/profiles install location"
-    ln -s /opt/profiles/.bash_aliases /home/$USER/
-    ln -s /opt/profiles/.bashrc /home/$USER/
-    ln -s /opt/profiles/.profile /home/$USER/
-    ln -s /opt/profiles/.git_bash_prompt /home/$USER/
-    if [ ! -f /home/$USER/.gitconfig ]; then
-      cp /opt/profiles/dotfiles/.gitconfig /home/$USER/
+    ln -s /opt/profiles/.bash_aliases $HPATH/
+    ln -s /opt/profiles/.bashrc $HPATH/
+    ln -s /opt/profiles/.profile $HPATH/
+    ln -s /opt/profiles/.git_bash_prompt $HPATH/
+    if [ ! -f $HPATH/.gitconfig ]; then
+      cp /opt/profiles/dotfiles/.gitconfig $HPATH/
     fi
-    if [ ! -f /home/$USER/.vimrc ]; then  
-       cp /opt/profiles/dotfiles/.vimrc /home/$USER/
+    if [ ! -f $HPATH/.vimrc ]; then  
+       cp /opt/profiles/dotfiles/.vimrc $HPATH/
     fi
-    if [ ! -f /home/$USER/.gitconfig.secret ]; then
-        cp /opt/profiles/dotfiles/.gitconfig.secret /home/$USER/
-        nano /home/$USER/.gitconfig.secret
+    if [ ! -f $HPATH/.gitconfig.secret ]; then
+        cp /opt/profiles/dotfiles/.gitconfig.secret $HPATH/
+        nano $HPATH/.gitconfig.secret
     fi
-    touch /home/$USER/.ran_profiles_once
+    touch $HPATH/.ran_profiles_once
   fi
 fi
 
@@ -134,8 +143,8 @@ echo "Ex3: command apt_get"
 echo "Ex4: command docker"
 echo "Ex5: command folders"
 echo "For a GUIDE: \$ guide"
-echo "Installed to local user account ${USER}. IE folder: /home/${USER}/"
-echo -e "\nIf you had any dotfiles, they will be moved to /home/${USER}/.old_a_XXXX"
+echo "Installed to local user account ${USER}. IE folder: ${HPATH}/"
+echo -e "\nIf you had any dotfiles, they will be moved to ${HPATH}/.old_a_XXXX"
 echo -e "Also, backed up to ~/.dotfile_backups/$bnow/ \n \t --- because I don't want you to loose any work....!"
 
 if [ ! -e .ran_setup ]; then

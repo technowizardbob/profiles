@@ -18,12 +18,10 @@ source ${_MAIN_PATH}/config.inc
 
 source ${_PATH_TO_CORE}/dynamic/run_cmd.inc
 
-for s in $_SCRIPT_FILES;
-do
+for s in $_SCRIPT_FILES; do
     source $s
 done
 
-for f in $_CORE_FILES;
-do
+for f in $_CORE_FILES; do
     source $f
 done

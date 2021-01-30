@@ -1,7 +1,16 @@
 #!/bin/bash
 
+if [ -d $HOME ]; then
+   HPATH=$HOME
+elif [ -d /home/$USER ]; then
+   HPATH=/home/$USER
+else
+   echo "Unable to Find user HOME folder!!!!"
+   exit 1
+fi
+
 urls=/opt/profiles/sites/urls
-config_sites_dir=~/.config/profiles_sites
+config_sites_dir=$HPATH/.config/profiles_sites
 config_sites=$config_sites_dir/sites_url.list
 WEBSITE_BROWSER='firefox'
 
@@ -32,7 +41,7 @@ refresh() {
     fi
     if [ ! -r "$config_sites" ]; then
         cp "$urls" "$config_sites"
-        echo "Local,file:/home/$USER/.config/profiles_sites/index.html,Links" >> "$config_sites"
+        echo "Local,file:${HPATH}/.config/profiles_sites/index.html,Links" >> "$config_sites"
     fi
     if [ ! -r "$config_sites_dir/index.html" ]; then
         cp /opt/profiles/sites/index.html "$config_sites_dir/index.html"

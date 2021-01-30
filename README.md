@@ -12,7 +12,7 @@ Sorry, if you wanted /usr/local/bin or something else....
 If you use the installer I make best efforts to auto backup to ~/.dotfile_backups
 So, please go to that folder if your {vimrc,bashrc,bash_aliases} is gone...as it will be...moved/copied.
 
-Download from github to /home/$USER/profiles and extract there...via the following git clone command:
+Download from github to $HOME/profiles and extract there...via the following git clone command:
 ```bash
 $ cd ~
 
@@ -53,29 +53,29 @@ $ ./firejail_firefox_icons.sh
 
 ## First Backup any changes to these files, move them:
 ```bash
-mv /home/$USER/.bash_aliases /home/$USER/.old_bash_aliases
+mv $HOME/.bash_aliases $HOME/.old_bash_aliases
 
-mv /home/$USER/.bashrc /home/$USER/.old_bashrc
+mv $HOME/.bashrc $HOME/.old_bashrc
 
-mv /home/$USER/.profile /home/$USER/.old_profile
+mv $HOME/.profile $HOME/.old_profile
 .........and other dotfiles.........listed below.
 ```
 ## Make links to Bash Aliases:
 ```bash
-ln -s /opt/profiles/.bash_aliases /home/$USER/
+ln -s /opt/profiles/.bash_aliases $HOME/
 
-ln -s /opt/profiles/.bashrc /home/$USER/
+ln -s /opt/profiles/.bashrc $HOME/
 
-ln -s /opt/profiles/.profile /home/$USER/
+ln -s /opt/profiles/.profile $HOME/
 
-ln -s /opt/profiles/.git_bash_prompt /home/$USER/
+ln -s /opt/profiles/.git_bash_prompt $HOME/
 
 (Optionaly, if you do not have an .gitconfig or .vimrc, yet):
 
-cp /opt/profiles/dotfiles/.gitconfig /home/$USER/
-....be sure to edit the .gitconfig.secret and save it to /home/$USER/
+cp /opt/profiles/dotfiles/.gitconfig $HOME/
+....be sure to edit the .gitconfig.secret and save it to $HOME/
 
-cp /opt/profiles/dotfiles/.vimrc /home/$USER/
+cp /opt/profiles/dotfiles/.vimrc $HOME/
 
 exit && relog in... for changes to take effect
 ```

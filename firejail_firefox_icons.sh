@@ -8,8 +8,17 @@ elif [ $1 == "--all_users" ]; then
    sudo ln -s /opt/profiles/dotfiles/firefox.desktop /usr/share/applications/
    set +x
 elif [ $1 == "--me" ]; then
-   set -x
-   mv /home/$USER/.local/share/applications/firefox.desktop /home/$USER/.local/share/applications/firefox.desktop.backup 
-   ln -s /opt/profiles/dotfiles/firefox.desktop /home/$USER/.local/share/applications/
-   set +x
+   if [ -d $HOME ]; then
+      set -x
+      mv $HOME/.local/share/applications/firefox.desktop $HOME/.local/share/applications/firefox.desktop.backup
+      ln -s /opt/profiles/dotfiles/firefox.desktop $HOME/.local/share/applications/
+      set +x
+   elif [ -d /home/$USER ]; then
+      set -x
+      mv /home/$USER/.local/share/applications/firefox.desktop /home/$USER/.local/share/applications/firefox.desktop.backup
+      ln -s /opt/profiles/dotfiles/firefox.desktop /home/$USER/.local/share/applications/
+      set +x
+   else
+      echo "Unable to find home folder!!!!"
+   fi
 fi

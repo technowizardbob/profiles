@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -d $HOME ]; then
+   HPATH=$HOME
+elif [ -d /home/$USER ]; then
+   HPATH=/home/$USER
+fi
+
 pushd /opt/profiles > /dev/null
 
 if [ -e .ran_setup ]; then
@@ -28,7 +34,7 @@ fi
 if [ $? -eq 0 ]; then
    touch .unicode_support
    touch .ran_setup
-   if [ ! -f /home/$USER/.ran_profiles_once ]; then
+   if [ ! -f $HPATH/.ran_profiles_once ]; then
       echo -e "Success!\nNow run install.sh if you have not already..."
    fi
 fi
