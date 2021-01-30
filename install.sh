@@ -73,18 +73,19 @@ if [ -f /home/$USER/.git_bash_prompt ]; then
         echo "Moved existing Git Prompt - Dot File!!! to ~/.old_a_git_bash_prompt"
         echo "If something does not look right anymore in git prompt edit the backup..."
 fi
-if [ -f /home/$USER/.gitconfig ]; then
-    echo -e "\n"
-    mv -v /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
-        echo "Moved existing Git Config - Dot File!!! to ~/.old_a_gitconfig"
-        echo "If something does not work anymore in Git edit the backup..."
-fi
-if [ -f /home/$USER/.vimrc ]; then
-    echo -e "\n"
-    mv -v /home/$USER/.vimrc /home/$USER/.old_a_vimrc
-        echo "Moved existing VIM Config - Dot File!!! to ~/.old_a_vimrc"
-        echo "If something does not work anymore in Vim edit the backup..."
-fi
+###### My .gitconfig && .vimrc are not all that great, so....let's not wipe yours!
+#if [ -f /home/$USER/.gitconfig ]; then
+#    echo -e "\n"
+#    mv -v /home/$USER/.gitconfig /home/$USER/.old_a_gitconfig
+#        echo "Moved existing Git Config - Dot File!!! to ~/.old_a_gitconfig"
+#        echo "If something does not work anymore in Git edit the backup..."
+#fi
+#if [ -f /home/$USER/.vimrc ]; then
+#    echo -e "\n"
+#    mv -v /home/$USER/.vimrc /home/$USER/.old_a_vimrc
+#        echo "Moved existing VIM Config - Dot File!!! to ~/.old_a_vimrc"
+#        echo "If something does not work anymore in Vim edit the backup..."
+#fi
 
 if ([ -d aliases ] && [ -f .bash_aliases ]); then
     echo -e "\n"
@@ -93,8 +94,12 @@ if ([ -d aliases ] && [ -f .bash_aliases ]); then
     ln -s "$(pwd -P)"/.bashrc /home/$USER/
     ln -s "$(pwd -P)"/.profile /home/$USER/
     ln -s "$(pwd -P)"/.git_bash_prompt /home/$USER/
-    ln -s "$(pwd -P)"/dotfiles/.gitconfig /home/$USER/
-    ln -s "$(pwd -P)"/dotfiles/.vimrc /home/$USER/
+    if [ ! -f /home/$USER/.gitconfig ]; then
+      cp "$(pwd -P)"/dotfiles/.gitconfig /home/$USER/
+    fi
+    if [ ! -f /home/$USER/.vimrc ]; then  
+       cp "$(pwd -P)"/dotfiles/.vimrc /home/$USER/
+    fi
     if [ ! -f /home/$USER/.gitconfig.secret ]; then
         cp "$(pwd -P)"/dotfiles/.gitconfig.secret /home/$USER/
         nano /home/$USER/.gitconfig.secret
@@ -108,8 +113,12 @@ else
     ln -s /opt/profiles/.bashrc /home/$USER/
     ln -s /opt/profiles/.profile /home/$USER/
     ln -s /opt/profiles/.git_bash_prompt /home/$USER/
-    ln -s /opt/profiles/dotfiles/.gitconfig /home/$USER/
-    ln -s /opt/profiles/dotfiles/.vimrc /home/$USER/
+    if [ ! -f /home/$USER/.gitconfig ]; then
+      cp /opt/profiles/dotfiles/.gitconfig /home/$USER/
+    fi
+    if [ ! -f /home/$USER/.vimrc ]; then  
+       cp /opt/profiles/dotfiles/.vimrc /home/$USER/
+    fi
     if [ ! -f /home/$USER/.gitconfig.secret ]; then
         cp /opt/profiles/dotfiles/.gitconfig.secret /home/$USER/
         nano /home/$USER/.gitconfig.secret

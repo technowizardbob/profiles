@@ -2,9 +2,9 @@
 Bash Aliases :rocket:
 
 # INSTALL:
-Notice: I reference /opt/profiles folders a lot...in code, as it's a nice unused place for it to live at...
+You will need sudoers/root access to do install -- To: /opt/profiles folder.
 
-You will need sudoers/root access to do install!
+Notice: I reference /opt/profiles folders a lot...in code, as it's a nice unused place for it to live at...
 
 Sorry, if you wanted /usr/local/bin or something else....
 
@@ -70,10 +70,12 @@ ln -s /opt/profiles/.profile /home/$USER/
 
 ln -s /opt/profiles/.git_bash_prompt /home/$USER/
 
-ln -s /opt/profiles/dotfiles/.gitconfig /home/$USER/
+(Optionaly, if you do not have an .gitconfig or .vimrc, yet):
+
+cp /opt/profiles/dotfiles/.gitconfig /home/$USER/
 ....be sure to edit the .gitconfig.secret and save it to /home/$USER/
 
-ln -s /opt/profiles/dotfiles/.vimrc /home/$USER/
+cp /opt/profiles/dotfiles/.vimrc /home/$USER/
 
 exit && relog in... for changes to take effect
 ```
@@ -83,8 +85,6 @@ exit && relog in... for changes to take effect
 # Customize your Aliases:
 
  - [x] Add/Remove/Change any Bash Alias in: $ cd /opt/profiles/custom_aliases/
-
- - [ ] Also, see: $ cd /opt/profiles/custom_dotfiles/
 
 These will not get clobbered with every git pull request....
 
@@ -122,6 +122,8 @@ ex1: cheat chmod
 ex2: cheat kubernetes
 
 ex3: cheats
+
+If, you forget about this README.md file, type: $ guide
 
 .SH AUTHOR
 Robert S. <Robert@TryingToScale.com>
