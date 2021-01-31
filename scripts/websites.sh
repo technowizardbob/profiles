@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ -d $HOME ]; then
+if [ -d "$HOME" ]; then
    HPATH=$HOME
-elif [ -d /home/$USER ]; then
+elif [ -d "/home/$USER" ]; then
    HPATH=/home/$USER
 else
    echo "Unable to Find user HOME folder!!!!"
@@ -27,9 +27,9 @@ dialog &> /dev/null || {
 }
 
 edit() {
-    if [ -z $EDITOR ]; then
+    if [ -z "$EDITOR" ]; then
         nano "$config_sites"
-    else   
+    else
         $EDITOR "$config_sites"
     fi
     run_dialog
@@ -86,7 +86,7 @@ run_dialog() {
 }
 
 what=$(/opt/profiles/scripts/display_check.sh)
-[[ $what == "" ]] && clear || { echo $what; exit 1; }
+[[ "$what" == "" ]] && clear || { echo "$what"; exit 1; }
 
 run_dialog
 clear

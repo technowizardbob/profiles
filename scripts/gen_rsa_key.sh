@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ -d $HOME ]; then
+if [ -d "$HOME" ]; then
    HPATH=$HOME
-elif [ -d /home/$USER ]; then
+elif [ -d "/home/$USER" ]; then
    HPATH=/home/$USER
 else
    echo "Unable to Find user HOME folder!!!!"
@@ -11,24 +11,24 @@ fi
 
 gen_rsa_key() {
 
-    if [ $UID -eq 0 ]; then
+    if [ "$UID" -eq 0 ]; then
       echo "Be a regular user, not ROOT...!"
       exit 1
     fi
 
-    if [ ! -d $HPATH/.ssh ]; then
-       mkdir $HPATH/.ssh
-       chmod 700 $HPATH/.ssh
+    if [ ! -d "$HPATH/.ssh" ]; then
+       mkdir "$HPATH/.ssh"
+       chmod 700 "$HPATH/.ssh"
     fi
 
-    cd $HPATH/.ssh
+    cd "$HPATH/.ssh" || { echo "Unable to cd into $HPATH/.ssh !"; exit 1; }
     RKEY=$HPATH/.ssh/${USER}_rsa
 
-    if [ -f "${RKEY}.private" ] || [ -f ${RKEY}.pub ]; then
+    if [ -f "${RKEY}.private" ] || [ -f "${RKEY}.pub" ]; then
        echo -e "\nRSA key already made...!\n"
        echo "Enter name for new key, if you want another:"
-       read newkey
-       if [ -z $newkey ]; then
+       read -r newkey
+       if [ -z "$newkey" ]; then
           exit 1
        fi
        RKEY=$HPATH/.ssh/${newkey}_rsa
@@ -36,8 +36,8 @@ gen_rsa_key() {
 
     echo -e "\nCreating SSH RSA Keys..."
     echo -e "\nWhat is your email address?:"
-    read email
-    if [ -z $email ]; then
+    read -r email
+    if [ -z "$email" ]; then
        echo "No Email Supplied, exiting!"
        exit 1
     fi
