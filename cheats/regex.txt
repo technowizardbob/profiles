@@ -1,0 +1,42 @@
+\	Escape
+
+\^	Beginning of line
+\$	End of line
+\*	Match any # of previous or none
+\+	Match any # of previous
+\<	Start of word
+\>	End of word
+\b	A word boundary
+\B	A non-word boundary
+\A	The begining of the input
+\G	The end of the previous match
+\Z	The end of the input but the final terminator, if any
+\z	The end of the input
+\?	Optional
+\i	Case-insensitive matching
+\g	Global match
+
+\.	Any one character, except newline
+[a-z]	Any lowercase letter
+[A-Z]	Any uppercase letter
+[A-Za-z]	Any Letter
+\d OR [0-9]	Any digit
+\D OR [^0-9]	Any non-digit
+\s	Any white space character [ \t\n\x0B\f\r]
+\S	Any non-white space character [^\s]
+\w	A word character [a-zA-Z_0-9]
+\W	A non-word character [^\w]
+
+{n}	Match exactly n times
+{n,}	Match at least n times
+{x,y}	Match at least x times, but no more than y times
+*?	Match 0 or more times, but a few times as possible
++?	Match 1 or more times, but a few times as possible
+??	Match 0 or 1 times, but as few times as possible
+{x,y}?	Match at least x times, no more than y times, and as few times as possible
+(a|b)	a or b
+
+Ex email pattern: grep "\S\+@\S\+\.[A-Za-z]\+" file
+OR grep -rIhEo "\b[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+\b" file
+
+Ex URL pattern: grep "https\?://\S*\.[a-z]\+" file

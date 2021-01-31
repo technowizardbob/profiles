@@ -7,23 +7,19 @@
 6 = read and write (4+2)
 7 = read and write and execute (4+2+1)
 
++ allow, - deny
+
 +r adds read access
 +w adds write access
 +x allows execution
 
-+ allow
-- deny
-
-u = user
-g = group
-o = other
-
-user group others
-
+u = user, g = group, o = other
 # Change file permissions Examples:
 chmod +r file.txt
 chmod u+r g+r file.txt
 chmod o-w file.txt
+
+# ( user group other ), so 664 is u:r/w g:r/w o:r
 chmod 664 file.txt
 
 #Change ownership of a file: chown owner:group file
