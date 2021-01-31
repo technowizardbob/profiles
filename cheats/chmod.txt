@@ -1,3 +1,4 @@
+0 = none
 1 = execute only
 2 = write only
 3 = write and execute (1+2)
