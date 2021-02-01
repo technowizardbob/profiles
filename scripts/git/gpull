@@ -3,27 +3,28 @@ clear
 if [ -z "$1" ];		then
 	/bin/echo "Please enter you GIT Folder"
 	exit 1
-else	
+else
 	/bin/echo "Warning: All local code, in $1, on this PC will be wiped out!!!"
 	/bin/echo "Please type: yes (hit enter), to do a git pull to make your local copy up to date!"
-	read agree
-	if [ $agree = yes ];	then 
-		cd "$1"
+	read -r agree
+	if [ "$agree" = "yes" ]; then
+		cd "$1" || { echo "Unable to CD into $1 !!"; exit 1; }
 		branch=$(git symbolic-ref --short -q HEAD)
 		branch=${branch:-HEAD}
-		/usr/bin/git pull origin $branch
-		if [ $? -eq 0 ];	then
+		/usr/bin/git pull origin "$branch"
+                gpobs=$?
+		if [ "$gpobs" -eq "0" ]; then
 			/bin/echo "Updated..."
-			read -n 1 -p "Press any key to continue..."
+			read -r -n 1 -p "Press any key to continue..."
 		else
 			/bin/echo "Error!!!!"
-			read -n 1 -p "Hit a key..."
+			read -r -n 1 -p "Hit a key..."
 			exit 1
 		fi
 		/bin/echo "thanks"
 	else
 		/bin/echo "Skipped update..."
-		read -n 1 -p "Press any key to continue..."
+		read -r -n 1 -p "Press any key to continue..."
 		/bin/echo ""
 	fi
 fi

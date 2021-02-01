@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Check if Root
-if [ $UID -ne 0 ]; then
+if [ "$UID" -ne "0" ]; then
   echo "Please sudo first....!"
   exit
 else
@@ -80,16 +80,18 @@ else
   /usr/sbin/userdel news
   /usr/sbin/userdel gopher
   #install npm
-  cd /usr/local/bin
+  cd /usr/local/bin && {
   apt-get -y install npm
   apt-get -y install nodejs-legacy
   npm install -g npm
   npm install -g n
   n stable
   npm install --global gulp-cli
+} || echo "Unable to install npm!!"
   #PHP Composer
-  cd /tmp
+  cd /tmp && {
   wget -O composer-setup.php https://getcomposer.org/installer
   /usr/bin/php composer-setup.php --filename=composer --install-dir=/usr/local/bin
   rm composer-setup.php
+} || echo "Unable to install PHP Composer!!"
 fi

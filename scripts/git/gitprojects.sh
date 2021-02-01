@@ -19,21 +19,22 @@ refresh() {
 
 is_valid() {
   $git_gen
-  if [ $? -eq 0 ]; then
+  ggs=$?
+  if [ "$ggs" -eq "0" ]; then
      mv $tmp_projects $git_projects
   else
      exit 1
   fi
 }
 opps=false
-if [ ! -r $git_projects ]; then
+if [ ! -r "$git_projects" ]; then
    is_valid
    opps=true
 fi
 
 refresh
 
-if [ ${#cmdlist[@]} -eq 0 ] && [ "$opps" = false ]; then
+if [ "${#cmdlist[@]}" -eq "0" ] && [ "$opps" = false ]; then
    is_valid
    refresh
 fi
@@ -41,7 +42,7 @@ fi
 clear
 
 dialog &> /dev/null || {
-    [[ $(uname -s) == "Darwin" ]] && \
+    [[ "$(uname -s)" == "Darwin" ]] && \
        echo -e "\nInstall dialog\nbrew install -y dialog"
     if [[ -x /usr/bin/apt-get ]]; then
        echo -e "\nInstall dialog\nsudo apt-get install -y dialog"
@@ -53,7 +54,7 @@ dialog &> /dev/null || {
 }
 
 edit() {
-    nano $git_projects
+    nano "$git_projects"
     run_dialog
 }
 
@@ -77,16 +78,16 @@ run_dialog() {
          *:0) run_site;;
          *:3) edit;;
          *:*) quit;;
-    esac            
+    esac
 }
 
 what=$(/opt/profiles/scripts/display_check.sh)
-[[ $what == "" ]] && echo "" || { echo $what; exit 1; }
+[[ "$what" == "" ]] && echo "" || { echo "$what"; exit 1; }
 
 run_dialog
 
 clear
 
-if [ ! -z $DO ]; then
+if [ -n "$DO" ]; then
  $git_util "$DO"
 fi

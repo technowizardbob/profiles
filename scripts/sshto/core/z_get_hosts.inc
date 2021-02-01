@@ -13,7 +13,7 @@ update_hosts() {
     IFSOLD=$IFS 
     IFS=$'\n' 
 
-    for host in $(grep -h "Host " $cf | sed '/\*/d; s/Host //g;'); {
+    for host in $(grep -h "Host " $cf | sed '/\*/d; s/Host //g;'); do
 
         name="${host// #*/}" # Get HostName
         desc="${host//*#/}"  # Get Description
@@ -27,8 +27,8 @@ update_hosts() {
                 desc="${host%\#*}"
                 desc="${desc##*\#}"
                 name="{ $desc }" 
-                length=$[ (40-${#name})/2 ]
-                name=$( line - $length; printf  "$name"; line - $length )
+                length=$(( (40-${#name})/2 ))
+                name=$( line - $length; printf "%s" "$name"; line - $length )
                 [[ ${#name} -lt 40 ]]  &&  name=-$name
                 content+=( "$desc" )
                 desc=$(line - 20);;
@@ -42,13 +42,13 @@ update_hosts() {
         
         fullist+=( "$name" "$desc" ) #Add HostName and Description to the list
 
-    } 
+  done
 
   IFS=$IFSOLD
 
   list=( "${fullist[@]}" )
-  [[ -e \$tmpfile ]] && . \$tmpfile
-  [[ $filter ]] && new_list
+  [[ -e "$tmpfile" ]] && . "$tmpfile"
+  [[ "$filter" ]] && new_list
 
 }
 

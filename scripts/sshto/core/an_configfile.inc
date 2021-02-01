@@ -13,8 +13,8 @@ pkey() {
 
 choose_key() {
   local homes=$HPATH/.ssh/
-  local pubs=$(find $homes -type f -iname "*.pub" 2> /dev/null)
-  if [ -z $pubs ]; then
+  local pubs=$(find "$homes" -type f -iname "*.pub" 2> /dev/null)
+  if [ -z "$pubs" ]; then
      PK=${homes}${USER}
      pkey
      return 0
@@ -41,17 +41,17 @@ choose_key() {
   
   IFS=$IFSOLD
   
-   if [ $pubs_count -eq 1 ]; then
+   if [ "$pubs_count" -eq "1" ]; then
      PK=$nonpub
      pkey
      return 0
-   elif [ $pubs_count -eq 0 ]; then
+   elif [ "$pubs_count" -eq "0" ]; then
      PK=$HPATH/.ssh/${USER}
      pkey
      return 0
    fi
   
-  if [ ${#akeys[@]} -eq 0 ]; then
+  if [ "${#akeys[@]}" -eq "0" ]; then
       PK=$HPATH/.ssh/${USER}
       pkey
       return 0
@@ -102,14 +102,14 @@ ask_to_edit_hosts() {
 default_ssh_port() {
     SSH_PORT=22
     new_port=$(dialog --ok-label "OK" --cancel-label "BACK" --output-fd 1 --max-input 5 \
-                        --aspect 100 --colors --inputbox 'Change default SSH port#' 10 30 $SSH_PORT)
+                        --aspect 100 --colors --inputbox 'Change default SSH port#' 10 30 "$SSH_PORT")
     SSH_PORT=${new_port:-$SSH_PORT}
 }
 
 default_username() {
     DEFAULT_USER=$USER
     new_user=$(dialog --ok-label "OK" --cancel-label "BACK" --output-fd 1 \
-                        --aspect 100 --colors --inputbox 'Change default SSH USER' 10 30 $DEFAULT_USER)
+                        --aspect 100 --colors --inputbox 'Change default SSH USER' 10 30 "$DEFAULT_USER")
     DEFAULT_USER=${new_user:-$DEFAULT_USER}
 }
 
@@ -122,9 +122,9 @@ split_hosts_file() {
   IFSOLD=$IFS 
   IFS=$'\n' 
   for item in $(cat "$HOSTS_FILE"); do
-    tipaddr=$(echo $item | awk '{print $1}')
-    thostname=$(echo $item | awk '{print $2}')
-    #lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
+    tipaddr=$(echo "$item" | awk '{print $1}')
+    thostname=$(echo "$item" | awk '{print $2}')
+    #lcase=$(echo "$thostname" | tr '[A-Z]' '[a-z]')
     #rhost=${lcase/ssh-/}
     #rhost=${rhost/h-/}
     #rhost=${rhost/host-/}
@@ -135,21 +135,21 @@ split_hosts_file() {
           comment=""
        fi
        echo "$item" >> /tmp/localhosts_ip4
-    elif [ "$(echo $tipaddr | grep -c "::")" -ge 1 ]; then
+    elif [ $(echo $tipaddr | grep -c "::") -ge 1 ]; then
        #echo "Skipped IPv6 Loopback"
        if [ -n "$comment" ]; then
           echo "$comment" >> /tmp/localhosts_ip6
           comment=""
        fi
        echo "$item" >> /tmp/localhosts_ip6
-    elif [ "$(echo $tipaddr | grep -c "^#")" -ge 1 ]; then
+    elif [ $(echo $tipaddr | grep -c "^#") -ge 1 ]; then
        #echo "Skipped Comment"
        
-       if [ $item != "# Private/Remote Servers" && \
-            [ $item != "# Local-Hosts IPv4" ] && \
-            [ $item != "# Local-Hosts IPv6" ] && \
-            [ $item != "# Script will include Localhosts back in automatically" ] && \
-            [ $item != "#" ]; then
+       if [ "$item" != "# Private/Remote Servers" ] && \
+            [ "$item" != "# Local-Hosts IPv4" ] && \
+            [ "$item" != "# Local-Hosts IPv6" ] && \
+            [ "$item" != "# Script will include Localhosts back in automatically" ] && \
+            [ "$item" != "#" ]; then
                if [ -n "$comment" ]; then
                   comment+=$(printf "\n%s" "$item")  
                else   
@@ -216,11 +216,11 @@ admin_step() {
   fi 
   
   echo "Updating Hosts"
-  if [ ! -d $HPATH/.dotfile_backups ]; then
-     mkdir $HPATH/.dotfile_backups 2> /dev/null
+  if [ ! -d "$HPATH/.dotfile_backups" ]; then
+     mkdir "$HPATH/.dotfile_backups" 2> /dev/null
   fi
   local bknow=$(date +"%m_%d_%Y_%H_%M_%S")
-  cp "$HOSTS_FILE" $HPATH/.dotfile_backups/host${bknow} 2> /dev/null
+  cp "$HOSTS_FILE" "$HPATH/.dotfile_backups/host${bknow}" 2> /dev/null
 
   if [ "$split" = "0" ]; then
     split_hosts_file
@@ -229,19 +229,19 @@ admin_step() {
        echo -e "# Please add all your SSH Servers to this list:"  | cat - "$HOSTS_FILE" | sudo tee "$HOSTS_FILE"
     fi
 
-    if [ -z $EDITOR ]; then
+    if [ -z "$EDITOR" ]; then
        sudo nano "$HOSTS_FILE"
     else
-       sudo $EDITOR "$HOSTS_FILE"
+       sudo "$EDITOR" "$HOSTS_FILE"
     fi
     sudo sed -i '/# Please add all your SSH Servers to this list:/d' "$HOSTS_FILE"
     return 1
   fi
     
-  if [ -z $EDITOR ]; then
+  if [ -z "$EDITOR" ]; then
       nano /tmp/localhosts_main
   else
-      $EDITOR /tmp/localhosts_main
+      "$EDITOR" /tmp/localhosts_main
   fi
   
   sed -i '/# Script will include Localhosts back in automatically/d' /tmp/localhosts_main
@@ -251,9 +251,9 @@ admin_check() {
    if [ $UID -eq 0 ]; then
       admin_step
    else
-      sudoers_power=$(groups $USER | grep " sudo")
-      admin_power=$(groups $USER | grep " admin")
-      wheel_power=$(groups $USER | grep " wheel")
+      sudoers_power=$(groups "$USER" | grep " sudo")
+      admin_power=$(groups "$USER" | grep " admin")
+      wheel_power=$(groups "$USER" | grep " wheel")
       if [ -n "$sudoers_power" ] || [ -n "$admin_power" ] || [ -n "$wheel_power" ]; then
          admin_step
       fi
@@ -266,10 +266,10 @@ clean_up_split() {
       cat /tmp/localhosts_ip6 >> /tmp/localhosts_main
       echo -e "\n Original $HOSTS_FILE file Backed up at: $HPATH/.dotfile_backups/host${bknow}"
       echo "Cleaning up hosts file...."
-      sudo mv -f $HOSTS_FILE "${HOSTS_FILE}_old"
-      sudo mv /tmp/localhosts_main $HOSTS_FILE
-      sudo chown root:root $HOSTS_FILE
-      sudo chmod 644 $HOSTS_FILE
+      sudo mv -f "$HOSTS_FILE" "${HOSTS_FILE}_old"
+      sudo mv /tmp/localhosts_main "$HOSTS_FILE"
+      sudo chown root:root "$HOSTS_FILE"
+      sudo chmod 644 "$HOSTS_FILE"
       rm -f /tmp/localhosts_*
   fi
 }
@@ -287,12 +287,12 @@ findhosts() {
   IFSOLD=$IFS 
   IFS=$'\n' 
   
-  for item in $(cat $read_hosts); do
-    tipaddr=$(echo $item | awk '{print $1}')
-    thostname=$(echo $item | awk '{print $2}')
-    lcase=$(echo $thostname | tr '[A-Z]' '[a-z]')
+  for item in $(cat "$read_hosts"); do
+    tipaddr=$(echo "$item" | awk '{print $1}')
+    thostname=$(echo "$item" | awk '{print $2}')
+    lcase=$(echo "$thostname" | tr '[A-Z]' '[a-z]')
     
-    if [ $(echo $tipaddr | awk -F. '{ printf("%d\n", $1); }') = "127" ]; then
+    if [ "$(echo $tipaddr | awk -F. '{ printf("%d\n", $1); }')" = "127" ]; then
        #echo "Skipped IPv4 Loopback"
        continue
     elif [ "$(echo $tipaddr | grep -c "::")" -ge 1 ]; then
@@ -333,7 +333,7 @@ edit_configs() {
      aconfig+=( "$de" "$r" )
   done
   
-  if [ ${#aconfig[@]} -eq 0 ]; then
+  if [ "${#aconfig[@]}" -eq "0" ]; then
      return 1
   fi   
  
@@ -346,7 +346,7 @@ edit_configs() {
   local no
   for no in "${realindex[@]}"; do
     c=$((c+1))
-    echo $no
+    # echo "$no"
     if [ "$editme" = "$no" ]; then
        match=true
        break
@@ -362,7 +362,7 @@ edit_configs() {
   for i in "${realconfig[@]}"; do
     d=$((d+1))
     if [ "$d" = "$c" ]; then
-        $EDITOR $i
+        "$EDITOR" "$i"
         break
     fi
   done
@@ -370,7 +370,7 @@ edit_configs() {
   IFS=$IFSOLD
 }
 
-if [ ! -r $HPATH/.ssh/config ]; then
+if [ ! -r "$HPATH/.ssh/config" ]; then
    choose_key
    default_ssh_port
    default_username
@@ -389,21 +389,21 @@ if [ ! -r $HPATH/.ssh/config ]; then
 echo "Include $HPATH/.ssh/configs_*.conf
 
 # Edit the following SSHTO config file:
-# What servers do you want to connect to?" > $HPATH/.ssh/config
+# What servers do you want to connect to?" > "$HPATH/.ssh/config"
 
-if [ -r $HPATH/.ssh/configs_work.conf ]; then
+if [ -r "$HPATH/.ssh/configs_work.conf" ]; then
    bknow=$(date +"%m_%d_%Y_%H_%M_%S")
-   mv $HPATH/.ssh/configs_work.conf $HPATH/.ssh/bk_configs_work${bknow}.old  2> /dev/null
+   mv "$HPATH/.ssh/configs_work.conf" "$HPATH/.ssh/bk_configs_work${bknow}.old"  2> /dev/null
 fi
    
-   echo "#Host Group #My Work Server's#" > $HPATH/.ssh/configs_work.conf
+   echo "#Host Group #My Work Server's#" > "$HPATH/.ssh/configs_work.conf"
    
-   if [ ${#hostnames[@]} -eq 0 ]; then
+   if [ "${#hostnames[@]}" -eq "0" ]; then
     echo "Host ${prefix}mysite
     HostName YOURsiteHERE.com OR IP of computer
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" >> $HPATH/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" >> "$HPATH/.ssh/configs_work.conf"
    else
       for h in "${hostnames[@]}"; do
         ch=${h/host-/}
@@ -414,7 +414,7 @@ echo "Host ${prefix}${ch}
     HostName ${h}
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" >> $HPATH/.ssh/configs_work.conf
+    IdentityFile $USE_PRIVATE_KEY" >> "$HPATH/.ssh/configs_work.conf"
     
       done
    fi
@@ -435,18 +435,18 @@ Host *
      Protocol 2
      ServerAliveInterval 60
      ServerAliveCountMax 30
-" >> $HPATH/.ssh/config
+" >> "$HPATH/.ssh/config"
 
-if [ ! -r $HPATH/.ssh/configs_home.conf ]; then
+if [ ! -r "$HPATH/.ssh/configs_home.conf" ]; then
    echo "#Host Group #My Home Lab#   
 Host ${prefix}lab #ignore
     HostName lab1
     Port $SSH_PORT
     User $DEFAULT_USER
-    IdentityFile $USE_PRIVATE_KEY" > $HPATH/.ssh/configs_home.conf
+    IdentityFile $USE_PRIVATE_KEY" > "$HPATH/.ssh/configs_home.conf"
 fi
 
-if [ ! -r $HPATH/.ssh/EXAMPLEconfigs_proxy.conf ]; then
+if [ ! -r "$HPATH/.ssh/EXAMPLEconfigs_proxy.conf" ]; then
 echo "#Host Group #Proxies's#
 # Forward all local port 3128 traffic to port 3128 on the remote vps1.cyberciti.biz server
 # $ ssh -f -N  proxyus
@@ -454,13 +454,13 @@ Host proxyus #ignore
     HostName vps1.cyberciti.biz
     User breakfree
     IdentityFile $HPATH/.ssh/vps1.cyberciti.biz.key
-    LocalForward 3128 127.0.0.1:3128" > $HPATH/.ssh/EXAMPLEconfigs_proxy.conf
+    LocalForward 3128 127.0.0.1:3128" > "$HPATH/.ssh/EXAMPLEconfigs_proxy.conf"
 fi
 
-   chmod 644 $HPATH/.ssh/config
-   chmod 644 $HPATH/.ssh/configs_work.conf
-   chmod 644 $HPATH/.ssh/configs_home.conf
-   chmod 644 $HPATH/.ssh/EXAMPLEconfigs_proxy.conf
+   chmod 644 "$HPATH/.ssh/config"
+   chmod 644 "$HPATH/.ssh/configs_work.conf"
+   chmod 644 "$HPATH/.ssh/configs_home.conf"
+   chmod 644 "$HPATH/.ssh/EXAMPLEconfigs_proxy.conf"
 
    edit_configs
 

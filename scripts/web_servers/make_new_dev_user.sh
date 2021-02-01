@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $UID -ne 0 ]; then
+if [ "$UID" -ne "0" ]; then
   echo "Please sudo first....!"
   exit
 fi
@@ -10,8 +10,8 @@ fi
 
 user_exists() { id "$1" &>/dev/null; }
 if ! user_exists "$1"; then
-    adduser $1
+    adduser "$1"
 fi
 
-usermod -a -G sudo $1
-usermod -g www-data $1
+usermod -a -G sudo "$1"
+usermod -g www-data "$1"
