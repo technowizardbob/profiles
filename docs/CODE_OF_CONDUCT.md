@@ -34,4 +34,4 @@ avoid arguments if possible. Let's write some code....shall we.
 Sincerely, Bob S.
 
 CoC part II, See Main CoC :: 
-[Main CoC](https://github.com/tryingtoscale/profiles/docs/main_coc.md)
+[Main CoC](https://github.com/tryingtoscale/profiles/blob/main/docs/main_coc.md)
