@@ -27,16 +27,16 @@
 \w	A word character [a-zA-Z_0-9]
 \W	A non-word character [^\w]
 
-{n}	Match exactly n times
-{n,}	Match at least n times
-{x,y}	Match at least x times, but no more than y times
+\{n\}	Match exactly n times
+\{n,\}	Match at least n times
+\{x,y\}	Match at least x times, but no more than y times
 *?	Match 0 or more times, but a few times as possible
 +?	Match 1 or more times, but a few times as possible
 ??	Match 0 or 1 times, but as few times as possible
-{x,y}?	Match at least x times, no more than y times, and as few times as possible
+\{x,y\}?	Match at least x times, no more than y times, and as few times as possible
 (a|b)	a or b
 
-Ex email pattern: grep "\S\+@\S\+\.[A-Za-z]\+" file
+Ex email pattern: grep "\S\+@\S\+\.[A-Za-z]\{2,6\}" file
 OR grep -rIhEo "\b[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+\b" file
 
 Ex URL pattern: grep "https\?://\S*\.[a-z]\+" file
