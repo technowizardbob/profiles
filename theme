@@ -9,9 +9,16 @@ if is_normal_theme; then
   prompt_color='\[\033[;32m\]'
   info_color='\[\033[1;34m\]'
   
-  WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
+  WD="$WHITE$BK_BLUE\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
   BP="$PS_SYMBOL${WHITE}${BRANCH}${WD}"
-  PS1=$prompt_color'┌────'${FP}''$prompt_color'\n│\n├────'${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
+  
+  len=$(echo $PWD | wc -c)
+  if [ $len -gt 35 ]; then
+     NLT="\n│\n├────" 
+  else
+     NLT=""
+  fi
+  PS1=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
 
 else
   WD="\\w${COLOR_NONE}${WHITE}"
