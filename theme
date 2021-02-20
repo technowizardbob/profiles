@@ -1,7 +1,18 @@
 if is_normal_theme; then
-  PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
+
+  if [ $UID -ne 0 ]; then
+    FP="${BK_GREEN}${WHITE}░▒«${UPC}\u@\h»${GREEN}${SEGMENT_SEPARATOR}"
+  else
+    FP="${BK_GREEN}${WHITE}░▒«${UPC}${RED}■╠╬${DIM}!¡ as ${RESET}${BK_GREEN}${RED}Root${DIM} ¡!${RESET}${BK_GREEN}${RED}╬╣■${WHITE}@\h»${GREEN}${SEGMENT_SEPARATOR}"
+  fi
+
+  prompt_color='\[\033[;32m\]'
+  info_color='\[\033[1;34m\]'
+  
   WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
-  PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
+  BP="$PS_SYMBOL${WHITE}${BRANCH}${WD}"
+  PS1=$prompt_color'┌────'${FP}''$prompt_color'\n│\n├────'${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
+
 else
   WD="\\w${COLOR_NONE}${WHITE}"
   PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
