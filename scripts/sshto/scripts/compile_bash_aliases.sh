@@ -34,6 +34,7 @@ renew_env_aliases() {
 }
 
 renew_env_aliases
+mkdir -p ${_PROFILES_PATH}scripts/sshto/bin > /dev/null 2> /dev/null
 echo -e "# Bash aliases main\n" > ${_PROFILES_PATH}scripts/sshto/bin/.bash_aliases
 echo -e "PROFILE_PATH=/opt/profiles\n_PROFILE_PATH=/opt/profiles\n" >> ${_PROFILES_PATH}scripts/sshto/bin/.bash_aliases
 for rea in ${ALLENVS[@]}; do
