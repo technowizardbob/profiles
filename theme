@@ -18,8 +18,12 @@ if is_normal_theme; then
   else
      NLT=""
   fi
-  PS1=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
 
+  if [ $len -lt 12 ]; then
+     PS1=${FP}${BP}
+  else
+     PS1=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
+  fi
 else
   WD="\\w${COLOR_NONE}${WHITE}"
   PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
