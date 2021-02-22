@@ -2,7 +2,7 @@ PROFILE_PATH=/opt/profiles
 #   Set the bash prompt according to:
 #    * the branch/status of the current git repository
 #    * the return value of the previous command
-#	AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
+#   AUTHOR: Scott Woods <scott@westarete.com> West Arete Computing
 #   Based on work by halbtuerke and lakiolen.
 #   http://gist.github.com/31967
 
@@ -50,28 +50,28 @@ LIGHT_GREEN="\[\033[1;32m\]"
  COLOR_DEFAULT="\[\e[39m\]"
 
 function is_normal_theme() {
-	# sudo apt-get install fonts-powerline
-	
-	if [ -f "$PROFILE_PATH/.unicode_support" ]; then
+    # sudo apt-get install fonts-powerline
+    
+    if [ -f "$PROFILE_PATH/.unicode_support" ]; then
      PS_SYMBOL='🐧'
      SEGMENT_SEPARATOR=$'\ue0b0'
      PL_BRANCH_CHAR=$'\ue0a0'         # 
-	else
+    else
      PS_SYMBOL=''
      SEGMENT_SEPARATOR=' -> '
      PL_BRANCH_CHAR=''
-	fi		
-		
-	if [ -f "$PROFILE_PATH/.simple_theme" ]; then
-		return 1
-	else
-		return 0
-	fi		
+    fi      
+        
+    if [ -f "$PROFILE_PATH/.simple_theme" ]; then
+        return 1
+    else
+        return 0
+    fi      
 }
  
 __git_info() {
         # no .git directory
-    	[ -d .git ] || return
+        [ -d .git ] || return
 
         local aheadN
         local behindN
@@ -90,10 +90,10 @@ __git_info() {
         [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
-		if ! is_normal_theme; then
-			printf "%s" "$state[$branch]$WHITE$marks"
-		   return 
-		fi   
+        if ! is_normal_theme; then
+            printf "%s" "$state[$branch]$WHITE$marks"
+           return 
+        fi   
 
         # print the git branch segment without a trailing newline
         # branch is modified?
@@ -145,8 +145,8 @@ function set_git_branch {
   BRANCH="${state}(git)${COLOR_NONE}${remote} "
   BRANCH+="$(__git_info bk)"
   if is_normal_theme; then
-	BRANCH+="$BK_EXIT${SEGMENT_SEPARATOR}$RESET"
-  fi	
+    BRANCH+="$BK_EXIT${SEGMENT_SEPARATOR}$RESET"
+  fi    
 }
 
  
@@ -154,10 +154,10 @@ function set_git_branch {
 # previous command.
 function set_prompt_symbol () {
   if is_normal_theme; then
-	 ERRX="✘"
+     ERRX="✘"
   else 
-  	 ERRX="Opps!"
-  fi	
+     ERRX="Opps!"
+  fi    
   if test $1 -eq 0 ; then
       PROMPT_SYMBOL="\$${COLOR_NONE}"
   else
@@ -183,22 +183,22 @@ function set_bash_prompt () {
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     UPC="${RED}SSH:${WHITE}"
   else
-	UPC="Local:"	
+    UPC="Local:"    
   fi
   
   if [ -f "$PROFILE_PATH/theme" ]; then
-	source "$PROFILE_PATH/theme"
+    source "$PROFILE_PATH/theme"
   else
     UPC+="\u@\h" 
-	if is_normal_theme; then
-		PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
-		WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
-		PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
-	else
-		WD="\\w${COLOR_NONE}${WHITE}"
-		PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
-	fi	
-  fi	
+    if is_normal_theme; then
+        PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
+        WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
+        PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
+    else
+        WD="\\w${COLOR_NONE}${WHITE}"
+        PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+    fi  
+  fi    
 }
 # Tell bash to execute this function just before displaying its prompt.
 PROMPT_COMMAND=set_bash_prompt

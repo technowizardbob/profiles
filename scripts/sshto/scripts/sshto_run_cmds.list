@@ -15,3 +15,4 @@ Change Username, username, Switch user accounts: !GUEST
 Local Port, local_port, Change local port: !LOCAL
 Remote Port, remote_port, Change remote port: !REMOTE
 Change Colors, colors, Edit dialog colors
+Copy Aliases, add_aliases, SCP Bash Aliases

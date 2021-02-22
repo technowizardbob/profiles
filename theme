@@ -12,19 +12,19 @@ if is_normal_theme; then
   WD="$WHITE$BK_BLUE\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
   BP="$PS_SYMBOL${WHITE}${BRANCH}${WD}"
   
-  len=$(echo $PWD | wc -c)
-  if [ $len -gt 35 ]; then
+  len=${#PWD}
+  if [ "$len" -gt 35 ]; then
      NLT="\n│\n├────" 
   else
      NLT=""
   fi
 
-  if [ $len -lt 12 ]; then
+  if [ "$len" -lt 12 ]; then
      PS1=${FP}${BP}
   else
      PS1=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
   fi
 else
-  WD="\\w${COLOR_NONE}${WHITE}"
+  WD="\w${COLOR_NONE}${WHITE}"
   PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
 fi	
