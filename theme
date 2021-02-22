@@ -26,5 +26,10 @@ if is_normal_theme; then
   fi
 else
   WD="\w${COLOR_NONE}${WHITE}"
-  PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+  if [ $UID -ne 0 ]; then
+     UR="${WHITE}\u"
+  else
+     UR="${RED}|as ¡Root!|${COLOR_NONE}${WHITE}"
+  fi
+  PS1="${WHITE}┌─${CYAN}${UPC}${UR}@\h ${BRANCH} ${WD}\n└─ ${PROMPT_SYMBOL} "
 fi	
