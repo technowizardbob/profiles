@@ -55,11 +55,11 @@ function home_dir(): string {
     } else {
         $result = getenv("HOME");
     }
-    
+
     if (empty($result) && !empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
         $result = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
     }
-    
+
     if (empty($result) && function_exists('exec')) {
         if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
             $result = exec("echo %userprofile%");
@@ -122,11 +122,12 @@ try {
 $command = $argv[1] ?? "ls";
 $A = $argv[2] ?? "";
 $B = $argv[3] ?? "";
+$C = $argv[4] ?? "";
 
 function get_status(string $status): string {
     switch(strtolower($status)) {
         case "enabled": case "enable": $status = "1"; break;
-        default: $status = "0"; break;    
+        default: $status = "0"; break;
     }
     return $status;
 }
@@ -161,17 +162,17 @@ switch(strtolower($command)) {
        $item = $B;
        break;
    case "update-pwd":
-   case "update-password":    
+   case "update-password":
        $action = "update-password";
        $id = get_id($A);
        $item = $B;
        break;
-   case "enabled": case "enable": 
-       $action = "enable"; 
+   case "enabled": case "enable":
+       $action = "enable";
        $id = get_id($A);
        break;
-   case "disabled": case "disable": 
-       $action = "disable"; 
+   case "disabled": case "disable":
+       $action = "disable";
        $id = get_id($A);
        break;
    default: $action = "ls"; break;
@@ -199,12 +200,12 @@ function get_pwd(string $prompt = "Enter password: ") {
     for($i = 1; $i < $GLOBALS['argc']; $i++) {
         $opt = strtolower($GLOBALS['argv'][$i]);
         if ($opt === "-p" || $opt === "-pass" || $opt === "-password" || $opt === "-pwd") {
-           return (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : ""; 
+           return (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
         }
     }
     echo $prompt;
     if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-       $ret =  stream_get_line(STDIN, 1024, PHP_EOL); 
+       $ret =  stream_get_line(STDIN, 1024, PHP_EOL);
     } else {
        $ret = rtrim( shell_exec("/bin/bash -c 'read -s PW; echo \$PW'") );
     }
@@ -257,7 +258,7 @@ try {
     }
 } catch (\Exception $ex) {
     echo $ex->getMessage();
-    exit(1);    
+    exit(1);
 } catch (\PDOException $e) {
     echo $e->getMessage();
     exit(1);
@@ -283,7 +284,7 @@ if ($action === "show") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);        
+    exit(0);
 }
 
 if ($action === "ls") {
@@ -393,7 +394,10 @@ if ($action === "add") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);    
+    if ($C == "-show") {
+       echo $cc_pwd . "\n";
+    }
+    exit(0);
 }
 
 if ($action === "rm") {
@@ -407,7 +411,7 @@ if ($action === "rm") {
         echo $e->getMessage();
 	exit(1);
     }
-    exit(0);    
+    exit(0);
 }
 
 
@@ -432,7 +436,7 @@ if ($action === "update-item") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);    
+    exit(0);
 }
 
 if ($action === "update-password") {
@@ -456,7 +460,7 @@ if ($action === "update-password") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);    
+    exit(0);
 }
 
 if ($action === "enable") {
@@ -468,7 +472,7 @@ if ($action === "enable") {
                 $user = exec("whoami");
             } else {
                 $user = "unknown";
-            }            
+            }
             $ds = gmdate("Y/m/d H:i");
             $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
@@ -476,7 +480,7 @@ if ($action === "enable") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);    
+    exit(0);
 }
 
 if ($action === "disable") {
@@ -488,7 +492,7 @@ if ($action === "disable") {
                 $user = exec("whoami");
             } else {
                 $user = "unknown";
-            }            
+            }
             $ds = gmdate("Y/m/d H:i");
             $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
@@ -496,6 +500,6 @@ if ($action === "disable") {
         echo $e->getMessage();
         exit(1);
     }
-    exit(0);    
+    exit(0);
 }
 

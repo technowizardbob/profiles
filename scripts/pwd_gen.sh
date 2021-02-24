@@ -13,4 +13,4 @@ tpwd=$(grep -ao '[A-Za-z0-9]' /dev/urandom \
     | shuf \
     | tr -d 'ioIOlL01\n')
 echo "${SPC}${tpwd}${EPC}" | fold -w1 | shuf | tr -d '\n'
-echo -e "\n"
+echo ""
