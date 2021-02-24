@@ -32,7 +32,7 @@ renew_env_aliases() {
 }
 
 # List these alias Commands, this file...
-commands() {
+cmds() {
     echo "..." > /tmp/commands.txt
     renew_env_aliases
     for f in ${ALLENVS[@]}; do
