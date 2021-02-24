@@ -182,7 +182,8 @@ if ($action === "help") {
     echo "To get password: show Item#" . PHP_EOL;
     echo "To add: add \"System-NAME\" \"Password\"" . PHP_EOL;
     echo "To remove: rm Item#" . PHP_EOL;
-    echo "To update: update Item# \"Updated item info\"" . PHP_EOL;
+    echo "To update item: update-item Item# \"Updated system-name\"" . PHP_EOL;
+    echo "To update pwd: update-password Item# \"New Password\"" . PHP_EOL;
     echo "To mark as enabled: enable Item#" . PHP_EOL;
     echo "To mark as disabled: disable Item#" . PHP_EOL;
     echo "List Order: -desc or -latest" . PHP_EOL;
