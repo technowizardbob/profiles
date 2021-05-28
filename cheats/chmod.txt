@@ -30,3 +30,9 @@ chattr +i data.txt
 
 # Remove write protection, must be root....:
 chattr -i data.txt
+
+# Change all directories to 775
+find /var/www/myproject -type d -exec chmod 775 {} \;
+
+# Change all file to 664
+find /var/www/myproject -type f -exec chmod 664 {} \;
