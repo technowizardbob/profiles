@@ -55,7 +55,7 @@ fi
 
 bnow=$(date +"%m_%d_%Y_%H_%M_%S")
 mkdir -p "$HPATH/.dotfile_backups/$bnow" 2> /dev/null
-cp "$HPATH"/{.bash_aliases,.bashrc,.profile,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} "$HPATH/.dotfile_backups/$bnow/" 2> /dev/null
+cp "$HPATH"/{.bash_aliases,.bashrc,.profile,.kube-ps1,.git_bash_prompt,.vimrc,.gitconfig,.gitconfig.secret} "$HPATH/.dotfile_backups/$bnow/" 2> /dev/null
 cp /etc/hosts "$HPATH/.dotfile_backups/$bnow/" 2> /dev/null
 
 if [ -f "$HPATH/.bash_aliases" ]; then
@@ -103,6 +103,7 @@ if [ -d aliases ] && [ -f .bash_aliases ]; then
     ln -s "$(pwd -P)"/.bashrc "$HPATH/"
     ln -s "$(pwd -P)"/.profile "$HPATH/"
     ln -s "$(pwd -P)"/.git_bash_prompt "$HPATH/"
+    ln -s "$(pwd -P)"/.kube-ps1 "$HPATH/"
     if [ ! -f "$HPATH/.gitconfig" ]; then
       cp "$(pwd -P)"/dotfiles/.gitconfig "$HPATH/"
     fi
@@ -121,6 +122,7 @@ else
     ln -s /opt/profiles/.bash_aliases "$HPATH/"
     ln -s /opt/profiles/.bashrc "$HPATH/"
     ln -s /opt/profiles/.profile "$HPATH/"
+    ln -s /opt/profiles/.kube-ps1 "$HPATH/"
     ln -s /opt/profiles/.git_bash_prompt "$HPATH/"
     if [ ! -f "$HPATH/.gitconfig" ]; then
       cp /opt/profiles/dotfiles/.gitconfig "$HPATH/"

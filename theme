@@ -20,9 +20,9 @@ if is_normal_theme; then
   fi
 
   if [ "$len" -lt 12 ]; then
-     PS1=${FP}${BP}
+     PS1+=${FP}${BP}
   else
-     PS1=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
+     PS1+=$prompt_color'┌────'${FP}''$prompt_color${NLT}${BP}''$prompt_color'\n│\n'$prompt_color'└─'$info_color''${PROMPT_SYMBOL}'\[\033[0m\] ' 
   fi
 else
   WD="\w${COLOR_NONE}${WHITE}"
@@ -31,5 +31,5 @@ else
   else
      UR="${RED}|as ¡Root!|${COLOR_NONE}${WHITE}"
   fi
-  PS1="${WHITE}┌─${CYAN}${UPC}${UR}@\h ${BRANCH} ${WD}\n└─ ${PROMPT_SYMBOL} "
+  PS1+="${WHITE}┌─${CYAN}${UPC}${UR}@\h ${BRANCH} ${WD}\n└─ ${PROMPT_SYMBOL} "
 fi	

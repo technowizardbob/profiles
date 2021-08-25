@@ -49,6 +49,8 @@ LIGHT_GREEN="\[\033[1;32m\]"
  COLOR_NONE="\[\e[0m\]"
  COLOR_DEFAULT="\[\e[39m\]"
 
+[ -f ~/.kube-ps1 ] && source ~/.kube-ps1
+
 function is_normal_theme() {
     # sudo apt-get install fonts-powerline
     
@@ -186,19 +188,23 @@ function set_bash_prompt () {
     UPC="Local:"    
   fi
   
+  # if you want kube prompt
+  [ -f ~/.kube-ps1 ] && PS1="$(kube_ps1)\r\n"
+  [ ! -f ~/.kube-ps1 ] && PS1=""   
+
   if [ -f "$PROFILE_PATH/theme" ]; then
     source "$PROFILE_PATH/theme"
   else
     UPC+="\u@\h" 
     if is_normal_theme; then
-        PS1="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
+        PS1+="${BK_GREEN}$WHITE$UPC${GREEN}${SEGMENT_SEPARATOR}"
         WD="$WHITE$BK_BLUE\\w${COLOR_NONE}${BLUE}${SEGMENT_SEPARATOR}${WHITE}"
         PS1+="${WHITE}${BRANCH}${WD}$PS_SYMBOL${PROMPT_SYMBOL} "
     else
         WD="\\w${COLOR_NONE}${WHITE}"
-        PS1="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
+        PS1+="$CYAN$UPC ${WHITE}${BRANCH} ${WD} ${PROMPT_SYMBOL} "
     fi  
-  fi    
+  fi
 }
 # Tell bash to execute this function just before displaying its prompt.
 PROMPT_COMMAND=set_bash_prompt
