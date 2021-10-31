@@ -131,3 +131,5 @@ Robert S. <Robert@TryingToScale.com>
 :octocat: [On GitHub -> TryingToScale.com](https://github.com/tryingtoscale)
 
 [My Site -> TryingToScale.com](https://TryingToScale.com)
+
+[CoC](https://github.com/tryingtoscale/profiles/blob/main/CoC/CoC.md)
