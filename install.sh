@@ -1,6 +1,28 @@
 #!/bin/bash
 
 clear
+echo "Press q to Agree." > /tmp/LICENSE.Agreement.info
+cat LICENSE >> /tmp/LICENSE.Agreement.info
+echo "[End of File] - Press the letter q to Agree." >> /tmp/LICENSE.Agreement.info
+less /tmp/LICENSE.Agreement.info
+cat EULA.txt
+echo "Do you agree with my End User License Agreement? [yes/no]"
+read -r agree
+if [ "$agree" = "n" ]; then
+   exit 1
+fi
+if [ "$agree" = "no" ]; then
+   exit 1
+fi
+if [ "$agree" = "N" ]; then
+   exit 1
+fi
+if [ "$agree" = "No" ]; then
+   exit 1
+fi
+if [ "$agree" = "NO" ]; then
+   exit 1
+fi
 
 if [ "$EUID" -eq 0 ]; then
     echo -e "\nPlease backup and make sym-links your self for the root account, as I do not want to make a admin mad.\n"

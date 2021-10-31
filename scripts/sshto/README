@@ -1,9 +1,29 @@
-Inital Credits for SSHTO: Thanks to: Ivan....
+A simple terminal GUI interface for SSH config files.
+
+Credits for sshto: go to the original creator Ivan Marov.
 
 .SH AUTHOR
 Ivan Marov <ie.marov@gmail.com>
 .SH GITHUB
 https://github.com/vaniacer/sshto
 
-Awesome code....
-I just tore it a part to make it like my own....
+Copyright: 2019-2020 Ivan Marov
+License: MIT
+
+All code in scripts/sshto and it's sub-fodlers were based on work by Ivan Marov.
+Ivan's repo is a nice smaller script, take a look...at his repo listed above.
+
+-=-=-
+
+What have I added in this adapted form of works:
+* Auto config file generation when .ssh folder does not exist:
+	- Finds remote servers and tries to create an entry for it from /etc/hosts file.
+	- Auto generate RSA/GPG key pairs for a new account.
+* $ sshto [optional group based on server names]
+	- Just load into view the optional name of servers group
+		IE: $ sshto work
+* config file "ignore" option...to hide host from main menu
+	- IE: Host github #ignore
+* Menu Command to copy main Bash Aliases (compresses and creates installer script).
+
+-- Still in progress verify that (up/down)load/copy files works.

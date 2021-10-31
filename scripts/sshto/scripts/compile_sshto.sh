@@ -2,17 +2,17 @@
 
 _MAIN_PATH="/opt/profiles/scripts/sshto"
 
-_SSHTO_BIN=${_MAIN_PATH}/bin/sshto   
+_SSHTO_BIN=${_MAIN_PATH}/bin/sshto
 
 if [ ! -d /opt/profiles ]; then
    echo "Sorry, no /opt/profiles folder!"
    exit 1
-fi   
+fi
 
 if [ ! -d ${_MAIN_PATH}/bin ]; then
    mkdir -p ${_MAIN_PATH}/bin > /dev/null 2> /dev/null
    chmod 775 ${_MAIN_PATH}/bin
-fi   
+fi
 
 _PATH_TO_CORE="${_MAIN_PATH}/core"
 _CORE_FILES="${_PATH_TO_CORE}/*.inc"
@@ -22,7 +22,7 @@ _SCRIPT_FILES="${_PATH_TO_SCRIPTS}/*.inc"
 
 _RUN_CMDS_FILE="${_PATH_TO_SCRIPTS}/sshto_run_cmds.list" 
 
-[ ! -f $_RUN_CMDS_FILE ] && { echo "No config file!! Aborting..."; exit; } 
+[ ! -f $_RUN_CMDS_FILE ] && { echo "No config file!! Aborting..."; exit; }
 
 _GEN_RSA_KEY=/opt/profiles/scripts/gen_rsa_key.sh
 
