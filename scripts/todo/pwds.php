@@ -259,9 +259,51 @@ try {
     exit(1);
 }
 
+function get_dt(string $date_stamp): string {
+   $full = false;
+   $military_time = false;
+   for($i = 1; $i < $GLOBALS['argc']; $i++) {
+       $xv = $GLOBALS['argv'][$i];
+        $opt = strtolower($xv);
+        if ($opt === "-time") {
+            $full = true;
+        }
+        if ($opt == "-24hours") {
+            $military_time = true;
+        }
+   }    
+   if ($military_time) {
+       $hours = "H:i";
+   } else {
+       $hours = "h:i A";
+   }
+   for($i = 1; $i < $GLOBALS['argc']; $i++) {
+       $xv = $GLOBALS['argv'][$i];
+        $opt = strtolower($xv);
+        if ($opt === "-dmy") {
+            // Creating timestamp from given date
+            $timestamp = strtotime($date_stamp);
+            // Creating new date format from that timestamp
+            $new_date = date("d-m-Y {$hours}", $timestamp);
+            $ymd = explode(" ", $new_date);
+            return ($full) ? $new_date : $ymd[0];
+        } else if ($opt === "-mdy") {
+            $timestamp = strtotime($date_stamp);
+            $new_date = date("m/d/Y {$hours}", $timestamp);
+            $ymd = explode(" ", $new_date);
+            return ($full) ? $new_date : $ymd[0];
+        } else if ($opt === "-fancy") {
+            $timestamp = strtotime($date_stamp);
+            return date("l jS \of F Y h:i:s A", $timestamp);
+        }
+   }
+   $ymd = explode(" ", $date_stamp);
+   return ($full) ? $date_stamp : $ymd[0];
+}
+
 if ($action === "show") {
     try {
-        $sql = "SELECT `item`,`pwd`,`nonce`,`enabled` FROM systems_pwd WHERE id=:id LIMIT 1";
+        $sql = "SELECT `item`,`pwd`,`nonce`,`enabled`,`date_stamp` FROM systems_pwd WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
         if (! $pdostmt === false) {
             $pdostmt->execute(["id"=>$id]);
@@ -275,6 +317,8 @@ if ($action === "show") {
         $dpwd = $c->decode($key, $row['pwd']);
         $status = ($row['enabled'] == "1") ? "*Active*" : "*Expired*";
         echo "System[{$ditem}]{$status}({$dpwd})\n";
+        $time = get_dt($row['date_stamp']);
+        echo "Date modified: {$time}\n";
     } catch (\PDOException $e) {
         echo $e->getMessage();
         exit(1);
@@ -302,9 +346,6 @@ if ($action === "ls") {
         if ($opt === "-host") {
             $host = true;
             $select .= ", host_name";
-        }
-        if ($opt === "-time") {
-            $full = true;
         }
         if ($opt === "-enable" || $opt === "-enabled") {
             $where = " WHERE enabled='1' ";
@@ -350,10 +391,9 @@ if ($action === "ls") {
             } else {
                 $item = $row['item'];
             }
-            $row_user = ($user) ? $row['user'] : "";
+            $row_user = ($user) ? $row['user'] . "->" : "";
             $row_host = ($host) ? "@" . $row['host_name'] . "->" : "";
-            $ymd = explode(" ", $row['date_stamp']);
-            $time = ($full) ? $row['date_stamp'] : $ymd[0];
+            $time = get_dt($row['date_stamp']);
             echo "[{$row['id']}]{$time}({$done})-{$row_user}{$row_host}{$item}" . PHP_EOL;
         }
     } catch (\PDOException $e) {
@@ -379,7 +419,7 @@ if ($action === "add") {
             } else {
                 $user = "unknown";
             }
-            $ds = gmdate("Y/m/d H:i");
+            $ds = date("Y/m/d H:i");
             $pdostmt->execute(["item"=>$enc_item, "pwd"=>$enc_pwd, "nonce"=>$nonce, "host"=>$host, "user"=>$user, "ds"=>$ds, "enabled"=>"1"]);
         }
     } catch (\Exception $ex) {
@@ -424,7 +464,7 @@ if ($action === "update-item") {
             } else {
                 $user = "unknown";
             }
-            $ds = gmdate("Y/m/d H:i");
+            $ds = date("Y/m/d H:i");
             $pdostmt->execute(["item"=>$enc_item, "nonce"=>$nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
     } catch (\PDOException $e) {
@@ -448,7 +488,7 @@ if ($action === "update-password") {
             } else {
                 $user = "unknown";
             }
-            $ds = gmdate("Y/m/d H:i");
+            $ds = date("Y/m/d H:i");
             $pdostmt->execute(["pwd"=>$enc_item, "nonce"=>$nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
     } catch (\PDOException $e) {
@@ -468,7 +508,7 @@ if ($action === "enable") {
             } else {
                 $user = "unknown";
             }
-            $ds = gmdate("Y/m/d H:i");
+            $ds = date("Y/m/d H:i");
             $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
     } catch (\PDOException $e) {
@@ -488,7 +528,7 @@ if ($action === "disable") {
             } else {
                 $user = "unknown";
             }
-            $ds = gmdate("Y/m/d H:i");
+            $ds = date("Y/m/d H:i");
             $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
     } catch (\PDOException $e) {
