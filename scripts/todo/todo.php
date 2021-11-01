@@ -1,146 +1,18 @@
 <?php
-const home_dir = 0;
-const install_dir = 1;
-const use_default = home_dir;
-$todo_dir = "/.todo";
+/**
+ * Author: Robert Strutts
+ * Copyright: 2021
+ * Site: https://TryingToScale.com
+ * GitHub: https://github.com/tryingtoscale/profiles
+ * License: MIT
+ * Packages: todo/pwds
+ * Version: 1.0
+ */
 
-function is_cli(): bool {
-    if (defined('STDIN')) {
-        return true;
-    }
+use \todo\encryption\crypto2 as c;
 
-    if (php_sapi_name() === 'cli') {
-        return true;
-    }
-
-    if (array_key_exists('SHELL', $_ENV)) {
-        return true;
-    }
-
-    if (empty($_SERVER['REMOTE_ADDR']) and ! isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
-        return true;
-    }
-
-    if (!array_key_exists('REQUEST_METHOD', $_SERVER)) {
-        return true;
-    }
-
-    return false;
-}
-
-if (is_cli() === false) {
-    echo('Unable to Start');
-    exit(1);
-}
-
-function key_file(): string {
-    for($i = 1; $i < $GLOBALS['argc']; $i++) {
-        $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-keyfile" || $opt === "-k") {
-            $key_file = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
-            if (!empty($key_file)) {
-                return $key_file;
-            }
-        }
-    }
-    return "";
-}
-
-function db_file(): string {
-    for($i = 1; $i < $GLOBALS['argc']; $i++) {
-        $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-dbfile" || $opt === "-d") {
-            $db_file = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
-            if (!empty($db_file)) {
-                return $db_file;
-            }
-        }
-    }
-    return "";
-}
-
-function db_name(): string {
-    $generic = true;
-    for($i = 1; $i < $GLOBALS['argc']; $i++) {
-        $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-usernamed" || $opt === "-u") {
-            $generic = false;
-        }
-        if ($opt === "-who") {
-            $whoami = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
-        }
-    }
-    if (empty($whoami)) {
-        return "todo.db";
-    }
-    return ($generic) ? "todo.db" : "{$whoami}_todo.db";
-}
-$todo_file = db_name();
-
-function home_dir(): string {
-    $use_home = use_default;
-    for($i = 1; $i < $GLOBALS['argc']; $i++) {
-        $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-installpath" || $opt === "-i") {
-            $use_home = install_dir;
-            break;
-        }
-        if ($opt === "-home") {
-            $use_home = home_dir;
-            break;
-        }
-        if ($opt === "-dir") {
-            $dir = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
-            if (!empty($dir)) {
-                return $dir;
-            }
-        }
-    }
-    if ($use_home === install_dir) {
-        return __DIR__; // Use install DIR
-    }
-    if (isset($_SERVER['HOME'])) {
-        $result = $_SERVER['HOME'];
-    } else {
-        $result = getenv("HOME");
-    }
-    
-    if (empty($result) && !empty($_SERVER['HOMEDRIVE']) && !empty($_SERVER['HOMEPATH'])) {
-        $result = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'];
-    }
-    
-    if (empty($result) && function_exists('exec')) {
-        if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            $result = exec("echo %userprofile%");
-        } else {
-            $result = exec("echo ~");
-        }
-    }
-    $result = str_replace('..', '', $result);
-    $result = rtrim($result, '/');
-    $result = rtrim($result, '\\');
-    return $result;
-}
-
-$open_db = db_file();
-if (empty($open_db)) {
-    $home_dir = home_dir() . $todo_dir;
-    if (! is_dir($home_dir)) {
-        $s = mkdir($home_dir);
-        if ($s === false) {
-            echo "Unable to create folder: {$home_dir}" . PHP_EOL;
-            exit(1);
-        }
-    }
-    $open_db = "{$home_dir}/{$todo_file}";
-}
-
-try {
-    $pdo = new PDO("sqlite:{$open_db}");
-} catch (PDOException $e) {
-    echo $e->getMessage() . PHP_EOL;
-    exit(1);
-}
+$run_name = "todo.db";
+require 'common.php';
 
 try {
     $sql = "CREATE TABLE IF NOT EXISTS items (
@@ -172,7 +44,7 @@ try {
 
 $command = $argv[1] ?? "ls";
 $A = $argv[2] ?? "";
-$B = $argv[3] ?? "";
+$B = escapeshellarg($argv[3]) ?? "";
 
 function get_status(string $status): string {
     switch(strtolower($status)) {
@@ -198,7 +70,7 @@ switch(strtolower($command)) {
        break;
    case "add": case "new":
        $action = "add";
-       $item = $A;
+       $item = escapeshellarg($A);
        $status = get_status($B);
        break;
    case "remove": case "rm": case "del": case "delete":
@@ -238,27 +110,7 @@ if ($action === "help") {
     exit(0);
 }
 
-function get_pwd(string $prompt = "Enter password: ") {
-    for($i = 1; $i < $GLOBALS['argc']; $i++) {
-        $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-p" || $opt === "-pass" || $opt === "-password" || $opt === "-pwd") {
-           return (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : ""; 
-        }
-    }
-    echo $prompt;
-    if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-       $ret =  stream_get_line(STDIN, 1024, PHP_EOL); 
-    } else {
-       $ret = rtrim( shell_exec("/bin/bash -c 'read -s PW; echo \$PW'") );
-    }
-    echo PHP_EOL;
-    return $ret;
-}
-
 try {
-    require 'crypto.php';
-    $c = new \todo\encryption\crypto();
-
     $sql = "SELECT COUNT(id) AS c FROM password";
     $pdostmt = $pdo->prepare($sql);
     $pdostmt->execute();
@@ -266,6 +118,7 @@ try {
     $key_file = key_file();
     if (intval($count) == 0) {
        $pwd = get_pwd("Create a password: ");
+       $cp = $pwd;
        if (empty($pwd)) {
          $sql = "INSERT INTO password (myhash, mykey) VALUES ('none', '')";
          $pdostmt = $pdo->prepare($sql);
@@ -277,9 +130,11 @@ try {
          $sql = "INSERT INTO password (myhash, mykey) VALUES (:hash, :key)";
          $pdostmt = $pdo->prepare($sql);
          if (! $pdostmt === false) {
-            $myhash = password_hash($pwd, PASSWORD_BCRYPT);
-            $key = $c->getKey();
-            $ekey = openssl_encrypt($key, "AES-128-ECB", $pwd);
+            $myhash = base64_encode(c::store_pwd_into_hash($pwd));
+            $salt = c::make_some_salt();
+            $new_key = base64_encode(c::make_key_from_pwd($cp, $salt));
+            $a_keys = ['newkey'=>$new_key,'salt'=>$salt];
+            $key = base64_encode(json_encode($a_keys));
             if (!empty($key_file)) {
                 if (file_exists($key_file)) {
                     echo "Key already exists..." . PHP_EOL;
@@ -290,9 +145,9 @@ try {
                 chmod($key_file, 0660);
             }    
             if (empty($key_file) || !is_writable($key_file)) {
-                $pdostmt->execute(["hash"=>$myhash, "key"=>$ekey]);
+                $pdostmt->execute(["hash"=>$myhash, "key"=>$key]);
             } else {
-                file_put_contents($key_file, $ekey);
+                file_put_contents($key_file, $key);
                 $pdostmt->execute(["hash"=>$myhash, "key"=>""]);                
             }
          }
@@ -303,37 +158,42 @@ try {
         $pdostmt = $pdo->prepare($sql);
         $pdostmt->execute();
         $row = $pdostmt->fetch(\PDO::FETCH_ASSOC);
-        $myhash = $row['myhash'];
-        if ($myhash === "none") {
+        if ($row['myhash'] === "none") {
             $do_encode = false;
         } else {
             $do_encode = true;
+            $myhash = base64_decode($row['myhash']);
             $pwd = get_pwd();
-            if (! password_verify($pwd, $myhash)) {
+            $copy_of_pwd = $pwd;
+            if (! c::compair_hashed_pwd($myhash, $pwd)) {
                 echo "Invalid Password!" . PHP_EOL;
                 exit(1);
             }
             if (empty($key_file) || !is_readable($key_file)) {
-                $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+                $mykey = json_decode(base64_decode($row['mykey']), true);
+                $salt = base64_decode($mykey['salt']);
+                $new_key = base64_decode($mykey['newkey']);
             } else {
                 if (is_link($key_file) || is_readable($key_file) ) {
-                    $tmp_key = file_get_contents($key_file);
-                    if ($tmp_key === false) {
+                    $mykey = json_decode(base64_decode(file_get_contents($key_file)), true);
+                    if ($mykey === false) {
                         echo "Unable to read from key file, so using db instead!" . PHP_EOL;
-                        $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+                        $mykey = json_decode(base64_decode($row['mykey']), true);
+                        $salt = base64_decode($mykey['salt']);
+                        $new_key = base64_decode($mykey['newkey']);
                     } else {
-                        $key = openssl_decrypt($tmp_key, "AES-128-ECB", $pwd);
-                        if ($key === false) {
-                            $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
-                        }
+                        $salt = base64_decode($mykey['salt']);
+                        $new_key = base64_decode($mykey['newkey']);
                     }
                 } else {
+                    $mykey = json_decode(base64_decode($row['mykey']), true);
+                    $salt = base64_decode($mykey['salt']);
+                    $new_key = base64_decode($mykey['newkey']);
                     echo "Unable to read from key file, so using db instead!" . PHP_EOL;
                     echo "Maybe blocked by open_basedir in /opt/profiles/scripts/todo/php_todo.ini" . PHP_EOL;
-                    $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
                 }
             }
-            if ($key === false) {
+            if ($new_key === false) {
                 echo "Invalid Key or maybe password!" . PHP_EOL;
             }
         }
@@ -346,49 +206,6 @@ try {
     exit(1);
 }
 
-function get_dt(string $date_stamp): string {
-   $full = false;
-   $military_time = false;
-   for($i = 1; $i < $GLOBALS['argc']; $i++) {
-       $xv = $GLOBALS['argv'][$i];
-        $opt = strtolower($xv);
-        if ($opt === "-time") {
-            $full = true;
-        }
-        if ($opt == "-24hours") {
-            $military_time = true;
-        }
-   }    
-   if ($military_time) {
-       $hours = "H:i";
-   } else {
-       $hours = "h:i A";
-   }
-   for($i = 1; $i < $GLOBALS['argc']; $i++) {
-       $xv = $GLOBALS['argv'][$i];
-        $opt = strtolower($xv);
-        if ($opt === "-dmy") {
-            // Creating timestamp from given date
-            $timestamp = strtotime($date_stamp);
-            // Creating new date format from that timestamp
-            $new_date = date("d-m-Y {$hours}", $timestamp);
-            $ymd = explode(" ", $new_date);
-            return ($full) ? $new_date : $ymd[0];
-        } else if ($opt === "-mdy") {
-            $timestamp = strtotime($date_stamp);
-            $new_date = date("m/d/Y {$hours}", $timestamp);
-            $ymd = explode(" ", $new_date);
-            return ($full) ? $new_date : $ymd[0];
-        } else if ($opt === "-fancy") {
-            $timestamp = strtotime($date_stamp);
-            return date("l jS \of F Y h:i:s A", $timestamp);
-        }
-   }
-   $ymd = explode(" ", $date_stamp);
-   return ($full) ? $date_stamp : $ymd[0];
-}
-
-
 if ($action === "show") {
     try {
         $sql = "SELECT `item`, `nonce`, `completed`, `date_stamp` FROM items WHERE id=:id LIMIT 1";
@@ -400,17 +217,20 @@ if ($action === "show") {
             exit(1);
         }
         $row = $pdostmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            echo "Does not Exist!";
+            exit(1);
+        }
         $done = ($row['completed'] == 1) ? "Complete" : "Incomplete";
         if ($do_encode) {
-            $c->setNonce($row['nonce']);
-            $item = $c->decode($key, $row['item']);
+            $cipher_text = base64_decode($row['item']);
+            $nonce = base64_decode($row['nonce']);
+            $item = c::decode_cipher_text($cipher_text, $nonce, $new_key);
         } else {
             $item = $row['item'];
         }
-        $row_user = ($user) ? $row['user'] . "->" : "";
-        $row_host = ($host) ? "@" . $row['host_name'] . "->" : "";
         $time = get_dt($row['date_stamp']);
-        echo "[{$id}]{$time}({$done})-{$row_user}{$row_host}->" . PHP_EOL;
+        echo "[{$id}]{$time}({$done})->" . PHP_EOL;
         echo "{$item}" . PHP_EOL;
     } catch (\PDOException $e) {
         echo $e->getMessage();
@@ -477,10 +297,12 @@ if ($action === "ls") {
         $pdostmt->execute();
         $rows = $pdostmt->fetchAll(PDO::FETCH_ASSOC);
         foreach($rows as $row) {
+            $bk = $new_key;
             $done = ($row['completed'] == 1) ? "Complete" : "Incomplete";
             if ($do_encode) {
-                $c->setNonce($row['nonce']);
-                $item = $c->decode($key, $row['item']);
+                $cipher_text = base64_decode($row['item']);
+                $nonce = base64_decode($row['nonce']);
+                $item = c::decode_cipher_text($cipher_text, $nonce, $bk);
             } else {
                 $item = $row['item'];
             }
@@ -502,10 +324,11 @@ if ($action === "add") {
         $pdostmt = $pdo->prepare($sql);
         if (! $pdostmt === false) {
             if ($do_encode) {
-                $nonce = $c->getNonce();
-                $enc_item = $c->encode($key, $item);
+                $nonce = c::make_nonce();
+                $b_nonce = base64_encode($nonce);
+                $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
             } else {
-                $nonce = "";
+                $b_nonce = "";
                 $enc_item = $item;
             }
             $host = gethostname();
@@ -515,7 +338,7 @@ if ($action === "add") {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["item"=>$enc_item, "nonce"=>$nonce, "host"=>$host, "user"=>$user, "ds"=>$ds, "completed"=>$status]);
+            $pdostmt->execute(["item"=>$enc_item, "nonce"=>$b_nonce, "host"=>$host, "user"=>$user, "ds"=>$ds, "completed"=>$status]);
         }
     } catch (\Exception $ex) {
         echo $ex->getMessage();
@@ -548,10 +371,11 @@ if ($action === "update") {
         $pdostmt = $pdo->prepare($sql);
         if (! $pdostmt === false) {
             if ($do_encode) {
-                $nonce = $c->getNonce();
-                $enc_item = $c->encode($key, $item);
+                $nonce = c::make_nonce();
+                $b_nonce = base64_encode($nonce);
+                $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
             } else {
-                $nonce = "";
+                $b_nonce = "";
                 $enc_item = $item;
             }
             if (function_exists('exec')) {
@@ -560,7 +384,7 @@ if ($action === "update") {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["item"=>$enc_item, "nonce"=>$nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
+            $pdostmt->execute(["item"=>$enc_item, "nonce"=>$b_nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();

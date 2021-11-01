@@ -1,4 +1,4 @@
-# todo
+# todo v1.0
 PHP CLI - Linux Server - To Do - Lists
 
 #### Purpose: To encrypt things left, to do, on a Server.
@@ -27,3 +27,9 @@ $ touch /opt/profiles/skip_php_check
 ## Review what folders and drives you want these scripts to have access to!:
 nano /opt/profiles/scripts/todo/php_todo.ini
 open_basedir = /root/.todo:/opt/profiles/scripts/todo:/home:/media:/mnt
+
+# todo version #1.0 crypto breaking changes. Better encryption...
+
+#License
+Copyright 2021 by Robert Strutts
+Released under the MIT License. The source code for this project is licensed under the MIT license, which you can find in the MIT-LICENSE.txt file.
