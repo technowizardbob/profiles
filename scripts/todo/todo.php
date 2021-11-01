@@ -1,6 +1,7 @@
 <?php
-
-$todo_file = "todo.db";
+const home_dir = 0;
+const install_dir = 1;
+const use_default = home_dir;
 $todo_dir = "/.todo";
 
 function is_cli(): bool {
@@ -32,11 +33,61 @@ if (is_cli() === false) {
     exit(1);
 }
 
-function home_dir(): string {
+function key_file(): string {
     for($i = 1; $i < $GLOBALS['argc']; $i++) {
         $opt = strtolower($GLOBALS['argv'][$i]);
-        if ($opt === "-global" || $opt === "-g") {
-            return __DIR__;
+        if ($opt === "-keyfile" || $opt === "-k") {
+            $key_file = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
+            if (!empty($key_file)) {
+                return $key_file;
+            }
+        }
+    }
+    return "";
+}
+
+function db_file(): string {
+    for($i = 1; $i < $GLOBALS['argc']; $i++) {
+        $opt = strtolower($GLOBALS['argv'][$i]);
+        if ($opt === "-dbfile" || $opt === "-d") {
+            $db_file = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
+            if (!empty($db_file)) {
+                return $db_file;
+            }
+        }
+    }
+    return "";
+}
+
+function db_name(): string {
+    $generic = true;
+    for($i = 1; $i < $GLOBALS['argc']; $i++) {
+        $opt = strtolower($GLOBALS['argv'][$i]);
+        if ($opt === "-usernamed" || $opt === "-u") {
+            $generic = false;
+        }
+        if ($opt === "-who") {
+            $whoami = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
+        }
+    }
+    if (empty($whoami)) {
+        return "todo.db";
+    }
+    return ($generic) ? "todo.db" : "{$whoami}_todo.db";
+}
+$todo_file = db_name();
+
+function home_dir(): string {
+    $use_home = use_default;
+    for($i = 1; $i < $GLOBALS['argc']; $i++) {
+        $opt = strtolower($GLOBALS['argv'][$i]);
+        if ($opt === "-installpath" || $opt === "-i") {
+            $use_home = install_dir;
+            break;
+        }
+        if ($opt === "-home") {
+            $use_home = home_dir;
+            break;
         }
         if ($opt === "-dir") {
             $dir = (isset($GLOBALS['argv'][$i+1])) ? $GLOBALS['argv'][$i+1] : "";
@@ -44,6 +95,9 @@ function home_dir(): string {
                 return $dir;
             }
         }
+    }
+    if ($use_home === install_dir) {
+        return __DIR__; // Use install DIR
     }
     if (isset($_SERVER['HOME'])) {
         $result = $_SERVER['HOME'];
@@ -68,18 +122,21 @@ function home_dir(): string {
     return $result;
 }
 
-$home_dir = home_dir() . $todo_dir;
-
-if (! is_dir($home_dir)) {
-    $s = mkdir($home_dir);
-    if ($s === false) {
-	echo "Unable to create folder: {$home_dir}" . PHP_EOL;
-        exit(1);
+$open_db = db_file();
+if (empty($open_db)) {
+    $home_dir = home_dir() . $todo_dir;
+    if (! is_dir($home_dir)) {
+        $s = mkdir($home_dir);
+        if ($s === false) {
+            echo "Unable to create folder: {$home_dir}" . PHP_EOL;
+            exit(1);
+        }
     }
+    $open_db = "{$home_dir}/{$todo_file}";
 }
 
 try {
-    $pdo = new PDO("sqlite:{$home_dir}/{$todo_file}");
+    $pdo = new PDO("sqlite:{$open_db}");
 } catch (PDOException $e) {
     echo $e->getMessage() . PHP_EOL;
     exit(1);
@@ -176,7 +233,8 @@ if ($action === "help") {
     echo "List Pagination: -page # -limit #" . PHP_EOL;
     echo "Use Password: -p mypassword" . PHP_EOL;
     echo "Use alt folder: -dir full_path" . PHP_EOL;
-    echo "Use global folder: -g or -global" . PHP_EOL;
+    echo "Use this db file: -dbfile or -d" . PHP_EOL;
+    echo "Use this key file: -keyfile or -k" . PHP_EOL;
     exit(0);
 }
 
@@ -205,6 +263,7 @@ try {
     $pdostmt = $pdo->prepare($sql);
     $pdostmt->execute();
     $count = $pdostmt->fetch(PDO::FETCH_COLUMN);
+    $key_file = key_file();
     if (intval($count) == 0) {
        $pwd = get_pwd("Create a password: ");
        if (empty($pwd)) {
@@ -221,7 +280,21 @@ try {
             $myhash = password_hash($pwd, PASSWORD_BCRYPT);
             $key = $c->getKey();
             $ekey = openssl_encrypt($key, "AES-128-ECB", $pwd);
-            $pdostmt->execute(["hash"=>$myhash, "key"=>$ekey]);
+            if (!empty($key_file)) {
+                if (file_exists($key_file)) {
+                    echo "Key already exists..." . PHP_EOL;
+                    $pdostmt->execute(["hash"=>$myhash, "key"=>""]);
+                    exit(2);
+                }
+                touch($key_file);
+                chmod($key_file, 0660);
+            }    
+            if (empty($key_file) || !is_writable($key_file)) {
+                $pdostmt->execute(["hash"=>$myhash, "key"=>$ekey]);
+            } else {
+                file_put_contents($key_file, $ekey);
+                $pdostmt->execute(["hash"=>$myhash, "key"=>""]);                
+            }
          }
          $do_encode = true;
        }
@@ -240,7 +313,29 @@ try {
                 echo "Invalid Password!" . PHP_EOL;
                 exit(1);
             }
-            $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+            if (empty($key_file) || !is_readable($key_file)) {
+                $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+            } else {
+                if (is_link($key_file) || is_readable($key_file) ) {
+                    $tmp_key = file_get_contents($key_file);
+                    if ($tmp_key === false) {
+                        echo "Unable to read from key file, so using db instead!" . PHP_EOL;
+                        $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+                    } else {
+                        $key = openssl_decrypt($tmp_key, "AES-128-ECB", $pwd);
+                        if ($key === false) {
+                            $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+                        }
+                    }
+                } else {
+                    echo "Unable to read from key file, so using db instead!" . PHP_EOL;
+                    echo "Maybe blocked by open_basedir in /opt/profiles/scripts/todo/php_todo.ini" . PHP_EOL;
+                    $key = openssl_decrypt($row['mykey'], "AES-128-ECB", $pwd);
+                }
+            }
+            if ($key === false) {
+                echo "Invalid Key or maybe password!" . PHP_EOL;
+            }
         }
     }
 } catch (\Exception $ex) {

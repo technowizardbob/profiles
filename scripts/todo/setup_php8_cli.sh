@@ -1,4 +1,19 @@
 #!/bin/bash
+if [ ! -d /usr/local/share/man/man1 ]; then
+    sudo mkdir -p /usr/local/share/man/man1
+fi
+if [ -r /opt/profiles/scripts/todo/todo.1 ]; then
+    if [ ! -r /usr/local/share/man/man1/todo.1.gz ]; then
+        sudo install -g 0 -o 0 -m 0644 /opt/profiles/scripts/todo/todo.1 /usr/local/share/man/man1/
+        sudo gzip /usr/local/share/man/man1/todo.1
+    fi
+fi
+if [ -r /opt/profiles/scripts/todo/pwds.1 ]; then
+    if [ ! -r /usr/local/share/man/man1/pwds.1.gz ]; then
+        sudo install -g 0 -o 0 -m 0644 /opt/profiles/scripts/todo/pwds.1 /usr/local/share/man/man1/
+        sudo gzip /usr/local/share/man/man1/pwds.1
+    fi
+fi
 if [ -r /opt/profiles/skip_php_check ]; then
 	exit 0
 fi

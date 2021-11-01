@@ -6,3 +6,4 @@ awesome.txt
 custom_aliases/*.env
 custom_dotfiles/.*
 scripts/sshto/bin
+scripts/todo/.todo
