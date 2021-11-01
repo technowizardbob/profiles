@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author Robert Strutts
- * @copyright (c) 2020, Robert Strutts
- */
-
 $todo_file = "todo.db";
 $todo_dir = "/.todo";
 

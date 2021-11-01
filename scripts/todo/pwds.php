@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author Robert Strutts
- * @copyright (c) 2020, Robert Strutts
- */
-
 $pwds_file = "pwds.db";
 $pwds_dir = "/.todo";
 
