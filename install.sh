@@ -1,29 +1,22 @@
 #!/bin/bash
-
+RESET="\033[0m"
+BOLD="\033[1m"
+YELLOW="\033[38;5;11m"
+RED="\033[31m"
 clear
-echo "Press q to Agree." > /tmp/LICENSE.Agreement.info
-cat MIT-LICENSE.txt >> /tmp/LICENSE.Agreement.info
-echo "..." >> /tmp/LICENSE.Agreement.info
-echo "[End of File] - Press the letter q to Agree." >> /tmp/LICENSE.Agreement.info
-less /tmp/LICENSE.Agreement.info
-cat EULA.txt
-echo "Do you agree with my End User License Agreement? [yes/no]"
-read -r agree
-if [ "$agree" = "n" ]; then
-   exit 1
-fi
-if [ "$agree" = "no" ]; then
-   exit 1
-fi
-if [ "$agree" = "N" ]; then
-   exit 1
-fi
-if [ "$agree" = "No" ]; then
-   exit 1
-fi
-if [ "$agree" = "NO" ]; then
-   exit 1
-fi
+cat LICENSE
+echo ".."
+read -r -p "$(echo -e $BOLD$RED'After reading LICENSE hit enter key.'$RESET)"
+function check () {
+	cat EULA.txt
+	read -r -p "$(echo -e $BOLD$YELLOW'Do you agree with my End User License Agreement? [yes/no]'$RESET)" agree
+	case $agree in
+		y|yes|Y|YES|Yes) return 0;;
+		n|no|N|NO|No) exit 1;;
+		*) check;;
+	esac
+}
+check
 
 if [ "$EUID" -eq 0 ]; then
     echo -e "\nPlease backup and make sym-links your self for the root account, as I do not want to make a admin mad.\n"

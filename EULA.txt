@@ -1,11 +1,9 @@
 ﻿
-See LICENSE file for legal agreement. Feel free to use/modify/distribute as you desire...
-
 Do a full system backup before installing any software....
+As described in LICENSE: Usage means you understand that this software 
+has Absolutely NO WARRANTY of any kind. Use at own risk. 
 
-Usage means you understand that this software has Absolutely NO WARRANTY of any kind.
-
-Use at own risk. Please review all files before any execution of Internet code.
+Please review all files before any execution of Internet code.
 
 The included source code is not meant to be used in a Production environment!
 
