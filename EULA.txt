@@ -1,19 +1,13 @@
-See LICENESE file for legal agreement.
-
-Feel free to use/give as you desire... No attribution is required, but
-it's kind to do so...
+﻿
+See LICENSE file for legal agreement. Feel free to use/modify/distribute as you desire...
 
 Do a full system backup before installing any software....
 
-Useage means you understand that this software has Absolutly NO WARRANTY of any kind.
+Usage means you understand that this software has Absolutely NO WARRANTY of any kind.
 
 Use at own risk. Please review all files before any execution of Internet code.
 
 The included source code is not meant to be used in a Production environment!
 
-It is intened for educational use only and maybe fun with Home-Labs. However,
+It is intended for educational use only and maybe fun with Home-Labs. However,
 I'm not even saying it is fit for any purpose...use at own risk.
-
-Should have made this comment MIT licensed - BTW I guess.
-
-I hate the legal stuff...just want to do code....

@@ -114,10 +114,10 @@ if ($action === "help") {
     exit(0);
 }
 
-$pwd_neeeded = true;
-update_db($pwd_neeeded);
+$pwd_needed = true; // Deny empty passwords?
+update_db($pwd_needed);
 
-$ar = fetch_keys($pwd_neeeded);
+$ar = fetch_keys($pwd_needed);
 $salt = $ar['salt'] ?? false;
 $new_key = $ar['new_key'] ?? false;
 $pwd = $ar['pwd'] ?? false;
@@ -220,7 +220,7 @@ if ($action === "ls") {
         foreach ($rows as $row) {
             $bk = $new_key;
             $done = ($row['completed'] == 1) ? "Complete" : "Incomplete";
-            if ($pwd_neeeded) {
+            if ($pwd_needed) {
                 $cipher_text = base64_decode($row['item']);
                 $nonce = base64_decode($row['nonce']);
                 $item = c::decode_cipher_text($cipher_text, $nonce, $bk);
@@ -244,7 +244,7 @@ if ($action === "add") {
         $sql = "INSERT INTO items (item, nonce, host_name, user, date_stamp, completed) VALUES (:item, :nonce, :host, :user, :ds, :completed)";
         $pdostmt = $pdo->prepare($sql);
         if (!$pdostmt === false) {
-            if ($pwd_neeeded) {
+            if ($pwd_needed) {
                 $nonce = c::make_nonce();
                 $b_nonce = base64_encode($nonce);
                 $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
@@ -291,7 +291,7 @@ if ($action === "update") {
         $sql = "UPDATE items SET item=:item, nonce=:nonce, user=:user, date_stamp=:ds WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
         if (!$pdostmt === false) {
-            if ($pwd_neeeded) {
+            if ($pwd_needed) {
                 $nonce = c::make_nonce();
                 $b_nonce = base64_encode($nonce);
                 $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));

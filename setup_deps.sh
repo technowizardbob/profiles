@@ -13,7 +13,7 @@ if [ -e .ran_setup ]; then
    echo "If it did not install everything, then \$ rm .ran_setup"
    exit 1
 fi
-   
+
 if [ ! -r arch_deps.list ] || [ ! -r debian_deps.list ] || \
    [ ! -d /opt/profiles ]; then
    echo -e "Setup FAILED to install, as it could not find its default path of /opt/profiles, or could not find arch_deps.list, or debian_deps.list \n- required for setup!\n"

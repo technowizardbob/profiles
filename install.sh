@@ -2,7 +2,8 @@
 
 clear
 echo "Press q to Agree." > /tmp/LICENSE.Agreement.info
-cat LICENSE >> /tmp/LICENSE.Agreement.info
+cat MIT-LICENSE.txt >> /tmp/LICENSE.Agreement.info
+echo "..." >> /tmp/LICENSE.Agreement.info
 echo "[End of File] - Press the letter q to Agree." >> /tmp/LICENSE.Agreement.info
 less /tmp/LICENSE.Agreement.info
 cat EULA.txt

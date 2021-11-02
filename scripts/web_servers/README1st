@@ -1,4 +1,4 @@
-deploy_NEW_UbuntuServer.sh -> once enabled and run creates a MySQL, PHP, Apache web site server
+deploy_NEW_UbuntuServer.sh.EDITME -> once enabled and run creates a MySQL, PHP, Apache web site server
 make_new_dev_user.sh -> once enabled and run creates a ROOTable dev user account
 
 These scripts are provided as is, becareful not to run on existing servers
@@ -19,4 +19,4 @@ Other installed components: Redis, curl, screen, wget, PHPmyAdmin, git, npm-node
 
 I assume no fitness or warranty....use at own risk!
 
-Peace out, Robert S.
+These files are provided for educational useage.

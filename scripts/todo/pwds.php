@@ -132,10 +132,10 @@ if ($action === "help") {
     exit(0);
 }
 
-$pwd_neeeded = true;
-update_db($pwd_neeeded);
+$pwd_needed = true; // Make sure is set to true to force password requirements.
+update_db($pwd_needed);
 
-$ar = fetch_keys($pwd_neeeded);
+$ar = fetch_keys($pwd_needed);
 $salt = $ar['salt'] ?? false;
 $new_key = $ar['new_key'] ?? false;
 $pwd = $ar['pwd'] ?? false;
@@ -239,7 +239,7 @@ if ($action === "ls") {
         foreach ($rows as $row) {
             $bk = $new_key;
             $done = ($row['enabled'] == 1) ? "Enabled" : "Disabled";
-            if ($pwd_neeeded) {
+            if ($pwd_needed) {
                 $cipher_text = base64_decode($row['item']);
                 $nonce = base64_decode($row['nonce']);
                 $item = c::decode_cipher_text($cipher_text, $nonce, $bk);
@@ -263,7 +263,7 @@ if ($action === "add") {
         $sql = "INSERT INTO systems_pwd (item, pwd, nonce, host_name, user, date_stamp, enabled) VALUES (:item, :pwd, :nonce, :host, :user, :ds, :enabled)";
         $pdostmt = $pdo->prepare($sql);
         if (!$pdostmt === false) {
-            if ($pwd_neeeded) {
+            if ($pwd_needed) {
                 $nonce = c::make_nonce();
                 $b_nonce = base64_encode($nonce);
                 $ckey = $new_key;
