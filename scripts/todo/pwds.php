@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author: Robert Strutts
  * Copyright: 2021
@@ -49,9 +50,11 @@ $B = $argv[3] ?? "";
 $C = $argv[4] ?? "";
 
 function get_status(string $status): string {
-    switch(strtolower($status)) {
-        case "enabled": case "enable": $status = "1"; break;
-        default: $status = "0"; break;
+    switch (strtolower($status)) {
+        case "enabled": case "enable": $status = "1";
+            break;
+        default: $status = "0";
+            break;
     }
     return $status;
 }
@@ -64,47 +67,49 @@ function get_id($id) {
     return $id;
 }
 
-switch(strtolower($command)) {
-   case "help": case "?": case "-?": case "--help": case "-help": $action = "help"; break; 
-   case "show":
-       $action = "show";
-       $id = get_id($A);
-       break;
-   case "add": case "new":
-       $action = "add";
-       $item = escapeshellarg($A);
-       $cc_pwd = escapeshellarg($B);
-       break;
-   case "remove": case "rm": case "del": case "delete":
-       $action = "rm";
-       $id = get_id($A);
-       break;
-   case "update-name":
-   case "update-item":
-       $action = "update-item";
-       $id = get_id($A);
-       $item = escapeshellarg($B);
-       break;
-   case "update-pwd":
-   case "update-password":
-       $action = "update-password";
-       $id = get_id($A);
-       $item = escapeshellarg($B);
-       break;
-   case "enabled": case "enable":
-       $action = "enable";
-       $id = get_id($A);
-       break;
-   case "disabled": case "disable":
-       $action = "disable";
-       $id = get_id($A);
-       break;
-   case "expires": case "expires-on":
-       $action = "expires";
-       $id = get_id($A);
-       $expires = escapeshellarg($B);
-       break;
-   default: $action = "ls"; break;
+switch (strtolower($command)) {
+    case "help": case "?": case "-?": case "--help": case "-help": $action = "help";
+        break;
+    case "show":
+        $action = "show";
+        $id = get_id($A);
+        break;
+    case "add": case "new":
+        $action = "add";
+        $item = escapeshellarg($A);
+        $cc_pwd = escapeshellarg($B);
+        break;
+    case "remove": case "rm": case "del": case "delete":
+        $action = "rm";
+        $id = get_id($A);
+        break;
+    case "update-name":
+    case "update-item":
+        $action = "update-item";
+        $id = get_id($A);
+        $item = escapeshellarg($B);
+        break;
+    case "update-pwd":
+    case "update-password":
+        $action = "update-password";
+        $id = get_id($A);
+        $item = escapeshellarg($B);
+        break;
+    case "enabled": case "enable":
+        $action = "enable";
+        $id = get_id($A);
+        break;
+    case "disabled": case "disable":
+        $action = "disable";
+        $id = get_id($A);
+        break;
+    case "expires": case "expires-on":
+        $action = "expires";
+        $id = get_id($A);
+        $expires = escapeshellarg($B);
+        break;
+    default: $action = "ls";
+        break;
 }
 
 if ($action === "help") {
@@ -127,96 +132,16 @@ if ($action === "help") {
     exit(0);
 }
 
-try {
-    $sql = "SELECT COUNT(id) AS c FROM password";
-    $pdostmt = $pdo->prepare($sql);
-    $pdostmt->execute();
-    $count = $pdostmt->fetch(PDO::FETCH_COLUMN);
-    $key_file = key_file();
-    if (intval($count) == 0) {
-       $pwd = get_pwd("Create a password: ");
-       $cp = $pwd;
-       if (empty($pwd)) {
-           echo "Empty pwd not allowed!";
-           exit(1);
-       } else {
-         $sql = "INSERT INTO password (myhash, mykey) VALUES (:hash, :key)";
-         $pdostmt = $pdo->prepare($sql);
-         if (! $pdostmt === false) {
-            $myhash = base64_encode(c::store_pwd_into_hash($pwd));
-            $salt = c::make_some_salt();
-            $new_key = base64_encode(c::make_key_from_pwd($cp, $salt));
-            $a_keys = ['newkey'=>$new_key,'salt'=>$salt];
-            $key = base64_encode(json_encode($a_keys));
-            if (!empty($key_file)) {
-                if (file_exists($key_file)) {
-                    echo "Key already exists..." . PHP_EOL;
-                    $pdostmt->execute(["hash"=>$myhash, "key"=>""]);
-                    exit(2);
-                }
-                touch($key_file);
-                chmod($key_file, 0660);
-            }
-            if (empty($key_file) || !is_writable($key_file)) {
-                $pdostmt->execute(["hash"=>$myhash, "key"=>$key]);
-            } else {
-                file_put_contents($key_file, $key);
-                $pdostmt->execute(["hash"=>$myhash, "key"=>""]);                
-            }
-         }
-         $do_encode = true;
-       }
-    } else {
-        $sql = "SELECT myhash, mykey FROM password WHERE id=1 LIMIT 1";
-        $pdostmt = $pdo->prepare($sql);
-        $pdostmt->execute();
-        $row = $pdostmt->fetch(\PDO::FETCH_ASSOC);
-        $myhash = $row['myhash'];
-        if ($myhash === "none") {
-            echo "Error, no password was set!";
-            exit(1);
-        }
-        $do_encode = true;
-        $myhash = base64_decode($row['myhash']);
-        $pwd = get_pwd();
-        $copy_of_pwd = $pwd;
-        if (! c::compair_hashed_pwd($myhash, $pwd)) {
-            echo "Invalid Password!" . PHP_EOL;
-            exit(1);
-        }
-            if (empty($key_file) || !is_readable($key_file)) {
-                $mykey = json_decode(base64_decode($row['mykey']), true);
-                $salt = base64_decode($mykey['salt']);
-                $new_key = base64_decode($mykey['newkey']);
-        } else {
-            if (is_link($key_file) || is_readable($key_file) ) {
-                    $mykey = json_decode(base64_decode(file_get_contents($key_file)), true);
-                    if ($mykey === false) {
-                        echo "Unable to read from key file, so using db instead!" . PHP_EOL;
-                        $mykey = json_decode(base64_decode($row['mykey']), true);
-                        $salt = base64_decode($mykey['salt']);
-                        $new_key = base64_decode($mykey['newkey']);
-                } else {
-                        $salt = base64_decode($mykey['salt']);
-                        $new_key = base64_decode($mykey['newkey']);
-                    }
-            } else {
-                $mykey = json_decode(base64_decode($row['mykey']), true);
-                $salt = base64_decode($mykey['salt']);
-                $new_key = base64_decode($mykey['newkey']);
-                echo "Unable to read from key file, so using db instead!" . PHP_EOL;
-                echo "Maybe blocked by open_basedir in /opt/profiles/scripts/todo/php_todo.ini" . PHP_EOL;
-            }
-        }
-        if ($new_key === false) {
-            echo "Invalid Key or maybe password!" . PHP_EOL;
-        }
-    }
-} catch (\Exception $ex) {
-    echo $ex->getMessage();
-    exit(1);
-} catch (\PDOException $e) {
-    echo $e->getMessage();
+$pwd_neeeded = true;
+update_db($pwd_neeeded);
+
+$ar = fetch_keys($pwd_neeeded);
+$salt = $ar['salt'] ?? false;
+$new_key = $ar['new_key'] ?? false;
+$pwd = $ar['pwd'] ?? false;
+
+if ($salt === false || $new_key === false || $pwd === false) {
+    echo "No DB data found for key/salt/pwd.";
     exit(1);
 }
 
@@ -224,13 +149,13 @@ if ($action === "show") {
     try {
         $sql = "SELECT `item`,`pwd`,`nonce`,`enabled`,`date_stamp`,`expires_on` FROM systems_pwd WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
-            $pdostmt->execute(["id"=>$id]);
+        if (!$pdostmt === false) {
+            $pdostmt->execute(["id" => $id]);
         } else {
             echo "INVALID Schema!";
             exit(1);
         }
-        $row = $pdostmt->fetch(PDO::FETCH_ASSOC);
+        $row = $pdostmt->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             echo "Does not Exist!";
             exit(1);
@@ -265,7 +190,7 @@ if ($action === "ls") {
     $full = false;
     $user = false;
     $host = false;
-    for($i = 1; $i < $argc; $i++) {
+    for ($i = 1; $i < $argc; $i++) {
         $opt = strtolower($argv[$i]);
         if ($opt === "-user") {
             $user = true;
@@ -286,11 +211,11 @@ if ($action === "ls") {
         }
         if ($opt === "-page") {
             $limiter = true;
-            $page = (isset($argv[$i+1])) ? $argv[$i+1] : 1;
+            $page = (isset($argv[$i + 1])) ? $argv[$i + 1] : 1;
         }
         if ($opt === "-limit") {
             $limiter = true;
-            $limit_no = (isset($argv[$i+1])) ? $argv[$i+1] : 8;
+            $limit_no = (isset($argv[$i + 1])) ? $argv[$i + 1] : 8;
         }
     }
     if ($limiter === true) {
@@ -306,15 +231,15 @@ if ($action === "ls") {
         $sql = "SELECT id, item, nonce, enabled, date_stamp{$select} FROM systems_pwd {$where}{$orderby}{$limit}";
         $pdostmt = $pdo->prepare($sql);
         if ($pdostmt === false) {
-           echo "INVALID Schema!";
-           exit(1);
+            echo "INVALID Schema!";
+            exit(1);
         }
         $pdostmt->execute();
-        $rows = $pdostmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach($rows as $row) {
+        $rows = $pdostmt->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
             $bk = $new_key;
             $done = ($row['enabled'] == 1) ? "Enabled" : "Disabled";
-            if ($do_encode) {
+            if ($pwd_neeeded) {
                 $cipher_text = base64_decode($row['item']);
                 $nonce = base64_decode($row['nonce']);
                 $item = c::decode_cipher_text($cipher_text, $nonce, $bk);
@@ -337,13 +262,16 @@ if ($action === "add") {
     try {
         $sql = "INSERT INTO systems_pwd (item, pwd, nonce, host_name, user, date_stamp, enabled) VALUES (:item, :pwd, :nonce, :host, :user, :ds, :enabled)";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
-            if ($do_encode) {
+        if (!$pdostmt === false) {
+            if ($pwd_neeeded) {
                 $nonce = c::make_nonce();
                 $b_nonce = base64_encode($nonce);
                 $ckey = $new_key;
                 $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
                 $enc_pwd = base64_encode(c::make_cipher_text($cc_pwd, $nonce, $ckey));
+            } else {
+                echo "Cannot save this data, sorry!";
+                exit(1);
             }
             $host = gethostname();
             if (function_exists('exec')) {
@@ -352,7 +280,7 @@ if ($action === "add") {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["item"=>$enc_item, "pwd"=>$enc_pwd, "nonce"=>$b_nonce, "host"=>$host, "user"=>$user, "ds"=>$ds, "enabled"=>"1"]);
+            $pdostmt->execute(["item" => $enc_item, "pwd" => $enc_pwd, "nonce" => $b_nonce, "host" => $host, "user" => $user, "ds" => $ds, "enabled" => "1"]);
         }
     } catch (\Exception $ex) {
         echo $ex->getMessage();
@@ -362,7 +290,7 @@ if ($action === "add") {
         exit(1);
     }
     if ($C == "-show") {
-       echo $cc_pwd . "\n";
+        echo $cc_pwd . "\n";
     }
     exit(0);
 }
@@ -371,12 +299,12 @@ if ($action === "rm") {
     try {
         $sql = "DELETE FROM systems_pwd WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
-            $pdostmt->execute(["id"=>$id]);
+        if (!$pdostmt === false) {
+            $pdostmt->execute(["id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
-	exit(1);
+        exit(1);
     }
     exit(0);
 }
@@ -386,7 +314,7 @@ if ($action === "update-item") {
     try {
         $sql = "UPDATE systems_pwd SET item=:item, nonce=:nonce, user=:user, date_stamp=:ds WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
+        if (!$pdostmt === false) {
             if ($do_encode) {
                 $nonce = c::make_nonce();
                 $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
@@ -397,7 +325,7 @@ if ($action === "update-item") {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["item"=>$enc_item, "nonce"=>$nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
+            $pdostmt->execute(["item" => $enc_item, "nonce" => $nonce, "user" => $user, "ds" => $ds, "id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
@@ -410,7 +338,7 @@ if ($action === "update-password") {
     try {
         $sql = "UPDATE systems_pwd SET pwd=:pwd, nonce=:nonce, user=:user, date_stamp=:ds WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
+        if (!$pdostmt === false) {
             if ($do_encode) {
                 $nonce = c::make_nonce();
                 $enc_item = base64_encode(c::make_cipher_text($item, $nonce, $new_key));
@@ -421,7 +349,7 @@ if ($action === "update-password") {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["pwd"=>$enc_item, "nonce"=>$nonce, "user"=>$user, "ds"=>$ds, "id"=>$id]);
+            $pdostmt->execute(["pwd" => $enc_item, "nonce" => $nonce, "user" => $user, "ds" => $ds, "id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
@@ -434,14 +362,14 @@ if ($action === "enable") {
     try {
         $sql = "UPDATE systems_pwd SET enabled='1', user=:user, date_stamp=:ds WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
+        if (!$pdostmt === false) {
             if (function_exists('exec')) {
                 $user = exec("whoami");
             } else {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
+            $pdostmt->execute(["user" => $user, "ds" => $ds, "id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
@@ -454,14 +382,14 @@ if ($action === "disable") {
     try {
         $sql = "UPDATE systems_pwd SET enabled='0', user=:user, date_stamp=:ds WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
+        if (!$pdostmt === false) {
             if (function_exists('exec')) {
                 $user = exec("whoami");
             } else {
                 $user = "unknown";
             }
             $ds = date("Y/m/d H:i");
-            $pdostmt->execute(["user"=>$user, "ds"=>$ds, "id"=>$id]);
+            $pdostmt->execute(["user" => $user, "ds" => $ds, "id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
@@ -474,8 +402,8 @@ if ($action === "expires") {
     try {
         $sql = "UPDATE systems_pwd SET expires_on=:expires WHERE id=:id LIMIT 1";
         $pdostmt = $pdo->prepare($sql);
-        if (! $pdostmt === false) {
-            $pdostmt->execute(["expires"=>$expires, "id"=>$id]);
+        if (!$pdostmt === false) {
+            $pdostmt->execute(["expires" => $expires, "id" => $id]);
         }
     } catch (\PDOException $e) {
         echo $e->getMessage();
