@@ -3,12 +3,13 @@ RESET="\033[0m"
 BOLD="\033[1m"
 YELLOW="\033[38;5;11m"
 RED="\033[31m"
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 clear
-cat LICENSE
+cat $SCRIPT_DIR/LICENSE
 echo ".."
 read -r -p "$(echo -e $BOLD$RED'After reading LICENSE hit enter key.'$RESET)"
 function check () {
-	cat EULA.txt
+	cat  $SCRIPT_DIR/EULA.txt
 	read -r -p "$(echo -e $BOLD$YELLOW'Do you agree with my End User License Agreement? [yes/no]'$RESET)" agree
 	case $agree in
 		y|yes|Y|YES|Yes) return 0;;
