@@ -125,15 +125,6 @@ ex3: cheats
 
 If, you forget about this README.md file, type: $ guide
 
-The followings two scripts (todo and pwds) will install PHP 8.0 CLI and PHP 8.0 SQLite3,
-	if apt-get is installed....
-To disable PHP version checking if already on newest version:
-$ touch /opt/profiles/skip_php_check
-
-PHP server todo list: todo
-PHP password MGR: pwds
-
-
 .SH AUTHOR
 Robert S. <Robert@TryingToScale.com>
 
