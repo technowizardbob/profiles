@@ -32,6 +32,9 @@ Note: It will edit the git config file so it has your name and email at this poi
    -   so ensure you got system backups....
 $ ./setup_deps.sh
 
+# To skip TripWire security install checking:
+$ touch /opt/profiles/.no_tripwire_check
+
 # (Optional) If on windows sub-system for Linux and your Fonts look bad...then
 $ rm /opt/profiles/.unicode_support
 
