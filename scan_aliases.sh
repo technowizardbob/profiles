@@ -88,7 +88,7 @@ del_mail() {
 
    read -r -p "Would you like to save your mail or delete it [save or delete] : " keep
    if [ "$keep" == "delete" ] || [ "$keep" == "del" ]; then
-	echo "Attempting to erase mail for user root."
+	echo "Attempting to erase mail for user $1."
 	sudo rm "$MAIL_FOLDER/$1"
    fi
 }
@@ -98,8 +98,8 @@ read_mail() {
       return
    fi
 
-   if [ "$1" == "root" ] && [ $EUID -ne 0 ] && [ -z "$USE_SUPER" ]; then
-      echo "Have your Root user check his mailbox as ${MAIL_FOLDER}/root has Mail in it!"
+   if [ $EUID -ne 0 ] && [ -z "$USE_SUPER" ]; then
+      echo "Have your Root user check the mailbox for ${MAIL_FOLDER}/$1 has Mail in it!"
       return
    fi
 
