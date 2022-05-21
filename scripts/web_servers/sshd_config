@@ -26,12 +26,12 @@ LogLevel INFO
 LoginGraceTime 120
 PermitRootLogin no
 StrictModes yes
-####################AllowUsers YOURnameHere!,OtherGUY
+####################AllowUsers you1 me2
+AllowGroups www-data sftp
 ClientAliveInterval 300
 ClientAliveCountMax 0
 
 RSAAuthentication yes
-PubkeyAuthentication yes
 AuthorizedKeysFile	%h/.ssh/authorized_keys
 
 # Don't read the user's ~/.rhosts and ~/.shosts files
@@ -49,9 +49,6 @@ PermitEmptyPasswords no
 # Change to yes to enable challenge-response passwords (beware issues with
 # some PAM modules and threads)
 ChallengeResponseAuthentication no
-
-# Change to no to disable tunnelled clear text passwords
-PasswordAuthentication no
 
 # Kerberos options
 #KerberosAuthentication no
@@ -80,7 +77,7 @@ Banner /etc/banner
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
 
-Subsystem sftp /usr/lib/openssh/sftp-server
+#Subsystem sftp /usr/lib/openssh/sftp-server
 
 # Set this to 'yes' to enable PAM authentication, account processing,
 # and session processing. If this is enabled, PAM authentication will
@@ -92,3 +89,17 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
 UsePAM yes
+
+Subsystem sftp internal-sftp -u 0002
+Match group www-data
+        PubkeyAuthentication yes
+        PasswordAuthentication no
+
+Match group sftp
+        ChrootDirectory /var/webjails
+        ForceCommand internal-sftp -u 0002
+        AllowTcpForwarding no
+        X11Forwarding no
+        PermitTTY no
+        PasswordAuthentication yes
+        PubkeyAuthentication no
