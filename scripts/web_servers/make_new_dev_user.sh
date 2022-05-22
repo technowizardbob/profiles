@@ -13,5 +13,10 @@ if ! user_exists "$1"; then
     adduser "$1"
 fi
 
-usermod -a -G sudo "$1"
-usermod -g www-data "$1"
+if [ $(cat /etc/group | grep -c "web-admin:") -eq 0 ]; then
+   groupadd web-admin
+fi
+
+usermod -a -G www-data "$1"
+usermod -g sudo "$1"
+usermod -g web-admin "$1"

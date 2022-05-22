@@ -27,7 +27,7 @@ LoginGraceTime 120
 PermitRootLogin no
 StrictModes yes
 ####################AllowUsers you1 me2
-AllowGroups www-data sftp
+AllowGroups web-admin sftp-user
 ClientAliveInterval 300
 ClientAliveCountMax 0
 
@@ -91,12 +91,12 @@ AcceptEnv LANG LC_*
 UsePAM yes
 
 Subsystem sftp internal-sftp -u 0002
-Match group www-data
+Match group web-admin
         PubkeyAuthentication yes
         PasswordAuthentication no
 
-Match group sftp
-        ChrootDirectory /var/webjails
+Match group sftp-user
+        ChrootDirectory /var/www/webjails
         ForceCommand internal-sftp -u 0002
         AllowTcpForwarding no
         X11Forwarding no
