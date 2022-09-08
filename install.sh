@@ -155,12 +155,12 @@ else
   fi
 fi
 
-echo "See a list of commands Type: command"
-echo "Example: command web"
-echo "Ex2: command git"
-echo "Ex3: command apt_get"
-echo "Ex4: command docker"
-echo "Ex5: command folders"
+echo "See a list of commands Type: cmd"
+echo "Example: cmd web"
+echo "Ex2: cmd git"
+echo "Ex3: cmd apt_get"
+echo "Ex4: cmd docker"
+echo "Ex5: cmd folders"
 echo "For a GUIDE: \$ guide"
 echo "Installed to local user account ${USER}. IE folder: ${HPATH}/"
 echo -e "\nIf you had any dotfiles, they will be moved to ${HPATH}/.old_a_XXXX"
