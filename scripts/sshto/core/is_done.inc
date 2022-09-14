@@ -5,7 +5,9 @@ is_done() {
   what=$(/opt/profiles/scripts/display_check.sh)
   [[ $what == "" ]] && {
         clear 
-        [[ $(uname -s) == "Darwin" ]] && ls -G || ls --color=auto
+        echo "Edit me: /opt/profiles/scripts/sshto/core/is_done.inc"
+	echo "Cool beans..."
+        # [[ $(uname -s) == "Darwin" ]] && ls -G || ls --color=auto
         exit 0; 
   } || { clear; echo $what; exit 1; } 
 }
