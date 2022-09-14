@@ -15,5 +15,5 @@ if [ ! -d ${_MAIN_PATH}/bin ]; then
 fi
 
 pushd ${_PROFILES_PATH}
-tar -zvcf ${_MAIN_PATH}/bin/bash_aliases.tar.gz .bashrc .bash_aliases .git_bash_prompt theme aliases/ cheats/ custom_aliases/ scripts/pwd_gen.sh scripts/todo/
+tar -zvcf ${_MAIN_PATH}/bin/bash_aliases.tar.gz .bashrc .bash_aliases .git_bash_prompt theme aliases/ cheats/ custom_aliases/ scripts/pwd_gen.sh
 popd
