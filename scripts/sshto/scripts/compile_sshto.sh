@@ -9,10 +9,10 @@ fi
 
 _MAIN_PATH="${_MAIN_PATHCC}scripts/sshto"
 
-_SSHTO_BIN=${_MAIN_PATHCC}/bin/sshto
+_SSHTO_BIN=${_MAIN_PATH}/bin/sshto
 
-if [ ! -d _MAIN_PATHCC ]; then
-   echo "Sorry, no /opt/profiles folder!"
+if [ ! -d ${_MAIN_PATH} ]; then
+   echo "Sorry, no /opt/profiles/scripts/sshto folder!"
    exit 1
 fi
 
