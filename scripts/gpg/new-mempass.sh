@@ -3,7 +3,7 @@ source ${_PROFILES_PATH}scripts/gpg/common-helper.sh
 
 new-mempass() {
   if [ -z "$1" ]; then
-     echo "Please assign system-name!"
+     echo "Please assign system-name, example: email/bob@example.com"
   else
      _parse_gpg_system_name "$1"
      if [ $? -ne 0 ]; then
