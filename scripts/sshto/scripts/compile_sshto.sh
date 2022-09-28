@@ -1,10 +1,17 @@
 #!/bin/bash
 
-_MAIN_PATH="/opt/profiles/scripts/sshto"
+if [ -z "$_PROFILES_PATH" ]; then
+   _MAIN_PATHCC=/opt/profiles/
+else
+   _MAIN_PATHCC=${_PROFILES_PATH}
+fi
 
-_SSHTO_BIN=${_MAIN_PATH}/bin/sshto
 
-if [ ! -d /opt/profiles ]; then
+_MAIN_PATH="${_MAIN_PATHCC}scripts/sshto"
+
+_SSHTO_BIN=${_MAIN_PATHCC}/bin/sshto
+
+if [ ! -d _MAIN_PATHCC ]; then
    echo "Sorry, no /opt/profiles folder!"
    exit 1
 fi
@@ -24,7 +31,7 @@ _RUN_CMDS_FILE="${_PATH_TO_SCRIPTS}/sshto_run_cmds.list"
 
 [ ! -f $_RUN_CMDS_FILE ] && { echo "No config file!! Aborting..."; exit; }
 
-_GEN_RSA_KEY=/opt/profiles/scripts/gen_rsa_key.sh
+_GEN_RSA_KEY=${_MAIN_PATHCC}scripts/gen_rsa_key.sh
 
 echo "#!/bin/bash" > $_SSHTO_BIN
 cat ${_MAIN_PATH}/config.inc >> $_SSHTO_BIN

@@ -9,7 +9,13 @@ else
    exit 1
 fi
 
-urls=/opt/profiles/sites/urls
+if [ -z "$_PROFILES_PATH" ]; then
+   _MAIN_PATHX=/opt/profiles/
+else
+   _MAIN_PATHX=${_PROFILES_PATH}
+fi
+
+urls=${_MAIN_PATHX}sites/urls
 config_sites_dir=$HPATH/.config/profiles_sites
 config_sites=$config_sites_dir/sites_url.list
 WEBSITE_BROWSER='firefox'
@@ -44,7 +50,7 @@ refresh() {
         echo "Local,file:${HPATH}/.config/profiles_sites/index.html,Links" >> "$config_sites"
     fi
     if [ ! -r "$config_sites_dir/index.html" ]; then
-        cp /opt/profiles/sites/index.html "$config_sites_dir/index.html"
+        cp ${_MAIN_PATH}sites/index.html "$config_sites_dir/index.html"
     fi
    cmdlist=()
    IFSOLD=$IFS
@@ -85,7 +91,7 @@ run_dialog() {
         esac
 }
 
-what=$(/opt/profiles/scripts/display_check.sh)
+what=$(${_MAIN_PATHX}scripts/display_check.sh)
 [[ "$what" == "" ]] && clear || { echo "$what"; exit 1; }
 
 run_dialog

@@ -8,6 +8,11 @@ elif [ "$2" = home ]; then
 else
   FOLDER="$1"
 fi
+if [ -z "$_PROFILES_PATH" ]; then
+   _MAIN_PATH_GIT=/opt/profiles/scripts/git/
+else
+   _MAIN_PATH_GIT=${_PROFILES_PATH}scripts/git/
+fi
 if [ -d "$FOLDER/.git" ]; then
   cd "$FOLDER" || { echo "Unable to CD into $FOLDER !!"; exit 1; }
   /bin/echo "$FOLDER"
@@ -53,7 +58,7 @@ if [ -d "$FOLDER/.git" ]; then
   if [[ -z "$well" ]]; then
       exit 1
   elif [ "$well" = "1" ] || [ "$well" = "pull" ]; then
-    /opt/profiles/scripts/git/gpull "$FOLDER"
+    ${_MAIN_PATH_GIT}gpull "$FOLDER"
   elif [ "$well" = "2" ] || [ "$well" = "push" ]; then
   while :
    do
@@ -91,7 +96,7 @@ if [ -d "$FOLDER/.git" ]; then
       break
     fi
    done
-    /opt/profiles/scripts/git/gpull-and-push "$FOLDER"
+    ${_MAIN_PATH_GIT}gpull-and-push "$FOLDER"
   fi
 else
   /bin/echo "Sorry, Git Repo not found!"

@@ -2,19 +2,22 @@
 
 errors="0"
 
-_MAIN_PATH=/opt/profiles/scripts/sshto
-
-_PATH_TO_CORE=${_MAIN_PATH}/core
+if [ -z "$_PROFILES_PATH" ]; then
+   export _MAIN_PATH_SSHTO=/opt/profiles/scripts/sshto/
+else
+   export _MAIN_PATH_SSHTO=${_PROFILES_PATH}scripts/sshto/
+fi
+_PATH_TO_CORE=${_MAIN_PATH_SSHTO}core
 _CORE_FILES=${_PATH_TO_CORE}/*.inc
 
-_PATH_TO_SCRIPTS=${_MAIN_PATH}/scripts
+_PATH_TO_SCRIPTS=${_MAIN_PATH_SSHTO}scripts
 _SCRIPT_FILES=${_PATH_TO_SCRIPTS}/*.inc
 
 _RUN_CMDS_FILE=${_PATH_TO_SCRIPTS}/sshto_run_cmds.list
 
 [ ! -f "$_RUN_CMDS_FILE" ] && { echo "No config file!! Aborting..."; exit; } 
 
-source "${_MAIN_PATH}/config.inc"
+source "${_MAIN_PATH_SSHTO}config.inc"
 
 source "${_PATH_TO_CORE}/dynamic/run_cmd.inc"
 

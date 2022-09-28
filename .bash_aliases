@@ -1,4 +1,4 @@
-_PROFILES_PATH="/opt/profiles/"
+export _PROFILES_PATH="/opt/profiles/"
 _CUSTOM_ENV_PATH="${_PROFILES_PATH}custom_aliases/"
 _CUSTOM_ENV_FILES="${_CUSTOM_ENV_PATH}*.env"
 _ENV_PATH="${_PROFILES_PATH}aliases/"

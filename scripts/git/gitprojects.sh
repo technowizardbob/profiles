@@ -1,9 +1,15 @@
 #!/bin/bash
 
+if [ -z "$_PROFILES_PATH" ]; then
+   _MAIN_PATHGP=/opt/profiles/scripts/
+else
+   _MAIN_PATHGP=${_PROFILES_PATH}scripts/
+fi
+
 git_projects=~/.gitprojects
 tmp_projects=/tmp/gitprojects
-git_util=/opt/profiles/scripts/git/dogit
-git_gen=/opt/profiles/scripts/locate_gits.sh
+git_util=${_MAIN_PATHGP}git/dogit
+git_gen=${_MAIN_PATHGP}locate_gits.sh
 
 refresh() {
    cmdlist=()
@@ -81,7 +87,7 @@ run_dialog() {
     esac
 }
 
-what=$(/opt/profiles/scripts/display_check.sh)
+what=$(${_MAIN_PATHGP}display_check.sh)
 [[ "$what" == "" ]] && echo "" || { echo "$what"; exit 1; }
 
 run_dialog

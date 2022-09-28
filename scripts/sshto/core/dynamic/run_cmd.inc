@@ -1,5 +1,12 @@
+if [ -z "$_PROFILES_PATH" ]; then
+   _MAIN_PATHC=/opt/profiles/scripts/
+else
+   _MAIN_PATHC=${_PROFILES_PATH}scripts/
+fi
+
+
 if [ ! -d ~/.ssh ]; then
-   /opt/profiles/scripts/gen_rsa_key.sh
+   ${_MAIN_PATHC}gen_rsa_key.sh
 fi
 
 refresh() {
