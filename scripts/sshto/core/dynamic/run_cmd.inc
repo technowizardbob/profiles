@@ -6,7 +6,7 @@ fi
 
 
 if [ ! -d ~/.ssh ]; then
-   ${_MAIN_PATHC}gen_rsa_key.sh
+   ${_MAIN_PATHC}make_a_key.sh
 fi
 
 refresh() {

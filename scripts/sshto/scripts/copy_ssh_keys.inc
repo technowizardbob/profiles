@@ -16,7 +16,7 @@ add_sshkey() {
   local pubs=$(find ~/.ssh/ -type f -iname "*.pub")
   if [ -z $pubs ]; then
      echo "You have no KEYs, copy your existing ones or make a new one...."
-     echo "To make a key do \$ /opt/profiles/scripts/gen_rsa_key.sh"
+     echo "To make a key do \$ /opt/profiles/scripts/make_a_key.sh"
      exit 1
   fi
   
