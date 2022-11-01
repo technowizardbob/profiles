@@ -164,24 +164,44 @@ EOF
 }
 
 checkForSourceInclude() {
-if grep -qFe "source ~/.bash_aliases" ~/.bashrc
-then
-   return
-else
-   sourceAliasPath
-fi
+  if grep -qFe "source ~/.bash_aliases" ~/.bashrc
+  then
+    return
+  else
+    sourceAliasPath
+  fi
 }
 
 checkForAliases() {
-if grep -qFe ". ~/.bash_aliases" ~/.bashrc
-then
-   return
-else
-   checkForSourceInclude
-fi
+  if grep -qFe ". ~/.bash_aliases" ~/.bashrc
+  then
+    return
+  else
+    checkForSourceInclude
+  fi
 }
 
 checkForAliases
+
+go_lsd() {
+  if [ -d /opt/profiles/dotfiles/ls_deluxe_amd ]; then
+    /opt/profiles/dotfiles/ls_deluxe_amd/debian_install_fonts.sh
+    /opt/profiles/dotfiles/ls_deluxe_amd/lsd_AMD64_installer.sh
+  else
+    if [ -d "$(pwd -P)"/dotfiles/ls_deluze_amd ]; then
+      "$(pwd -P)"/dotfiles/ls_deluxe_amd/debian_install_fonts.sh
+      "$(pwd -P)"/dotfiles/ls_deluxe_amd/lsd_AMD64_installer.sh
+    fi
+  fi
+}
+
+cpu_arch=`uname -p`
+if [[ "$cpu_arch" == "x86_64" ]]; then
+   read -r -p "Would you like to install Nerd font and Deluxe listings (LSD)? " lsd
+   case $lsd in
+	y|yes|Y|YES|Yes) go_lsd;;
+   esac
+fi
 
 echo "See a list of commands Type: cmd"
 echo "Example: cmd web"

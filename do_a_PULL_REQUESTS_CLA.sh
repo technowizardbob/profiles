@@ -1,10 +1,11 @@
+#!/bin/bash
+if [ -n "$(which gpg)" ] && [ -n "$(gpg --list-key)" ]; then
+
+cat <<EOF | tee ~/TTS_CLA_WAIVER
 # Copyright waiver for <https://github.com/tryingtoscale/profiles>
 
 By submitting a pull request for this project, you agree to 
 license your contribution under the MIT license to this project.
-
-Using GnuPG, contributors can sign a copyright waiver file as follows:
-$ gpg --no-version --armor --sign WAIVER
 
 To accept your pull request with changes....If you want to contribute 
 any code, then email me <Robert@TryingToScale.com> with -
@@ -68,3 +69,24 @@ required to provide support for your Contributions, except to the extent you des
 You acknowledge that the maintainers of this project are under no obligation to use or incorporate your contributions
 into the project. The decision to use or incorporate your contributions into the project will be made at the
 sole discretion of the maintainers or their authorized delegates.
+EOF
+
+  echo -e "\nIf you agree to keep with using the MIT License with this project, then:"
+  read -r -p "Sign your legal name here:" legal
+  if [ -z "$legal" ]; then
+     echo "Aborting..."
+     exit 1
+  fi
+  echo -e "\n$legal, accepted this MIT CLA." >> ~/TTS_CLA_WAIVER
+  echo -e "\n Singed on: " >> ~/TTS_CLA_WAIVER
+  date -R >> ~/TTS_CLA_WAIVER
+
+  if gpg --no-version --armor --sign ~/TTS_CLA_WAIVER
+  then
+     echo -e "Please attach the file: ~/TTS_CLA_WAIVER to an email.\nSend it to: Robert@TryingToScale.com"
+  else
+     echo "Sorry, gpg did not complete successfully..."
+  fi
+else
+  echo "Please generate a GPG key before doing this to sign this."
+fi
