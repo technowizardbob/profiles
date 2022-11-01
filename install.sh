@@ -81,12 +81,12 @@ if [ -f "$HPATH/.bash_aliases" ]; then
         echo "Moved existing Bash Aliases - Dot File!!! to ~/.old_a_bash_aliases"
         echo "If something does not work anymore in bash alias...edit the backup..."
 fi
-if [ -f "$HPATH/.bashrc" ]; then
-    echo -e "\n"
-    mv -v "$HPATH/.bashrc" "$HPATH/.old_a_bashrc"
-        echo "Moved existing Bash RC - Dot File!!! to ~/.old_a_bash_rc"
-        echo "If something does not work anymore in bashrc edit the backup..."
-fi
+#if [ -f "$HPATH/.bashrc" ]; then
+#    echo -e "\n"
+#    mv -v "$HPATH/.bashrc" "$HPATH/.old_a_bashrc"
+#        echo "Moved existing Bash RC - Dot File!!! to ~/.old_a_bash_rc"
+#        echo "If something does not work anymore in bashrc edit the backup..."
+#fi
 if [ -f "$HPATH/.profile" ]; then
     echo -e "\n"
     mv -v "$HPATH/.profile" "$HPATH/.old_a_profile"
@@ -117,7 +117,7 @@ if [ -d aliases ] && [ -f .bash_aliases ]; then
     echo -e "\n"
     echo "Making Sym Links from current install location"
     ln -s "$(pwd -P)"/.bash_aliases "$HPATH/"
-    ln -s "$(pwd -P)"/.bashrc "$HPATH/"
+#    ln -s "$(pwd -P)"/.bashrc "$HPATH/"
     ln -s "$(pwd -P)"/.profile "$HPATH/"
     ln -s "$(pwd -P)"/.git_bash_prompt "$HPATH/"
     ln -s "$(pwd -P)"/.kube-ps1 "$HPATH/"
@@ -137,7 +137,7 @@ else
     echo -e "\n"
     echo "Making Sym Links from /opt/profiles install location"
     ln -s /opt/profiles/.bash_aliases "$HPATH/"
-    ln -s /opt/profiles/.bashrc "$HPATH/"
+#    ln -s /opt/profiles/.bashrc "$HPATH/"
     ln -s /opt/profiles/.profile "$HPATH/"
     ln -s /opt/profiles/.kube-ps1 "$HPATH/"
     ln -s /opt/profiles/.git_bash_prompt "$HPATH/"
@@ -154,6 +154,34 @@ else
     touch "$HPATH/.ran_profiles_once"
   fi
 fi
+
+sourceAliasPath() {
+  cat <<EOF | tee --append ~/.bashrc >/dev/null
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+EOF
+}
+
+checkForSourceInclude() {
+if grep -qFe "source ~/.bash_aliases" ~/.bashrc
+then
+   return
+else
+   sourceAliasPath
+fi
+}
+
+checkForAliases() {
+if grep -qFe ". ~/.bash_aliases" ~/.bashrc
+then
+   return
+else
+   checkForSourceInclude
+fi
+}
+
+checkForAliases
 
 echo "See a list of commands Type: cmd"
 echo "Example: cmd web"
