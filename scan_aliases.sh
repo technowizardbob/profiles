@@ -19,14 +19,20 @@ fi
 
 SANE_TEST_FAILED=0
 
+tmpsum=$(mktemp -u --suffix ".sum.tmp")
+
 #shaXsum
 require_root() {
   if [ "$EUID" -eq 0 ]; then
+    mv "$tmpsum" "$SANE_CHECKER"
+    chown root:root "$SANE_CHECKER"
     chmod 444 "$SANE_CHECKER"
     chattr +i "$SANE_CHECKER"
   else
     echo "Trying to make sane sum file Immutable for security purposes, Please enter ROOT password when prompted."
     if [ -n "$USE_SUPER" ] && sudo --validate; then
+       sudo mv "$tmpsum" "$SANE_CHECKER"
+       sudo chown root:root "$SANE_CHECKER"
        sudo chmod 444 "$SANE_CHECKER"
        sudo chattr +i "$SANE_CHECKER"
     else
@@ -44,8 +50,8 @@ prompter_for_fix() {
 }
 
 if [ ! -f "$SANE_CHECKER" ]; then
-   $SHA_SUM_APP {/opt/profiles/aliases/*.env,/opt/profiles/custom_aliases/*.env,~/.bash_aliases,~/.bashrc,~/.bash_logout,~/.git_bash_prompt,~/.profile,~/.kube-ps1} > "$SANE_CHECKER" 2>/dev/null
    echo -e "\033[0;34m 1st run added to sane sum file! \033[0m"
+   $SHA_SUM_APP {/opt/profiles/*.sh,/opt/profiles/aliases/*.env,/opt/profiles/custom_aliases/*.env,~/.bash_aliases,~/.bashrc,~/.bash_logout,~/.git_bash_prompt,~/.profile,~/.kube-ps1} > "$tmpsum" 2>/dev/null
    require_root
 else
    if [ -w "$SANE_CHECKER" ]; then
@@ -66,7 +72,7 @@ else
    if ! $SHA_SUM_APP --quiet -c "$SANE_CHECKER"; then
       echo -e "\033[0;31m Danger...? Failed Sane checker!! \033[0m"
       SANE_TEST_FAILED=1
-   fi   
+   fi
 fi
 
 if [ $SANE_TEST_FAILED -eq 1 ]; then
