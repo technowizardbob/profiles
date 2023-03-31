@@ -4,6 +4,9 @@ _CUSTOM_ENV_FILES="${_CUSTOM_ENV_PATH}*.env"
 _ENV_PATH="${_PROFILES_PATH}aliases/"
 _ENV_FILES="${_ENV_PATH}*.env"
 
+# Check if any files have changed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+source "${_PROFILES_PATH}scan_aliases.sh"
+
 renew_env_aliases() {
     ALLENVS=()
     
@@ -73,8 +76,10 @@ cmd aliasfilename --edit  Will edit the alias"
             done
     fi
 }
-
-renew_env_aliases
-for rea in ${ALLENVS[@]}; do
-    source "${rea}"
-done
+# Run source on file if no changes!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+if [ $SANE_TEST_FAILED -eq 0 ]; then
+	renew_env_aliases
+	for rea in ${ALLENVS[@]}; do
+		source "${rea}"
+	done
+fi

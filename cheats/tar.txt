@@ -1,0 +1,19 @@
+Extracting Files:
+tar xvjf FILE.tar.bz2
+tar xvzf FILE.tar.gz
+tar xvJf FILE.tar.xz
+tar xvf FILE.tar
+tar xvzf FILE.tgz
+tar xvjf FILE.tbz2
+gunzip FILE.gz
+unxz FILE.xz
+unlzma FILE.lzma
+bunzip2 FILE.bz2
+unrar x -ad FILE.rar
+unzip FILE.zip
+uncompress FILE.Z
+7z x FILE.7z
+
+Compressing Files:
+tar cvzf FILE.tgz files
+tar cvfj FILE.tar.bz2 files
