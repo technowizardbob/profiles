@@ -1,4 +1,5 @@
 #Label, Bash_Command, Description
+Mosh SSH, mosh, Use Mosh Client
 GUI, gui, Open GUI File MGR
 List Files, list_files, List remote files
 Free Memory, free_mem, Get memory on server
