@@ -51,7 +51,7 @@ prompter_for_fix() {
 
 if [ ! -f "$SANE_CHECKER" ]; then
    echo -e "\033[0;34m 1st run added to sane sum file! \033[0m"
-   $SHA_SUM_APP {/opt/profiles/*.sh,/opt/profiles/aliases/*.env,/opt/profiles/custom_aliases/*.env,~/.bash_aliases,~/.bashrc,~/.bash_logout,~/.git_bash_prompt,~/.profile,~/.kube-ps1} > "$tmpsum" 2>/dev/null
+   $SHA_SUM_APP {/opt/profiles/*.sh,/opt/profiles/aliases/*.env,/opt/profiles/custom_aliases/*.env,~/.bash_aliases,~/.bashrc,~/.bash_logout,~/.git_bash_prompt,~/.profile,~/.kube-ps1,/opt/profiles/theme} > "$tmpsum" 2>/dev/null
    require_root
 else
    if [ -w "$SANE_CHECKER" ]; then
