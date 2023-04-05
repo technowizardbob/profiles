@@ -43,9 +43,9 @@ require_root() {
 prompter_for_fix() {
    echo "Verify the integerity of your aliases scripts, then run:"
    if [ ! -w "$SANE_CHECKER" ]; then
-      echo -e "\r\n sudo chattr -i \"$SANE_CHECKER\" \r\n sudo chmod 664 \"$SANE_CHECKER\" \r\n rm $SANE_CHECKER"
+      echo -e "\r\n sudo chattr -i \"$SANE_CHECKER\" \r\n sudo chmod 664 \"$SANE_CHECKER\" \r\n sudo rm $SANE_CHECKER"
    else
-      echo -e "rm $SANE_CHECKER"
+      echo -e "sudo rm $SANE_CHECKER"
    fi
 }
 

@@ -6,14 +6,16 @@ else
    _PROFILES_PATHS=${_PROFILES_PATH}
 fi
 
-if [ -f "$HOME/.ran_profiles_once" ]; then
-        echo -e "Already run once for this user!!\n"
-        exit 1
-fi
 
 sudo mkdir -p ${_PROFILES_PATHS} 2> /dev/null
 pushd ${_PROFILES_PATHS}
 sudo tar -xvzf ~/bash_aliases.tar.gz
+
+if [ -f "$HOME/.ran_profiles_once" ]; then
+        echo -e "Already run once for this user!!\n"
+        popd
+        exit 1
+fi
 
 bnow=$(date +"%m_%d_%Y_%H_%M_%S")
 mkdir -p "$HOME/.dotfile_backups/$bnow" 2> /dev/null
