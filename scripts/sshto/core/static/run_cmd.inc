@@ -13,6 +13,9 @@ refresh() {
         desc=${desc/!GUEST/$GUEST}
         desc=${desc/!REMOTE/$REMOTE}
         desc=${desc/!LOCAL/$LOCAL}
+        desc=${desc/!DEST/$DEST}
+        desc=${desc/!home/$home}
+        desc=${desc/!target/$target}
 
         cmdlist+=("$label" "$desc")
    done <<< $hard_coded_cmds

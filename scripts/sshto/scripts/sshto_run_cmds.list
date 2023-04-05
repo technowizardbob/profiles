@@ -1,19 +1,26 @@
 #Label, Bash_Command, Description
 Mosh SSH, mosh, Use Mosh Client
+New Tab, newtab, Open SSHTO in a new Tab
 GUI, gui, Open GUI File MGR
 List Files, list_files, List remote files
 Free Memory, free_mem, Get memory on server
 Inodes Free, free_inodes, Get inodes free on server
-Disk Sace, disk_space, Get Disk Space on server
-#Upload, upload, Upload to the server
-#Dest, serverpath, Change Server folder
-#Download, dlst; down, Download from the server
+Disk Space, disk_space, Get Disk Space on server
 System Info, system_info, Get server information
-Port Tunnel, portunneling, Open Tunnel on server
+,,
+Home, homepath, Change local PC home folder\Z4 !home \Z0
+Dest, downpath, Change Server folder\Z4 !DEST \Z0 on \Z4 !target \Z0
+Upload, upload, Upload to the server\Z4 !home \Z0 to \Z4 !target:!DEST \Z0
+Download, download, Download from the server\Z4 !target:!DEST\Z0 to\Z4 !home \Z0
+Files Copy, copy_files, Copy file to server
+Mount, mountdest, Mount remote Server folder\Z4 !DEST\Z0 to\Z4 /mnt/!target \Z0
+Unmount, unmountdest, Unmount remote Server folder\Z4 !DEST\Z0 from\Z4 /mnt/!target \Z0
+,,
 Key Copy, add_sshkey, Copy your SSH key to the server
-#Files Copy, copy_files, Copy files to server
-Change Username, username, Switch user accounts: !GUEST
-Local Port, local_port, Change local port: !LOCAL
-Remote Port, remote_port, Change remote port: !REMOTE
+#Fix ID, fix_id , Update host in known_hosts
+Change Username, username, Switch user accounts:\Z4 !GUEST \Z0
+Local Port, local_port, Change local port:\Z4 !LOCAL \Z0
+Remote Port, remote_port, Change remote port:\Z4 !REMOTE \Z0
+Port Tunnel, portunneling, Open Tunnel on server
 Change Colors, colors, Edit dialog colors
 Copy Aliases, add_aliases, SCP Bash Aliases

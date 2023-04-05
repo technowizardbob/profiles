@@ -12,8 +12,8 @@ is_done() {
   [[ $what == "" ]] && {
         clear 
         #echo "Edit me: ${_MAIN_PATHD}sshto/core/is_done.inc"
-	echo "Cool beans..."
-        # [[ $(uname -s) == "Darwin" ]] && ls -G || ls --color=auto
+        $LSEXIT || exit 0
+        ls
         exit 0; 
   } || { clear; echo $what; exit 1; } 
 }
