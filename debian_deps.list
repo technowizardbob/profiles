@@ -1,1 +1,1 @@
-dialog mlocate suckless-tools expect fonts-powerline firejail mutt
+dialog mlocate suckless-tools expect fonts-powerline firejail mutt mosh sshfs
