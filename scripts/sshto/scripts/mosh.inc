@@ -5,7 +5,7 @@ mosh() {
      /usr/bin/mosh "$target"
   else 
      echo "Unable to find the mosh client!"
-     echo "try: $ apt install mosh"
+     how_to_install mosh
      exit 1 
   fi
 }
