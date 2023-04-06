@@ -21,6 +21,6 @@ Key Copy, add_sshkey, Copy your SSH key to the server
 Change Username, username, Switch user accounts:\Z4 !GUEST \Z0
 Local Port, local_port, Change local port:\Z4 !LOCAL \Z0
 Remote Port, remote_port, Change remote port:\Z4 !REMOTE \Z0
-Port Tunnel, portunneling, Open Tunnel on server
+Port Tunnel, portunneling, Open Tunnel to server
 Change Colors, colors, Edit dialog colors
 Copy Aliases, add_aliases, SCP Bash Aliases

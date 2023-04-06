@@ -24,6 +24,10 @@ What have I added in this adapted form of works:
 		IE: $ sshto work
 * config file "ignore" option...to hide host from main menu
 	- IE: Host github #ignore
-* Menu Command to copy main Bash Aliases (compresses and creates installer script).
+* Menu Command to Copy main Bash Aliases (compresses and creates installer script).
+* Mosh client connection
+* SFTP via GUI file MGR
+* Mount will mount into /mnt
+* Key Copy asks which key to use
 
 -- Still in progress... See BUGS.txt.
