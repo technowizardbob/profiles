@@ -17,7 +17,7 @@ Mount, mountdest, Mount remote Server folder\Z4 !DEST\Z0 to\Z4 /mnt/!target \Z0
 Unmount, unmountdest, Unmount remote Server folder\Z4 !DEST\Z0 from\Z4 /mnt/!target \Z0
 ,,
 Key Copy, add_sshkey, Copy your SSH key to the server
-#Fix ID, fix_id , Update host in known_hosts
+Fix host ID, fix_id , Remove server/host from known_hosts
 Change Username, username, Switch user accounts:\Z4 !GUEST \Z0
 Local Port, local_port, Change local port:\Z4 !LOCAL \Z0
 Remote Port, remote_port, Change remote port:\Z4 !REMOTE \Z0

@@ -6,10 +6,15 @@ new_ssh_yes(){
 
 fix_id(){
     clear
-    local hostname=$target
-    local address=$(dig +short $hostname)
-    ssh-keygen -f "$knwhosts" -R "$hostname"
-    ssh-keygen -f "$knwhosts" -R "$address"
+    hostname=$(D "FIX" '' "BACK" '' --max-input 20 --inputbox 'Change Server Host name/address' 10 30 $target)
+	case $hostname:$? in
+                 *:0) USEHOST=${hostname:-$USEHOST}; clear
+                 local address=$(dig +short $USEHOST)
+                 ssh-keygen -f "$knwhosts" -R "$USEHOST"
+                 ssh-keygen -f "$knwhosts" -R "$address";;
+                 *:*) return;;
+	esac
+     
     new_ssh_yes
     pause
 }
