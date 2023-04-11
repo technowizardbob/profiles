@@ -10,7 +10,7 @@ else
 fi
 
 legacy_mode() {
-  ssh-keygen -t rsa -b 4096 -C "$email" -f "$RKEY"
+  ssh-keygen -o -a 100 -t rsa -b 4096 -C "$email" -f "$RKEY"
 }
 
 newer_mode() {
@@ -52,10 +52,10 @@ make_a_key() {
        exit 1
     fi
     echo -e "\nUse RSA for older Legacy systems or Ed25519 for Newer Systems\n"
-    read -r -p "L) Legacy N) Newer Systems : " runas
-    case runas in
-      l | L) legacy_mode;;
-      *) newer_mode;;
+    read -p "L) Legacy N) Newer Systems : " -r runas
+    case "$runas" in
+        *[lL]*) legacy_mode;;
+        *) newer_mode;;
     esac
 
     mv "$RKEY" "${RKEY}.private"

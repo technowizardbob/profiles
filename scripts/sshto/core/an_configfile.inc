@@ -427,14 +427,24 @@ echo "Host ${prefix}${ch}
 
 # ---  default for all NOT Defined hosts..! ---
 Host *
-     ForwardAgent no
-     ForwardX11 no
-     ForwardX11Trusted yes
-     User root
-     Port 22
-     Protocol 2
-     ServerAliveInterval 60
-     ServerAliveCountMax 30
+    Protocol 2
+    HostKeyAlgorithms sk-ssh-ed25519@openssh.com,ssh-ed25519,rsa-sha2-512,rsa-sha2-256,ssh-rsa
+    KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group18-sha512,diffie-hellman-group16-sha512
+    Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+    MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+    StrictHostKeyChecking ask
+    VerifyHostKeyDNS ask
+    User root
+    Port 22
+    ServerAliveInterval 300
+    ServerAliveCountMax 3
+    ForwardAgent no
+    ForwardX11 no
+    ForwardX11Trusted no
+    PermitLocalCommand no
+    HashKnownHosts yes
+    TCPKeepAlive yes
+    SendEnv LANG LC_*
 " >> "$HPATH/.ssh/config"
 
 if [ ! -r "$HPATH/.ssh/configs_home.conf" ]; then
