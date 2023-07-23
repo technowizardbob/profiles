@@ -43,3 +43,11 @@ Following are a few points to be noted when comparing strings:
 There are multiple ways to check if a string contains a substring:
 
     One approach is to use surround the substring with asterisk symbols * which means match all characters.
+
+EX block:
+
+if [ -z "$1" ];then
+   echo "Please enter something!"
+else
+   echo "Thanks..."
+fi
