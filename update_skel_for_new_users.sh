@@ -16,6 +16,15 @@ if [ -d aliases ] && [ -f .bash_aliases ]; then
 	ln -s "$(pwd -P)"/.profile /etc/skel/
 	ln -s "$(pwd -P)"/.git_bash_prompt /etc/skel/
 	ln -s "$(pwd -P)"/.kube-ps1 /etc/skel/
+    if [ ! -f /etc/skel/.nanorc ]; then
+        cp "$(pwd -P)"/dotfiles/.nanorc /etc/skel/
+    fi
+    if [ ! -f /etc/skel/.tmux.conf ]; then
+        cp "$(pwd -P)"/dotfiles/.tmux.conf /etc/skel/
+    fi
+    if [ ! -f /etc/skel/.vimrc ]; then
+        cp "$(pwd -P)"/dotfiles/.vimrc /etc/skel/
+    fi
 	exit 0
 fi
 echo "Making Sym Links for new users..."
@@ -24,3 +33,12 @@ ln -s /opt/profiles/.bashrc /etc/skel/
 ln -s /opt/profiles/.profile /etc/skel/
 ln -s /opt/profiles/.git_bash_prompt /etc/skel/
 ln -s /opt/profiles/.kube-ps1 /etc/skel/
+if [ ! -f /etc/skel/.nanorc ]; then
+   cp /opt/profiles/dotfiles/.nanorc /etc/skel/
+fi
+if [ ! -f /etc/skel/.tmux.conf ]; then
+   cp /opt/profiles/dotfiles/.tmux.conf /etc/skel/
+fi
+if [ ! -f /etc/skel/.vimrc ]; then
+   cp /opt/profiles/dotfiles/.vimrc /etc/skel/
+fi
