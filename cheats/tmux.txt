@@ -32,6 +32,7 @@ In tmux, hit the prefix `ctrl+b` (my modified prefix is ctrl+a) and then:
 
 ## List all shortcuts
 to see all the shortcuts keys in tmux simply use the `bind-key ?` in my case that would be `CTRL-B ?`
+CTRL+B " -> will create a horizontal split, then CTRL+B ArrowKey -> will move over...
 
 ## Sessions
 
