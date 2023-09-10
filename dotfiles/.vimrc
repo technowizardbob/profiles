@@ -29,9 +29,3 @@ augroup commenting_blocks_of_code
 augroup END
 noremap <silent> ,cc :<C-B>silent <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:nohlsearch<CR>
 noremap <silent> ,cu :<C-B>silent <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:nohlsearch<CR>
-
-" Change the cursor at insert mode
-let &t_ti.="\<Esc>[1 q"
-let &t_SI.="\<Esc>[5 q"
-let &t_EI.="\<Esc>[1 q"
-let &t_te.="\<Esc>[0 q"

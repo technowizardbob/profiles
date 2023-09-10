@@ -121,6 +121,12 @@ if [ -d aliases ] && [ -f .bash_aliases ]; then
     ln -s "$(pwd -P)"/.profile "$HPATH/"
     ln -s "$(pwd -P)"/.git_bash_prompt "$HPATH/"
     ln -s "$(pwd -P)"/.kube-ps1 "$HPATH/"
+    if [ ! -f "$HPATH/.tmux.conf" ]; then
+      cp "$(pwd -P)"/dotfiles/.tmux.conf "$HPATH/"
+    fi
+    if [ ! -f "$HPATH/.nanorc" ]; then
+      cp "$(pwd -P)"/dotfiles/.nanorc "$HPATH/"
+    fi
     if [ ! -f "$HPATH/.gitconfig" ]; then
       cp "$(pwd -P)"/dotfiles/.gitconfig "$HPATH/"
     fi
@@ -143,6 +149,9 @@ else
     ln -s /opt/profiles/.git_bash_prompt "$HPATH/"
     if [ ! -f "$HPATH/.tmux.conf" ]; then
       cp /opt/profiles/dotfiles/.tmux.conf "$HPATH/"
+    fi
+    if [ ! -f "$HPATH/.nanorc" ]; then
+      cp /opt/profiles/dotfiles/.nanorc "$HPATH/"
     fi
     if [ ! -f "$HPATH/.gitconfig" ]; then
       cp /opt/profiles/dotfiles/.gitconfig "$HPATH/"
