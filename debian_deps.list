@@ -1,1 +1,1 @@
-dialog mlocate suckless-tools expect fonts-powerline firejail mutt mosh sshfs git tmux
+dialog mlocate suckless-tools expect fonts-powerline firejail mutt mosh sshfs git tmux fzf
