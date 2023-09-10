@@ -1,3 +1,6 @@
+# Get the terminal width using tput
+width=$(tput cols)
+
 if is_normal_theme; then
 
   if [ $UID -ne 0 ]; then
@@ -13,7 +16,7 @@ if is_normal_theme; then
   BP="$PS_SYMBOL${WHITE}${BRANCH}${WD}"
   
   len=${#PWD}
-  if [ "$len" -gt 35 ]; then
+  if [ "$len" -gt 35 ] || [ "$width" -lt 70 ]; then
      NLT="\n│\n├────" 
   else
      NLT=""

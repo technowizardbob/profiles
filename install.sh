@@ -125,6 +125,7 @@ if [ -d aliases ] && [ -f .bash_aliases ]; then
       cp "$(pwd -P)"/dotfiles/.tmux.conf "$HPATH/"
     fi
     if [ ! -f "$HPATH/.nanorc" ]; then
+      mkdir ~/nanoBackups
       cp "$(pwd -P)"/dotfiles/.nanorc "$HPATH/"
     fi
     if [ ! -f "$HPATH/.gitconfig" ]; then
@@ -151,6 +152,7 @@ else
       cp /opt/profiles/dotfiles/.tmux.conf "$HPATH/"
     fi
     if [ ! -f "$HPATH/.nanorc" ]; then
+      mkdir ~/nanoBackups
       cp /opt/profiles/dotfiles/.nanorc "$HPATH/"
     fi
     if [ ! -f "$HPATH/.gitconfig" ]; then

@@ -1,1 +1,1 @@
-dialog mlocate expect awk sed powerline-fonts firejail
+dialog mlocate expect awk sed powerline-fonts firejail git tmux

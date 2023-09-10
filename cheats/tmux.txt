@@ -1,47 +1,33 @@
 # tmux shortcuts & cheatsheet
-
 start new:
-
     tmux
 
 start new with session name:
-
     tmux new -s myname
 
 attach:
-
     tmux a  #  (or at, or attach)
 
 attach to named:
-
     tmux a -t myname
 
 list sessions:
-
     tmux ls
 
-<a name="killSessions"></a>kill session:
-
+kill session:
     tmux kill-session -t myname
 
-<a name="killAllSessions"></a>Kill all the tmux sessions:
-
-    tmux ls | grep : | cut -d. -f1 | awk '{print substr($1, 0, length($1)-1)}' | xargs kill
-
-In tmux, hit the prefix `ctrl+b` (my modified prefix is ctrl+a) and then:
+In tmux, hit the prefix `ctrl+b` (my modified prefix is ctrl+space) and then:
 
 ## List all shortcuts
-to see all the shortcuts keys in tmux simply use the `bind-key ?` in my case that would be `CTRL-B ?`
-CTRL+B " -> will create a horizontal split, then CTRL+B ArrowKey -> will move over...
+to see all the shortcuts keys in tmux simply use the `bind-key ?` in my case that would be `CTRL-space ?`
 
 ## Sessions
-
     :new<CR>  new session
     s  list sessions
     $  name session
 
-## <a name="WindowsTabs"></a>Windows (tabs)
-
+##Windows (tabs)
     c  create window
     w  list windows
     n  next window
@@ -50,11 +36,9 @@ CTRL+B " -> will create a horizontal split, then CTRL+B ArrowKey -> will move ov
     ,  name window
     &  kill window
 
-## <a name="PanesSplits"></a>Panes (splits) 
-
-    %  vertical split
-    "  horizontal split
-    
+##Panes (splits) 
+    |  vertical split (default was %)
+    -  horizontal split (default was ")
     o  swap panes
     q  show pane numbers
     x  kill pane
@@ -65,22 +49,19 @@ CTRL+B " -> will create a horizontal split, then CTRL+B ArrowKey -> will move ov
     <prefix> { (Move the current pane left)
     <prefix> } (Move the current pane right)
     <prefix> z toggle pane zoom
+    <prefix> arrow key - move to pane
+    <alt> arrow key - move to pane
 
-## <a name="syncPanes"></a>Sync Panes 
-
-You can do this by switching to the appropriate window, typing your Tmux prefix (commonly Ctrl-B or Ctrl-A) and then a colon to bring up a Tmux command line, and typing:
-
+##Sync Panes 
+You can do this by switching to the appropriate window, typing your Tmux prefix (commonly Ctrl-B or Ctrl-space) and then a colon to bring up a Tmux command line, and typing:
 ```
 :setw synchronize-panes
 ```
-
 You can optionally add on or off to specify which state you want; otherwise the option is simply toggled. This option is specific to one window, so it won’t change the way your other sessions or windows operate. When you’re done, toggle it off again by repeating the command. [tip source](http://blog.sanctum.geek.nz/sync-tmux-panes/)
 
 
 ## Resizing Panes
-
 You can also resize panes if you don’t like the layout defaults. I personally rarely need to do this, though it’s handy to know how. Here is the basic syntax to resize panes:
-
     PREFIX : resize-pane -D (Resizes the current pane down)
     PREFIX : resize-pane -U (Resizes the current pane upward)
     PREFIX : resize-pane -L (Resizes the current pane left)
@@ -92,7 +73,6 @@ You can also resize panes if you don’t like the layout defaults. I personally 
     PREFIX : resize-pane -t 2 -L 20 (Resizes the pane with the id of 2 left by 20 cells)
     
 ## Copy mode:
-
 Pressing PREFIX [ places us in Copy mode. We can then use our movement keys to move our cursor around the screen. By default, the arrow keys work. we set our configuration file to use Vim keys for moving between windows and resizing panes so we wouldn’t have to take our hands off the home row. tmux has a vi mode for working with the buffer as well. To enable it, add this line to .tmux.conf:
 
     setw -g mode-keys vi
@@ -136,14 +116,12 @@ For example, we can use "w" to jump to the next word and "b" to jump back one wo
        Transpose chars                        C-t
 
 ## Misc
-
     d  detach
     t  big clock
     ?  list shortcuts
     :  prompt
 
 ## Configurations Options:
-
     # Mouse support - set to on if you want to use the mouse
     * setw -g mode-mouse off
     * set -g mouse-select-pane off
@@ -159,33 +137,3 @@ For example, we can use "w" to jump to the next word and "b" to jump back one wo
 
     # Center the window list
     set -g status-justify centre
-
-    # Maximize and restore a pane
-    unbind Up bind Up new-window -d -n tmp \; swap-pane -s tmp.1 \; select-window -t tmp
-    unbind Down
-    bind Down last-window \; swap-pane -s tmp.1 \; kill-window -t tmp
-
-## Resources:
-
-* [tmux: Productive Mouse-Free Development](http://pragprog.com/book/bhtmux/tmux)
-* [How to reorder windows](http://superuser.com/questions/343572/tmux-how-do-i-reorder-my-windows)
-
-## Notes:
-
-* 
-
-## Changelog:
-
-* 1411143833002 - Added [toggle zoom](#PanesSplits) under Panes (splits) section.
-* 1411143833002 - [Added Sync Panes](#syncPanes)
-* 1414276652677 - [Added Kill all tmux sessions ](#killAllSessions)
-* 1438585211173 - [corrected create and add next and previus thanks to @justinjhendrick](#WindowsTabs)
-* 1676001639197 - [corrected a typo Thanks to @justinjhendrick](#resizing-panes)
- 
-## Request an Update:
-
-We Noticed that our Cheatsheet is growing and people are coloberating to add new tips and tricks, so please tweet to me what would you like to add and let's make it better!
-
-* [this tmux MD](https://gist.githubusercontent.com/MohamedAlaa/2961058/raw/749592312cc599cc81def8f2313603ef669620cf/tmux-cheatsheet.markdown)
-
-* Twitter: [@MohammedAlaa](http://twitter.com/MohammedAlaa)
