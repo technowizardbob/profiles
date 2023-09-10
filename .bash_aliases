@@ -39,6 +39,10 @@ cmds() {
     echo "..." > /tmp/commands.txt
     renew_env_aliases
     for f in ${ALLENVS[@]}; do
+        if [ "$f" == "/opt/profiles/aliases/kubectl-cheat-sheet.env" ]; then
+            # skip large file
+            continue
+        fi
         echo "Reading Aliases for ${f}" >> /tmp/commands.txt
         cat "${f}" >> /tmp/commands.txt
     done
