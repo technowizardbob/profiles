@@ -141,6 +141,9 @@ else
     ln -s /opt/profiles/.profile "$HPATH/"
     ln -s /opt/profiles/.kube-ps1 "$HPATH/"
     ln -s /opt/profiles/.git_bash_prompt "$HPATH/"
+    if [ ! -f "$HPATH/.tmux.conf" ]; then
+      cp /opt/profiles/dotfiles/.tmux.conf "$HPATH/"
+    fi
     if [ ! -f "$HPATH/.gitconfig" ]; then
       cp /opt/profiles/dotfiles/.gitconfig "$HPATH/"
     fi
