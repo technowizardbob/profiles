@@ -131,7 +131,7 @@ If, you forget about this README.md file, type: $ guide
 .SH AUTHOR
 Bob S. <Tips@TechnoWizardBob.com>
 
-:octocat: [On GitHub -> TryingToScale.com](https://github.com/technowizardbob)
+:octocat: [On GitHub -> TechnoWizardBob.com](https://github.com/technowizardbob)
 
 [My Site -> TechonoWizardBob.com](https://TechonoWizardBob.com)
 
