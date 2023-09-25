@@ -8,7 +8,7 @@ PROFILE_PATH=/opt/profiles
 
 # Unicode symbols https://github.com/pjmp/fancy-linux-prompt/blob/master/fancy-prompt.sh
 # The various escape codes that we can use to color our prompt.
-# Glued together by Robert S. -> https://github.com/tryingtoscale/profiles
+# Glued together by Bob S. -> https://github.com/technowizardbob/profiles
      GIT_BRANCH_CHANGED_SYMBOL='+ changed'
      GIT_NEED_PULL_SYMBOL='⇣ do pull'
      GIT_NEED_PUSH_SYMBOL='⇡ needs push'

@@ -2,13 +2,13 @@
 if [ -n "$(which gpg)" ] && [ -n "$(gpg --list-key)" ]; then
 
 cat <<EOF | tee ~/TTS_CLA_WAIVER
-# Copyright waiver for <https://github.com/tryingtoscale/profiles>
+# Copyright waiver for <https://github.com/technowizardbob/profiles>
 
 By submitting a pull request for this project, you agree to 
 license your contribution under the MIT license to this project.
 
 To accept your pull request with changes....If you want to contribute 
-any code, then email me <Robert@TryingToScale.com> with -
+any code, then email me <Tips@TechnoWizardBob.com> with -
 this waiver signed by you, call the attached file WAIVER:
 
 ## Individual Contributor License Agreement (CLA)
@@ -83,7 +83,7 @@ EOF
 
   if gpg --no-version --armor --sign ~/TTS_CLA_WAIVER
   then
-     echo -e "Please attach the file: ~/TTS_CLA_WAIVER to an email.\nSend it to: Robert@TryingToScale.com"
+     echo -e "Please attach the file: ~/TTS_CLA_WAIVER to an email.\nSend it to: Tips@TechnoWizardBob.com"
   else
      echo "Sorry, gpg did not complete successfully..."
   fi

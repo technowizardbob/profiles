@@ -16,7 +16,7 @@ Download from github to $HOME/profiles and extract there...via the following git
 ```bash
 $ cd ~
 
-$ git clone https://github.com/tryingtoscale/profiles.git
+$ git clone https://github.com/technowizardbob/profiles.git
 
 Then:$ sudo mv profiles/ /opt/
 
