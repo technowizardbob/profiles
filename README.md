@@ -129,10 +129,10 @@ ex3: cheats
 If, you forget about this README.md file, type: $ guide
 
 .SH AUTHOR
-Robert S. <Robert@TryingToScale.com>
+Bob S. <Tips@TechnoWizardBob.com>
 
-:octocat: [On GitHub -> TryingToScale.com](https://github.com/tryingtoscale)
+:octocat: [On GitHub -> TryingToScale.com](https://github.com/technowizardbob)
 
-[My Site -> TryingToScale.com](https://TryingToScale.com)
+[My Site -> TechonoWizardBob.com](https://TechonoWizardBob.com)
 
-[CoC](https://github.com/tryingtoscale/profiles/blob/main/CoC/CoC.md)
+[CoC](https://github.com/technowizardbob/profiles/blob/main/CoC/CoC.md)
