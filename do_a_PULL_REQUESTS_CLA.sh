@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -n "$(which gpg)" ] && [ -n "$(gpg --list-key)" ]; then
 
-cat <<EOF | tee ~/TTS_CLA_WAIVER
+cat <<EOF | tee ~/TWB_CLA_WAIVER
 # Copyright waiver for <https://github.com/technowizardbob/profiles>
 
 By submitting a pull request for this project, you agree to 
@@ -77,13 +77,13 @@ EOF
      echo "Aborting..."
      exit 1
   fi
-  echo -e "\n$legal, accepted this MIT CLA." >> ~/TTS_CLA_WAIVER
-  echo -e "\n Singed on: " >> ~/TTS_CLA_WAIVER
-  date -R >> ~/TTS_CLA_WAIVER
+  echo -e "\n$legal, accepted this MIT CLA." >> ~/TWB_CLA_WAIVER
+  echo -e "\n Singed on: " >> ~/TWB_CLA_WAIVER
+  date -R >> ~/TWB_CLA_WAIVER
 
-  if gpg --no-version --armor --sign ~/TTS_CLA_WAIVER
+  if gpg --no-version --armor --sign ~/TWB_CLA_WAIVER
   then
-     echo -e "Please attach the file: ~/TTS_CLA_WAIVER to an email.\nSend it to: Tips@TechnoWizardBob.com"
+     echo -e "Please attach the file: ~/TWB_CLA_WAIVER to an email.\nSend it to: Tips@TechnoWizardBob.com"
   else
      echo "Sorry, gpg did not complete successfully..."
   fi
