@@ -18,7 +18,8 @@ check_env_var_hash() {
         
         # Compare the current hash with the previous hash
         if [[ "$current_hash" != "$previous_hash" ]]; then
-            /usr/bin/echo "Change detected in $env_var_name!"
+            /usr/bin/echo -e "\033[0;31m Danger...? Change detected in $env_var_name!!! ENV VAR \033[0m"
+            export SANE_TEST_FAILED=1
         fi
     else
         /usr/bin/echo "Hash file for $env_var_name does not exist. Creating new hash file."

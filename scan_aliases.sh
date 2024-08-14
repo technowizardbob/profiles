@@ -90,4 +90,4 @@ fi
 if [ $SANE_TEST_FAILED -eq 1 ]; then
    prompter_for_fix
 fi
-${_PROFILES_PATH}scan_libs.sh
+source ${_PROFILES_PATH}scan_libs.sh
