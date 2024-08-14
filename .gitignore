@@ -7,4 +7,4 @@ awesome.txt
 custom_aliases/*
 custom_dotfiles/.*
 scripts/sshto/bin
-sane_checker.sum
+*.sum
