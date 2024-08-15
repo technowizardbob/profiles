@@ -3,7 +3,7 @@
 # Function to check the SHA-256 hash of an environment variable
 check_env_var_hash() {
     local env_var_name="$1"
-    local hash_file="/opt/profiles/${env_var_name}_hash_${USER}.sum"
+    local hash_file="/opt/profiles/.${env_var_name}_hash_${USER}.sum"
 
     # Get the current value of the specified environment variable
     local current_value=$(/usr/bin/printenv "$env_var_name")

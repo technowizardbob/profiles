@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SANE_CHECKER="${_PROFILES_PATH}sane_checker.sum"
+SANE_CHECKER="${_PROFILES_PATH}.sane_checker.sum"
 SHA_SUM_APP=/usr/bin/sha256sum
 
 if groups "$USER" | grep -o "sudo" >/dev/null 2>/dev/null; then
