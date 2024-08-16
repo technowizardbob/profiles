@@ -6,7 +6,7 @@ export SHA_SUM_APP=/usr/bin/sha256sum
 _f_do_as() {
     local file_name="$1"
     shift # Remove the first argment (the file)
-    if [ -r "$file" ]; then
+    if [ -r "$file_name" ]; then
        $@
     else
        $USE_SUPER $@
