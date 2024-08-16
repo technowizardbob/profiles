@@ -1,7 +1,17 @@
 #!/bin/bash
 
 SANE_CHECKER="${_PROFILES_PATH}.sane_checker.sum"
-SHA_SUM_APP=/usr/bin/sha256sum
+export SHA_SUM_APP=/usr/bin/sha256sum
+
+_f_do_as() {
+    local file_name="$1"
+    shift # Remove the first argment (the file)
+    if [ -r "$file" ]; then
+       $@
+    else
+       $USE_SUPER $@
+    fi
+}
 
 if groups "$USER" | grep -o "sudo" >/dev/null 2>/dev/null; then
    USE_SUPER="sudo"
@@ -16,7 +26,7 @@ elif [ "$EUID" -eq 0 ]; then
 else
    USE_SUPER=""
 fi
-
+export USE_SUPER
 SANE_TEST_FAILED=0
 
 tmpsum=$(mktemp -u --suffix ".sum.tmp")
