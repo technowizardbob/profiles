@@ -12,5 +12,10 @@ tpwd=$(grep -ao '[A-Za-z0-9]' /dev/urandom \
     | head -n $PWD_SIZE \
     | shuf \
     | tr -d 'ioIOlL01\n')
-echo "${SPC}${tpwd}${EPC}" | fold -w1 | shuf | tr -d '\n'
+CAP=$(echo "${SPC}${tpwd}${EPC}" | fold -w1 | shuf | tr -d '\n')
+echo $CAP
+if command -v xclip > /dev/null 2>&1; then
+   echo $CAP | xclip -selection clipboard
+#else sudo apt install xclip
+fi
 echo ""
