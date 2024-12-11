@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Turn Off PC
+GenericName=PowerOff
+Comment=Turn Off PC
+Exec=/opt/profiles/dotfiles/poweroff.sh
+Icon=/opt/profiles/dotfiles/poweroff.png
+StartupNotify=false
+Terminal=false
+Type=Application

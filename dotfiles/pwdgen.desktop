@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=pwdgen
+GenericName=PasswordGenerator
+Comment=Makes Passwords
+Exec=/opt/profiles/scripts/pwd_gen.sh
+Icon=/opt/profiles/dotfiles/lock.png
+StartupNotify=false
+Terminal=true
+Type=Application

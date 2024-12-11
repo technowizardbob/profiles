@@ -1,0 +1,9 @@
+cp off.desktop ~/.local/share/applications/
+cp pwdgen.desktop ~/.local/share/applications/
+# --------- OR for all users:
+# /usr/share/applications/  
+chmod +x ~/.local/share/applications/off.desktop
+chmod +x ~/.local/share/applications/pwdgen.desktop
+sudo update-desktop-database ~/.local/share/applications/
+nautilus -q
+# If program do not show in the App Search page, logout/back in.
