@@ -1,7 +1,7 @@
 #!/bin/bash
-export LC_ALL=C
 PW_FOLDER="$HOME/.mypwds"
 ME=$(whoami)
+export PASSWORD_STORE_CLIP_TIME=75
 export PASSWORD_STORE_DIR="$PW_FOLDER/stores" 
 export GNUPGHOME="$PW_FOLDER"
 
@@ -41,6 +41,7 @@ a-good-pass() {
   GCAP=$(echo "$substring" | fold -w1 | shuf | tr -d '\n')
 }
 a-normal-pass() {
+    export LC_ALL=C
 	local PWD_SIZE=$((9 + RANDOM % 16)) # Min 9, Max 9 + 16
 	local PCS='@#%^&*()_-+=[].,;:?'
 	local SPC=${PCS:$((RANDOM % ${#PCS})):1}   # Start Random special char.
@@ -68,8 +69,9 @@ pick_option() {
   echo "2. Use Good   Password: $GCAP"
   echo "3. Use Normal Password: $NCAP"
   echo "4. Fetch Password."
-  echo "5. Edit Password."
-  read -p "Enter your choice (1, 2, 3, 4, or 5): " choice
+  echo "5. Edit/Add Password."
+  read -n 1 -r -p "Enter your choice (1, 2, 3, 4, or 5): " choice
+  echo ""
   case "$choice" in
     1)
       CAP=$LCAP
@@ -136,14 +138,16 @@ init_pwds() {
 	fi	    
 }
 fetch_pwd() {
+    export LC_ALL=en_US.UTF-8
     pass ls
-    read -p "Enter the password file to view, EX: $ME/Test :" file
+    read -p "Enter the password file to view, EX: $ME/Chase Bank :" file
     pass "$file"
     pass "$file" -c
 }
 edit_pwd() {
+    export LC_ALL=en_US.UTF-8
     pass ls
-    read -p "Enter the password file to edit, EX: $ME/Test :" file
+    read -p "Enter the password file to edit, EX: $ME/Chase Bank :" file
     pass edit "$file"
 	check=$(pass "$file")
 	# Remove Empty Passwords
@@ -151,6 +155,7 @@ edit_pwd() {
 		pass rm "$file"
     fi
 }
+clearclip=false
 enter_pwd() {
 	read -n 1 -r -p "Would you like to Save this Password (y/n)?" doit
 	  case "$doit" in
@@ -159,10 +164,30 @@ enter_pwd() {
 			read -p "Enter description, EX: Username :" desc
 			read -p "Enter Entry System Name, EX: $ME/Chase Bank :" entry
 			echo -e "$CAP\n$desc" | pass insert -m "$entry"
+			clearclip=true
+		  ;;
+		[nN])
+			echo -e "\nPlease, in some way, capture the password...\n"
+		  ;;
+		*)
+		 	echo -e "\nInvalid choice...please try again.\n"
+			enter_pwd
 		  ;;
 	  esac
 }
 
 init_pwds
 pick_option
-read -n 1 -s -r -p "Press the Enter key to EXIT..."
+echo ""
+if [ "$clearclip" = true ]; then
+    read -n 1 -r -p "Press E key to empty clipboard and Exit, or use Enter key to just EXIT : " doit
+	  case "$doit" in
+		[eE])
+    			echo -n "" | xclip -selection clipboard
+			echo -e "\nClearing password, 1 second to exit...\n"
+			sleep 1
+		;;
+	  esac
+else
+    read -n 1 -s -r -p "Press the Enter key to EXIT..."
+fi
