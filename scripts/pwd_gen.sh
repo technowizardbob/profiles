@@ -5,6 +5,15 @@ ME=$(whoami)
 export PASSWORD_STORE_DIR="$PW_FOLDER/stores" 
 export GNUPGHOME="$PW_FOLDER"
 
+editors=("gnome-text-editor" "mousepad" "leafpad" "kwrite" "kate" "pluma" "xed" "geany" "brackets" "notepadqq" "code" "nano" "vi")
+for editor in "${editors[@]}"; do
+    # Check if the editor exists in the PATH
+    if command -v "$editor" &> /dev/null; then
+        export EDITOR="$editor"
+        break
+    fi
+done
+
 a-long-password() {
   if [ -z "$1" ]; then
     local random_string=$(openssl rand -base64 24)
