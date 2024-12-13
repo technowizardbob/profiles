@@ -7,9 +7,9 @@ export GNUPGHOME="$PW_FOLDER"
 
 editors=("gnome-text-editor" "mousepad" "leafpad" "kwrite" "kate" "pluma" "xed" "geany" "brackets" "notepadqq" "code" "nano" "vi")
 for editor in "${editors[@]}"; do
-    # Check if the editor exists in the PATH
-    if command -v "$editor" &> /dev/null; then
-        export EDITOR="$editor"
+	full_path=$(command -v "$editor" 2> /dev/null)
+    if [ -n "$full_path" ]; then
+        export EDITOR="$full_path"
         break
     fi
 done
