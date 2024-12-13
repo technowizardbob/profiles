@@ -1,5 +1,10 @@
 #!/bin/bash
 export LC_ALL=C
+PW_FOLDER="$HOME/.mypwds"
+ME=$(whoami)
+export PASSWORD_STORE_DIR="$PW_FOLDER/stores" 
+export GNUPGHOME="$PW_FOLDER"
+
 a-long-password() {
   if [ -z "$1" ]; then
     local random_string=$(openssl rand -base64 24)
@@ -53,8 +58,9 @@ pick_option() {
   echo "1. Use LONG   Password: $LCAP"
   echo "2. Use Good   Password: $GCAP"
   echo "3. Use Normal Password: $NCAP"
-  read -p "Enter your choice (1, 2, or 3): " choice
-
+  echo "4. Fetch Password."
+  echo "5. Edit Password."
+  read -p "Enter your choice (1, 2, 3, 4, or 5): " choice
   case "$choice" in
     1)
       CAP=$LCAP
@@ -68,6 +74,12 @@ pick_option() {
       CAP=$NCAP
       use_pwd
       ;;
+    4)
+      fetch_pwd
+      ;;
+    5)
+      edit_pwd
+      ;;
     *)
       echo "Invalid choice, please try again."
       pick_option # Call the function again for a valid input
@@ -75,7 +87,7 @@ pick_option() {
   esac
 }
 
-function use_pwd() {
+use_pwd() {
 	if command -v xclip > /dev/null 2>&1; then
 	   printf "%s" "${CAP//$'\n'/}" | xclip -selection clipboard
 	   echo -e "This Password has been saved to the clip-board. Use CTRL+V to paste."
@@ -83,6 +95,65 @@ function use_pwd() {
 	   echo -e "please run \$ sudo apt install xclip \n"
 	fi
 	echo ""
-	read -n 1 -s -r -p "Press any key to continue..."
+	enter_pwd
 }
+
+do_init() {
+  # Create the directory if necessary and initialize it
+  mkdir -p "$PW_FOLDER/stores"
+  chmod 700 "$PW_FOLDER"
+  
+  gpg2 --homedir "$PW_FOLDER" --batch --gen-key <<EOF
+Key-Type: RSA
+Key-Length: 4096
+Expire-Date: 0
+Name-Real: $ME
+Name-Email: $ME@localhost.me
+%commit
+EOF
+  gpg2 --homedir "$PW_FOLDER" --list-keys --with-colons | grep '^pub' | awk -F: '{print $5}' > "$PASSWORD_STORE_DIR/.gpg-id"
+  pass init $(cat "$PASSWORD_STORE_DIR/.gpg-id")
+}
+
+init_pwds() {
+	if [ ! -d "$PW_FOLDER" ]; then
+		echo -e "Folder $PW_FOLDER does not exist.\nYou will be prompted to make a main password...\n"
+		read -n 1 -r -p "Would you like to Initialize the password store, now (y/n)?" doit
+		  case "$doit" in
+			[yY])
+			  do_init
+			  ;;
+		  esac
+	fi	    
+}
+fetch_pwd() {
+    pass ls
+    read -p "Enter the password file to view, EX: $ME/Test :" file
+    pass "$file"
+    pass "$file" -c
+}
+edit_pwd() {
+    pass ls
+    read -p "Enter the password file to edit, EX: $ME/Test :" file
+    pass edit "$file"
+	check=$(pass "$file")
+	# Remove Empty Passwords
+	if [[ -z "$check" ]]; then
+		pass rm "$file"
+    fi
+}
+enter_pwd() {
+	read -n 1 -r -p "Would you like to Save this Password (y/n)?" doit
+	  case "$doit" in
+		[yY])
+			echo -e "\n"
+			read -p "Enter description, EX: Username :" desc
+			read -p "Enter Entry System Name, EX: $ME/Chase Bank :" entry
+			echo -e "$CAP\n$desc" | pass insert -m "$entry"
+		  ;;
+	  esac
+}
+
+init_pwds
 pick_option
+read -n 1 -s -r -p "Press the Enter key to EXIT..."
