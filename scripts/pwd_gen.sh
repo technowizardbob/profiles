@@ -14,6 +14,26 @@ for editor in "${editors[@]}"; do
     fi
 done
 
+# Function to check if a program is installed
+check_program() {
+    local program=$1
+    if ! command -v "$program" &> /dev/null; then
+        if [ "$program" == "gpg2" ]; then
+            echo "$program is not installed. You can install it with:"
+            echo "  sudo apt update && sudo apt install gnupg2"
+        else
+            echo "$program is not installed. You can install it with:"
+            echo "  sudo apt update && sudo apt install $program"
+        fi
+        exit 1
+    fi
+}
+# Programs to check
+programs=("pass" "gpg2" "xclip")
+for program in "${programs[@]}"; do
+    check_program "$program"
+done
+
 a-long-password() {
   if [ -z "$1" ]; then
     local random_string=$(openssl rand -base64 24)
@@ -183,7 +203,7 @@ if [ "$clearclip" = true ]; then
     read -n 1 -r -p "Press E key to empty clipboard and Exit, or use Enter key to just EXIT : " doit
 	  case "$doit" in
 		[eE])
-    			echo -n "" | xclip -selection clipboard
+   			echo -n "" | xclip -selection clipboard
 			echo -e "\nClearing password, 1 second to exit...\n"
 			sleep 1
 		;;
