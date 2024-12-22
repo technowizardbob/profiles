@@ -35,7 +35,7 @@ tmpsum=$(mktemp -u --suffix ".sum.tmp")
 tmpsum2=$(mktemp -u --suffix ".sum2.tmp")
 
 # Spinner function with multiple animation styles
-spinner() {
+_my_spinner() {
     local pid=$1
     local style=${2:-0}
     local delay=0.1
@@ -157,30 +157,6 @@ check_certificates() {
 	fi
 
 	if [ "$SANE_TEST_FAILED" -eq 1 ]; then
-	   return 2
-	fi
-
-	if [ -f "$SANE_CERTS" ]; then
-		changed=0
-		for cert in /etc/ssl/certs/*; do
-			if [ -f "$cert" ]; then  # Only process regular files
-				if ! grep -q "$($SHA_SUM_APP "$cert")" "$SANE_CERTS"; then
-					echo -e "\033[0;31mWARNING: Modified or new cert found: $cert \r\n \033[0m" >> "$error_status"
-					changed=1
-				fi
-			fi	
-		done
-		if [ "$changed" -eq 1 ]; then
-		   echo "Please -- Verify the integerity of your SSL Certs, then run:" >> "$error_status"
-		   if [ ! -w "$SANE_CERTS" ]; then
-			  echo -e "\r\n sudo chattr -i \"$SANE_CERTS\" \r\n sudo chmod 664 \"$SANE_CERTS\" \r\n sudo rm $SANE_CERTS" >> "$error_status"
-		   else
-			  echo -e "sudo rm $SANE_CERTS" >> "$error_status"
-		   fi
-		   SANE_TEST_FAILED=1
-		fi
-	fi
-	if [ "$SANE_TEST_FAILED" -eq 1 ]; then
 		return 1
 	else
 		return 0
@@ -193,12 +169,12 @@ if [ "$good" -eq 1 ]; then
 	# Run the check in background and capture its exit status
 	(check_certificates; echo $? > "$temp_status") &
 	# Start spinner with style 0 (can be changed to 1-4 for different animations)
-	spinner $! 0
+	_my_spinner $! 0
 	# Wait for background process to complete
 	wait
 	# Read the exit status and clean up
 	exit_status=$(cat "$temp_status")
-	if [ "$exit_status" -eq 2 ]; then
+	if [ "$exit_status" -eq 1 ]; then
 		prompter_for_fix
 		SANE_TEST_FAILED=1
 	else	
@@ -209,4 +185,48 @@ fi
 cat "$error_status" | sed -r 's/\x1b\[[0-9;]*m//g'
 rm "$error_status"
 rm "$temp_status"
+
+_do_scan_ssl_certs() {
+	if [ -f "$SANE_CERTS" ]; then
+		changed=0
+		for cert in /etc/ssl/certs/*; do
+			if [ -f "$cert" ]; then  # Only process regular files
+				if ! grep -q "$($SHA_SUM_APP "$cert")" "$SANE_CERTS"; then
+					echo -e "\033[0;31mWARNING: Modified or new cert found: $cert \r\n \033[0m" >> "$ssl_error_status"
+					changed=1
+				fi
+			fi	
+		done
+		if [ "$changed" -eq 1 ]; then
+		   echo "Please -- Verify the integerity of your SSL Certs, then run:" >> "$ssl_error_status"
+		   if [ ! -w "$SANE_CERTS" ]; then
+			  echo -e "\r\n sudo chattr -i \"$SANE_CERTS\" \r\n sudo chmod 664 \"$SANE_CERTS\" \r\n sudo rm $SANE_CERTS" >> "$ssl_error_status"
+		   else
+			  echo -e "sudo rm $SANE_CERTS" >> "$ssl_error_status"
+		   fi
+		   SANE_TEST_FAILED=1
+		else
+		   echo -e "SSL Certs look the same..." >> "$ssl_error_status"
+		fi
+	fi
+}
+
+scan_ssl_certs() {
+	clear
+	ssl_error_status=$(mktemp)
+	# Run the check in background and capture its exit status
+	(_do_scan_ssl_certs) &
+	# Start spinner with style 0 (can be changed to 1-4 for different animations)
+	_my_spinner $! 0
+	# Wait for background process to complete
+	wait
+	cat "$ssl_error_status" | sed -r 's/\x1b\[[0-9;]*m//g'
+	rm "$ssl_error_status"
+}
+
+# Unset the function
+unset -f _f_do_as
+unset -f require_root
+unset -f prompter_for_fix
+unset -f check_certificates
 source ${_PROFILES_PATH}scan_libs.sh
