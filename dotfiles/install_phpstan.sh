@@ -15,11 +15,11 @@ Phar::loadPhar(__DIR__ . '/phpx.phar', 'phpstan.phar');
 
 require 'phar://phpstan.phar/bin/phpstan';
 EOF
-    chmod +x phpx
+    chmod 555 phpx
     sudo mv phpx /usr/local/bin/
 	wget https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar
 	mv phpstan.phar phpx.phar
-	chmod +x phpx.phar
+	chmod 555 phpx.phar
 	sudo mv phpx.phar /usr/local/bin/
 	popd
 	rmdir /tmp/stan
