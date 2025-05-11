@@ -154,7 +154,7 @@ function set_git_branch {
  
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
-function set_prompt_symbol () {
+function set_prompt_symbol() {
   if is_normal_theme; then
      ERRX="✘"
   else 
@@ -166,9 +166,40 @@ function set_prompt_symbol () {
       PROMPT_SYMBOL="${RED}${ERRX} \$${COLOR_NONE}"
   fi
 }
+
+function pydir() {
+    local pyt=$(dirname "$1")
+    local pw=$(pwd)
+    if [ "$pyt" == "$pw" ]; then
+        return 0
+    fi
+    return 1    
+}     
+# Function to check if inside a Python virtual environment
+function is_in_python_env() {
+    # Check for VIRTUAL_ENV environment variable (most reliable method)
+    if [ -n "$VIRTUAL_ENV" ]; then
+        if pydir "$VIRTUAL_ENV"; then
+           return 0
+        fi   
+    fi
+    
+    # Alternative check for venv/pipenv/conda environments
+    if [ -n "$CONDA_DEFAULT_ENV" ]; then
+        if pydir "$CONDA_DEFAULT_ENV"; then
+            return 0
+        fi    
+    fi 
+    if [ -n "$PIPENV_ACTIVE" ]; then
+        return 0
+    fi
+   
+    return 1
+}
+
  
 # Set the full bash prompt.
-function set_bash_prompt () {
+function set_bash_prompt() {
   # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the 
   # return value of the last command.
   set_prompt_symbol $?
@@ -180,6 +211,11 @@ function set_bash_prompt () {
     BRANCH=''
   fi
 
+  if is_in_python_env ; then
+    PY="🐍"
+  else
+    PY=''
+  fi  
   # Set the bash prompt variable.  
   
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
@@ -213,9 +249,9 @@ case $_distro in
     *)                       ICON="";;
 esac
 
-    UPC="${RED}SSH:${WHITE} ${ICON} "
+    UPC="${RED}SSH:${WHITE}${PY} ${ICON} "
   else
-    UPC="Local:"    
+    UPC="Local:${PY}"    
   fi
   
   # if you want kube prompt
