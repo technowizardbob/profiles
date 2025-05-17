@@ -225,7 +225,6 @@ scan_ssl_certs() {
 }
 
 # Unset the function
-unset -f _f_do_as
 unset -f require_root
 unset -f prompter_for_fix
 unset -f check_certificates
