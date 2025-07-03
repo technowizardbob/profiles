@@ -1,1 +1,1 @@
-pass gnupg2 xclip dialog mlocate suckless-tools expect fonts-powerline fonts-hack-ttf firejail mutt mosh sshfs git tmux fzf bat
+pass gnupg2 xclip dialog mlocate wofi expect fonts-powerline fonts-hack-ttf firejail mutt mosh sshfs git tmux fzf bat
